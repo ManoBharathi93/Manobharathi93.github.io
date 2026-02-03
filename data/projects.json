@@ -1,58 +1,28 @@
 {
   "projects": [
     {
-      "id": 1,
-      "name": "E-Commerce Platform",
-      "description": "A full-stack e-commerce application built with React, Node.js, and MongoDB. Features include product catalog, shopping cart, payment integration, and admin dashboard.",
-      "icon": "🛒",
-      "technologies": ["React", "Node.js", "MongoDB", "Stripe", "Redux"],
-      "github": "https://github.com",
-      "live": "https://example.com"
+      "name": "Cyber-Physical Power Grid False Data Injection Detection",
+      "description": "ML-based system for detecting sophisticated false data injection attacks in power grid SCADA systems using statistical anomaly detection and deep learning.",
+      "technologies": ["Python", "PyTorch", "Scikit-learn", "SCADA", "Anomaly Detection"],
+      "impact": "Achieved 95%+ detection accuracy for coordinated attacks on power grid measurements"
     },
     {
-      "id": 2,
-      "name": "Task Management App",
-      "description": "A collaborative task management tool with real-time updates. Users can create projects, assign tasks, set deadlines, and track progress with an intuitive interface.",
-      "icon": "✓",
-      "technologies": ["TypeScript", "React", "Firebase", "Tailwind CSS"],
-      "github": "https://github.com",
-      "live": "https://example.com"
+      "name": "Medical Imaging KNN Retrieval System",
+      "description": "Content-based image retrieval system for medical imaging datasets using k-nearest neighbors and deep feature extraction from CNN models.",
+      "technologies": ["Python", "PyTorch", "OpenCV", "Faiss", "Medical Imaging"],
+      "impact": "Enables fast similarity search across large medical image databases for research and diagnosis"
     },
     {
-      "id": 3,
-      "name": "Weather Dashboard",
-      "description": "A beautiful weather application that displays current weather, forecasts, and historical data. Features include location search, real-time updates, and weather alerts.",
-      "icon": "🌤️",
-      "technologies": ["React", "OpenWeather API", "Chart.js", "CSS"],
-      "github": "https://github.com",
-      "live": "https://example.com"
+      "name": "Line Outage Identification in Power Networks",
+      "description": "Algorithm for identifying transmission line outages in power systems using real-time measurement data and topology information.",
+      "technologies": ["Python", "NumPy", "Optimization", "Graph Theory", "Power Systems"],
+      "impact": "Reduces outage detection time from hours to minutes in real-time grid operations"
     },
     {
-      "id": 4,
-      "name": "Blog Platform",
-      "description": "A modern blogging platform with markdown support, comments, categories, and SEO optimization. Built for content creators and developers.",
-      "icon": "📝",
-      "technologies": ["Next.js", "TypeScript", "PostgreSQL", "Prisma"],
-      "github": "https://github.com",
-      "live": "https://example.com"
-    },
-    {
-      "id": 5,
-      "name": "API Testing Tool",
-      "description": "A comprehensive tool for testing REST APIs with features like request history, response validation, and batch testing capabilities.",
-      "icon": "🔌",
-      "technologies": ["React", "Node.js", "Express", "Axios"],
-      "github": "https://github.com",
-      "live": "https://example.com"
-    },
-    {
-      "id": 6,
-      "name": "Portfolio Website",
-      "description": "This beautiful portfolio website built with HTML, CSS, and JavaScript. Easy to customize and deploy on GitHub Pages.",
-      "icon": "💼",
-      "technologies": ["HTML", "CSS", "JavaScript", "GitHub Pages"],
-      "github": "https://github.com/yourname/personal-portfolio",
-      "live": "https://yourname.github.io"
+      "name": "Observability Platform for Distributed Systems",
+      "description": "Built comprehensive monitoring, logging, and tracing infrastructure for microservices architecture using modern observability tools.",
+      "technologies": ["Java", "Spring Boot", "Prometheus", "Grafana", "ELK Stack", "Kubernetes"],
+      "impact": "Reduced MTTR by 40% through improved visibility into system health and performance"
     }
   ]
 }

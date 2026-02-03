@@ -1,0 +1,19 @@
+{
+  "research": [
+    {
+      "title": "Adaptive Compute-Efficient Learning via Conceptual Criticality",
+      "authors": "Mano Bharathi M, et al.",
+      "venue": "Machine Learning and Systems (MLSys) 2024",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://github.com/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality"
+        },
+        {
+          "label": "GitHub",
+          "url": "https://github.com/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality"
+        }
+      ]
+    }
+  ]
+}

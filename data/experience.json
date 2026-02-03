@@ -1,0 +1,29 @@
+{
+  "experience": [
+    {
+      "company": "OpenText",
+      "title": "Associate Software Engineer",
+      "duration": "Oct 2024 - Present",
+      "description": "Building backend systems and AI-driven features for enterprise content management and security platforms.",
+      "highlights": [
+        "Optimized UUID storage reducing database overhead by leveraging efficient data structures",
+        "Developed LLM-based CLI Assistant, SQL query generator, and Root Cause Analyzer MVPs",
+        "Automated CVE summarization using LangChain and advanced prompting techniques",
+        "Implemented observability and monitoring solutions for distributed systems",
+        "Troubleshot performance bottlenecks in high-throughput services"
+      ]
+    },
+    {
+      "company": "Internship Experience",
+      "title": "Software Engineering Intern",
+      "duration": "2023 - 2024",
+      "description": "Gained hands-on experience with backend development, distributed systems, and ML integration.",
+      "highlights": [
+        "Developed core backend features using Java and Python",
+        "Worked with Spring Boot microservices architecture",
+        "Integrated ML models into production pipelines",
+        "Participated in code reviews and system design discussions"
+      ]
+    }
+  ]
+}
