@@ -1,0 +1,15 @@
+.DS_Store
+.vscode/
+node_modules/
+dist/
+build/
+*.log
+.env
+.env.local
+.gitignore.bak
+*.swp
+*.swo
+*~
+.AppleDouble
+.LSOverride
+._*

@@ -1,0 +1,52 @@
+{
+  "blogs": [
+    {
+      "id": 1,
+      "date": "Jan 15, 2026",
+      "title": "Building a Modern Web Stack with React and Node.js",
+      "excerpt": "Learn how to build a full-stack application using React for the frontend and Node.js for the backend. In this comprehensive guide, I'll walk you through best practices, architecture decisions, and deployment strategies.",
+      "tags": ["React", "Node.js", "Web Development"],
+      "link": "#"
+    },
+    {
+      "id": 2,
+      "date": "Jan 08, 2026",
+      "title": "Mastering CSS Grid and Flexbox for Responsive Design",
+      "excerpt": "A deep dive into modern CSS layout techniques. Understand when to use CSS Grid vs Flexbox, and how to create truly responsive designs that work on all devices.",
+      "tags": ["CSS", "Design", "Frontend"],
+      "link": "#"
+    },
+    {
+      "id": 3,
+      "date": "Dec 28, 2025",
+      "title": "Getting Started with Docker and Containerization",
+      "excerpt": "Docker has revolutionized the way we deploy applications. In this tutorial, I'll explain containerization concepts and show you how to containerize your first application.",
+      "tags": ["Docker", "DevOps", "Backend"],
+      "link": "#"
+    },
+    {
+      "id": 4,
+      "date": "Dec 20, 2025",
+      "title": "Understanding Async/Await in JavaScript",
+      "excerpt": "Async/await has made asynchronous JavaScript much cleaner and more readable. Let's explore how to write better async code and avoid common pitfalls.",
+      "tags": ["JavaScript", "Async", "Programming"],
+      "link": "#"
+    },
+    {
+      "id": 5,
+      "date": "Dec 12, 2025",
+      "title": "TypeScript Best Practices for Large-Scale Applications",
+      "excerpt": "TypeScript provides powerful type safety for JavaScript. Discover the best practices for using TypeScript effectively in large codebases and enterprise applications.",
+      "tags": ["TypeScript", "JavaScript", "Best Practices"],
+      "link": "#"
+    },
+    {
+      "id": 6,
+      "date": "Dec 05, 2025",
+      "title": "Introduction to Database Design and Normalization",
+      "excerpt": "Good database design is crucial for application performance. Learn about normalization, relationships, and how to design efficient database schemas.",
+      "tags": ["Database", "SQL", "Backend"],
+      "link": "#"
+    }
+  ]
+}
