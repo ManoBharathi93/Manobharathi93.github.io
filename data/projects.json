@@ -6,7 +6,7 @@
       "tldr": "NL→SQL conversion using RAG + LLM. 95% accuracy on simple queries, 70% on complex. Challenges: latency, version matching, accuracy/speed trade-offs.",
       "description": "Production system that converts natural language queries into Vertica SQL using retrieval-augmented generation (RAG) with vector search and LLMs. Handles metadata retrieval, prompt construction, LLM inference, and query execution.",
       "technologies": ["Python", "RAG", "LLM (LLaMA 2)", "Embeddings", "FAISS", "Streamlit", "Vertica"],
-      "documentation": "https://nbviewer.jupyter.org/github/ManoBharathi93/ManoBharathi93.github.io/blob/main/blog/vertica-analytics-assistant.ipynb",
+      "documentation": "https://manobharathi93.github.io/blog/vertica-analytics-assistant.html",
       "impact": "Reduces query writing from 10-30 minutes to <1 second. Eliminates need to know database schema."
     },
     {
@@ -15,7 +15,7 @@
       "tldr": "Automated CVE-device matching from vendor advisories. Parses → finds vulnerable devices → LLM exploitability assessment → VEX compliance → analyst overrides.",
       "description": "Enterprise security system for automating vulnerability assessment. Parses CVE advisories, matches to device inventory, performs LLM-based exploitability reasoning, generates VEX compliance reports, and maintains immutable audit trails.",
       "technologies": ["Python", "LLM (LLaMA 2)", "Backend", "Security", "Compliance"],
-      "documentation": "https://nbviewer.jupyter.org/github/ManoBharathi93/ManoBharathi93.github.io/blob/main/blog/cve-automation-system.ipynb",
+      "documentation": "https://manobharathi93.github.io/blog/cve-automation-system.html",
       "impact": "99% reduction in manual effort. Processes 500+ CVEs/day in <5 minutes. Reduces response time from 2-4 hours to automated."
     },
     {
@@ -24,7 +24,7 @@
       "tldr": "Fixed K=5 wastes tokens on low-confidence chunks. Adaptive K strategies improve answer quality by 30% while reducing context by 25%.",
       "description": "Optimization techniques for RAG systems showing why fixed top-K retrieval is suboptimal. Covers similarity decay, adaptive K strategies, and hybrid confidence+token-budget approach with empirical benchmarks.",
       "technologies": ["Python", "RAG", "Embeddings", "Similarity Search", "LLM Optimization"],
-      "documentation": "https://nbviewer.jupyter.org/github/ManoBharathi93/ManoBharathi93.github.io/blob/main/blog/why-fixed-topk-rag.ipynb",
+      "documentation": "https://manobharathi93.github.io/blog/why-fixed-topk-rag.html",
       "impact": "Answer quality improves from 6.8/10 to 8.9/10 while reducing tokens used. Better cost-accuracy trade-offs."
     },
     {
