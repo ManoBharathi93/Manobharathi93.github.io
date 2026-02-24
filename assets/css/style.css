@@ -287,6 +287,19 @@ body {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
+/* Keep anchor-wrapped project cards visually identical to cards */
+.project-card-link {
+    display: block; /* ensure full-card clickable */
+    text-decoration: none; /* remove link underline */
+    color: inherit; /* preserve text color */
+}
+.project-card-link:focus {
+    outline: none;
+}
+.project-card-link .project-item {
+    /* keep same hover effect when wrapping with anchor */
+}
+
 .project-name {
     font-size: 1.1rem;
     font-weight: 700;
