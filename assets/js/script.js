@@ -67,14 +67,20 @@ function renderProjects(projects) {
             .map(tech => `<span class="tech-tag">${tech}</span>`)
             .join('');
 
+        // Check if project has documentation blog
+        const hasDoc = project.documentation && project.documentation.trim() !== '';
+        const docLink = hasDoc ? `<a href="${project.documentation}" target="_blank" class="doc-link">📖 Read Documentation →</a>` : '';
+
         const projectHTML = `
             <div class="project-item">
                 <div class="project-name">${project.name}</div>
+                ${project.tldr ? `<div class="project-tldr"><strong>TLDR:</strong> ${project.tldr}</div>` : ''}
                 <p class="project-desc">${project.description}</p>
-                ${project.impact ? `<p class="project-desc"><strong>Impact:</strong> ${project.impact}</p>` : ''}
+                ${project.impact ? `<p class="project-impact"><strong>💡 Impact:</strong> ${project.impact}</p>` : ''}
                 <div class="project-tech">
                     ${techHTML}
                 </div>
+                ${hasDoc ? `<div class="project-docs">${docLink}</div>` : ''}
             </div>
         `;
         container.innerHTML += projectHTML;
@@ -142,8 +148,21 @@ function renderArticles(articles) {
             .map(tag => `<span class="article-tag">${tag}</span>`)
             .join('');
 
+        // Check if link is internal (local blog post) or external
+        const isInternal = article.link.startsWith('blog/') || !article.link.startsWith('http');
+        const isNotebook = article.link.endsWith('.ipynb');
+        
+        // For local development, notebooks open directly
+        // For GitHub Pages, they render natively or use nbviewer
+        let finalLink = article.link;
+        let target = isInternal ? '' : 'target="_blank"';
+        
+        if (!isInternal) {
+            target = 'target="_blank"';
+        }
+
         const articleHTML = `
-            <a href="${article.link}" target="_blank" class="article-item" style="text-decoration: none; color: inherit;">
+            <a href="${finalLink}" ${target} class="article-item" style="text-decoration: none; color: inherit;">
                 <div class="article-date">${article.date}</div>
                 <div class="article-title">${article.title}</div>
                 <p class="article-excerpt">${article.excerpt}</p>

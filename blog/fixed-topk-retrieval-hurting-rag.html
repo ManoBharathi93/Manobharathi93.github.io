@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Why Fixed Top-K Retrieval Is Secretly Hurting Your RAG System — and how Dynamic K improves accuracy and efficiency.">
+    <title>Why Fixed Top-K Retrieval Is Secretly Hurting Your RAG System</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/blog.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="logo">Mano Bharathi</a>
+            <ul class="nav-menu">
+                <li><a href="../index.html#about">About</a></li>
+                <li><a href="../index.html#experience">Experience</a></li>
+                <li><a href="../index.html#projects">Projects</a></li>
+                <li><a href="../index.html#research">Research</a></li>
+                <li><a href="../index.html#articles">Articles</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <article class="blog-post">
+        <div class="container">
+            <div class="post-header">
+                <h1>Why Fixed Top‑K Retrieval Is Secretly Hurting Your RAG System</h1>
+                <div class="post-meta">
+                    <span class="post-date">February 15, 2026</span>
+                    <span class="post-author">By Mano Bharathi</span>
+                    <span class="post-reading-time">6–9 min read</span>
+                </div>
+                <div class="post-tags">
+                    <span class="tag">RAG</span>
+                    <span class="tag">Retrieval</span>
+                    <span class="tag">LLMs</span>
+                    <span class="tag">Systems</span>
+                </div>
+            </div>
+
+            <div class="post-content">
+                <h2>The problem nobody questions</h2>
+                <p>
+                    When we build Retrieval‑Augmented Generation (RAG) systems, we often reach for a single magic number and stop thinking:
+                </p>
+                <p><strong>k = 5</strong></p>
+                <p>
+                    Five chunks. Every query. Always. It’s convenient and simple, but convenience is not the same as correctness.
+                    A short factual question like “What is the capital of France?” demands far less context than
+                    “Why does my PyTorch training loop throw OOM intermittently?” Yet the retrieval stack treats both the same.
+                </p>
+
+                <h2>Retrieval depth is an information problem</h2>
+                <p>
+                    Each retrieved chunk provides marginal information. Early chunks often supply large, useful gains. Later
+                    chunks typically add smaller improvements — and after a point they introduce noise, contradictions, or irrelevant
+                    facts. The moment where utility drops below cost is different for every query: it depends on intent, ambiguity, and
+                    the way knowledge is distributed across your corpus.
+                </p>
+
+                <h2>The core insight</h2>
+                <p>
+                    Different queries have different information entropy and distribution. Four illustrative categories:
+                </p>
+                <ul>
+                    <li><strong>Factual (narrow):</strong> concise answer, small K</li>
+                    <li><strong>Debugging (distributed):</strong> scattered clues, large K</li>
+                    <li><strong>How‑to (multi‑step):</strong> requires combining steps, larger K</li>
+                    <li><strong>Broad / exploratory:</strong> uncertain — K should vary with confidence</li>
+                </ul>
+                <p>
+                    A fixed K assumes uniform entropy and uniform information density across queries. That assumption is wrong.
+                </p>
+
+                <h2>Three practical ways to adapt K</h2>
+                <p>I've tested three strategies ranging from simple heuristics to principled signals:</p>
+
+                <h3>1. Rule‑based Dynamic K</h3>
+                <p>
+                    Classify query intent into coarse buckets (factual, debugging, how‑to, broad) and map each bucket to a K.
+                    Example:
+                </p>
+                <pre><code>Factual  → K = 3
+Debugging → K = 10
+How‑to    → K = 8
+Broad     → K = 12</code></pre>
+                <p>
+                    This is easy to implement and reduces tokens wasted on trivial questions, but it remains heuristic and brittle
+                    to misclassification.
+                </p>
+
+                <h3>2. Similarity‑adaptive K (principled and reactive)</h3>
+                <p>
+                    Use the structure of embedding similarity scores to decide when to stop retrieving. Intuition:
+                    if the top matches are tightly clustered, a small K is enough; if similarity decays slowly, fetch more.
+                </p>
+                <p>Simple pseudocode:</p>
+                <pre><code>// scores: sorted descending similarity scores for candidate chunks
+K = 1
+for i from 2 to max_candidates:
+    delta = scores[i-1] - scores[i]
+    if delta &gt; threshold_stop:
+        break
+    K += 1
+// optionally enforce min/max bounds</code></pre>
+                <p>
+                    A robust instability‑aware variant looks at the slope of the similarity curve, or the ratio between adjacent scores
+                    (sharp drop → stop; flat decay → continue). This method reacts to how the corpus represents the query.
+                </p>
+
+                <h3>3. Hybrid: combine intent priors + similarity signal</h3>
+                <p>
+                    Use a lightweight intent classifier to pick a prior K range, then refine with the similarity curve. For example,
+                    start with K_prior = 5 for a generic question, then increase if the similarity decay indicates distributed evidence.
+                    This balances low latency with adaptiveness.
+                </p>
+
+                <h2>What experiments show</h2>
+                <p>
+                    Across factual, debugging, and broad queries I evaluated retrieval efficiency (tokens) and answer quality (automatic
+                    metrics + human inspection). Fixed K often wastes tokens for simple queries and under‑retrieves for complex ones.
+                    Similarity‑adaptive K improved token efficiency while preserving or improving accuracy. The hybrid approach usually
+                    achieved the best tradeoff between speed and correctness.
+                </p>
+
+                <h2>Why this isn’t yet a full research paper</h2>
+                <p>
+                    The idea is practical and effective, but it remains engineering‑first:
+                </p>
+                <ul>
+                    <li>Relies on heuristics and thresholds</li>
+                    <li>Lacks a formal optimality objective for K</li>
+                    <li>Doesn’t model marginal information gain explicitly</li>
+                    <li>Doesn’t learn K automatically from supervision</li>
+                </ul>
+                <p>
+                    A research elevation would model expected marginal utility of adding one more chunk and optimize K as an action with
+                    diminishing returns — possibly learned via reinforcement learning or supervised signals that estimate utility.
+                </p>
+
+                <h2>Practical tips to implement similarity‑adaptive K</h2>
+                <ol>
+                    <li>Keep a max cap (e.g., 20) and a min (e.g., 1) to bound latency and cost.</li>
+                    <li>Compute normalized similarity deltas or ratios; tune a stopping threshold on validation queries.</li>
+                    <li>Use hybrid priors: intent classification can reduce unnecessary checks for trivial questions.</li>
+                    <li>Measure both token cost and downstream LLM accuracy — optimizing one alone can harm the other.</li>
+                </ol>
+
+                <h2>Where to go next (research directions)</h2>
+                <p>
+                    Several promising directions can turn this into formal science:
+                </p>
+                <ul>
+                    <li>Model K as expected marginal utility and derive stopping criteria from first principles</li>
+                    <li>Train models to predict marginal gain given the current context (supervised K prediction)</li>
+                    <li>Apply RL with reward a function of accuracy and token cost</li>
+                    <li>Use entropy‑aware retrieval: stop when uncertainty about the answer drops below a threshold</li>
+                </ul>
+
+                <h2>What I learned</h2>
+                <p>
+                    Defaults hide assumptions. In ML systems, small constants seed large systemic costs. Questioning defaults — like
+                    fixed top‑K — reveals low‑cost wins that improve both engineering efficiency and end‑user quality. Practical systems
+                    engineering and research are a continuum; the next step is to move from heuristics to measurable, learnable objectives.
+                </p>
+
+                <h2>Appendix: quick reference implementation (Python‑like pseudocode)</h2>
+                <pre><code>def similarity_adaptive_k(scores, min_k=1, max_k=20, stop_ratio=0.6):
+    # scores: descending similarity scores
+    k = min_k
+    for i in range(1, min(len(scores), max_k)):
+        ratio = (scores[i] / scores[i-1]) if scores[i-1] &gt; 0 else 0
+        if (1 - ratio) &gt; stop_ratio:
+            break
+        k += 1
+    return min(k, max_k)</code></pre>
+
+                <div class="post-footer">
+                    <p>Found this useful? Try it on your RAG stack and ping me with results — there’s a lot of low‑hanging fruit here.</p>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Mano Bharathi. Hosted on GitHub Pages.</p>
+            <p><a href="https://github.com/ManoBharathi93" target="_blank">GitHub</a> | 
+               <a href="https://linkedin.com/in/manobharathi-m" target="_blank">LinkedIn</a> | 
+               <a href="mailto:immanobharathi21@gmail.com">Email</a>
+            </p>
+        </div>
+    </footer>
+
+    <script src="../assets/js/script.js"></script>
+</body>
+</html>

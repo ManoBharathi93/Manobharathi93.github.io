@@ -316,6 +316,46 @@ body {
     border: 1px solid var(--border-color);
 }
 
+.project-tldr {
+    background-color: #f0f7ff;
+    border-left: 3px solid var(--accent);
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    border-radius: 2px;
+}
+
+.project-impact {
+    color: var(--text-secondary);
+    margin: 1rem 0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.project-docs {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.doc-link {
+    display: inline-block;
+    background-color: var(--accent);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 3px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.doc-link:hover {
+    background-color: var(--accent-hover);
+}
+
 /* ===== RESEARCH ===== */
 .research-list {
     display: grid;
