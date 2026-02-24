@@ -5,7 +5,7 @@
       "title": "Vertica Analytics Assistant: Natural Language SQL with RAG",
       "excerpt": "Production system converting natural language queries to Vertica SQL using retrieval-augmented generation (RAG). Covers architecture, LLM model selection trade-offs, production challenges (latency/accuracy), and solutions. Includes both Streamlit UI and CLI automation tool.",
       "date": "February 24, 2026",
-      "link": "https://nbviewer.jupyter.org/github/ManoBharathi93/personal-portfolio/blob/main/blog/vertica-analytics-assistant.ipynb",
+      "link": "https://nbviewer.jupyter.org/github/ManoBharathi93/ManoBharathi93.github.io/blob/main/blog/vertica-analytics-assistant.ipynb",
       "tags": ["RAG", "Backend", "Analytics", "LLMs", "SQL Generation"]
     },
     {
@@ -13,7 +13,7 @@
       "title": "Automating CVE Risk Assessment: From Advisory to Protected Devices",
       "excerpt": "Production system for intelligent vulnerability management. Automatically parse vendor CVE advisories, match to device inventory, reason through exploitability using LLM agents, and generate VEX-compliant risk assessments with audit trails.",
       "date": "February 24, 2026",
-      "link": "https://nbviewer.jupyter.org/github/ManoBharathi93/personal-portfolio/blob/main/blog/cve-automation-system.ipynb",
+      "link": "https://nbviewer.jupyter.org/github/ManoBharathi93/ManoBharathi93.github.io/blob/main/blog/cve-automation-system.ipynb",
       "tags": ["Security", "Backend", "AI/LLM", "Automation"]
     },
     {
@@ -21,7 +21,7 @@
       "title": "Why Fixed Top-K Retrieval Is Secretly Hurting Your RAG System",
       "excerpt": "Why fixed K wastes tokens, adaptive K strategies with code examples, performance benchmarks, and hybrid confidence+token-budget approach.",
       "date": "February 15, 2026",
-      "link": "https://nbviewer.jupyter.org/github/ManoBharathi93/personal-portfolio/blob/main/blog/why-fixed-topk-rag.ipynb",
+      "link": "https://nbviewer.jupyter.org/github/ManoBharathi93/ManoBharathi93.github.io/blob/main/blog/why-fixed-topk-rag.ipynb",
       "tags": ["RAG", "Retrieval", "LLMs", "Optimization"]
     }
   ]
