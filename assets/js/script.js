@@ -69,9 +69,9 @@ function renderProjects(projects) {
 
         // Check if project has documentation blog
         const hasDoc = project.documentation && project.documentation.trim() !== '';
-        const docLink = hasDoc ? `<a href="${project.documentation}" target="_blank" class="doc-link">📖 Read Documentation →</a>` : '';
 
-        const projectHTML = `
+        // If documentation link exists, make the entire card clickable and open docs in a new tab.
+        const cardInner = `
             <div class="project-item">
                 <div class="project-name">${project.name}</div>
                 ${project.tldr ? `<div class="project-tldr"><strong>TLDR:</strong> ${project.tldr}</div>` : ''}
@@ -80,10 +80,16 @@ function renderProjects(projects) {
                 <div class="project-tech">
                     ${techHTML}
                 </div>
-                ${hasDoc ? `<div class="project-docs">${docLink}</div>` : ''}
             </div>
         `;
-        container.innerHTML += projectHTML;
+
+        if (hasDoc) {
+            // wrap the card in an anchor so clicks open the documentation in new tab
+            const safeLink = project.documentation.replace(/"/g, '&quot;');
+            container.innerHTML += `<a class="project-card-link" href="${safeLink}" target="_blank" rel="noopener">${cardInner}</a>`;
+        } else {
+            container.innerHTML += cardInner;
+        }
     });
 }
 
