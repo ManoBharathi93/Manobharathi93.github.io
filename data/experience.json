@@ -8,8 +8,7 @@
       "highlights": [
         "Optimized UUID storage reducing database overhead by leveraging efficient data structures",
         "Developed LLM-based CLI Assistant, SQL query generator, and Root Cause Analyzer MVPs",
-        "Automated CVE summarization using LangChain and advanced prompting techniques",
-        "Implemented observability and monitoring solutions for distributed systems",
+        "Automated CVE Identification and VEX report generation, reducing manual effort by 99%",
         "Troubleshot performance bottlenecks in high-throughput services"
       ]
     },
@@ -19,10 +18,7 @@
       "duration": "2023 - 2024",
       "description": "Gained hands-on experience with backend development, distributed systems, and ML integration.",
       "highlights": [
-        "Developed core backend features using Java and Python",
-        "Worked with Spring Boot microservices architecture",
-        "Integrated ML models into production pipelines",
-        "Participated in code reviews and system design discussions"
+        "Developed a license consumption reporting platform for Network Operations Management, improving visibility into product usage; performance directly led to full-time conversion.",
       ]
     }
   ]

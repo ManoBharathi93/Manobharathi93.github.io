@@ -1,6 +1,6 @@
 {
   "projects": [
-        {
+    {
       "id": "cve-automation-system",
       "name": "CVE Automation System",
       "tldr": "Automated CVE-device matching from vendor advisories. Parses → finds vulnerable devices → LLM exploitability assessment → VEX compliance → analyst overrides.",
@@ -8,15 +8,6 @@
       "technologies": ["Python", "LLM (LLaMA 2)", "Backend", "Security", "Compliance"],
       "repolink": "https://manobharathi93.github.io/blog/cve-automation-system.html",
       "impact": "99% reduction in manual effort. Processes 500+ CVEs/day in <5 minutes. Reduces response time from 2-4 hours to automated."
-    },
-    {
-      "id": "vertica-analytics-assistant",
-      "name": "Vertica Analytics Assistant",
-      "tldr": "NL→SQL conversion using RAG + LLM. 95% accuracy on simple queries, 70% on complex. Challenges: latency, version matching, accuracy/speed trade-offs.",
-      "description": "Production system that converts natural language queries into Vertica SQL using retrieval-augmented generation (RAG) with vector search and LLMs. Handles metadata retrieval, prompt construction, LLM inference, and query execution.",
-      "technologies": ["Python", "RAG", "LLM (LLaMA 2)", "Embeddings", "FAISS", "Streamlit", "Vertica"],
-      "repolink": "https://manobharathi93.github.io/blog/vertica-analytics-assistant.html",
-      "impact": "Reduces query writing from 10-30 minutes to <1 second. Eliminates need to know database schema."
     },
     {
       "name": "Cyber-Physical Power Grid False Data Injection Detection",
