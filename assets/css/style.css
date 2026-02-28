@@ -181,7 +181,7 @@ body {
 /* ===== SECTIONS ===== */
 .experience,
 .projects,
-.research,
+.experiments,
 .articles {
     padding: 3rem var(--spacing);
     border-bottom: 1px solid var(--border-color);
@@ -189,14 +189,14 @@ body {
 
 .experience:nth-child(even),
 .projects:nth-child(even),
-.research:nth-child(even),
+.experiments:nth-child(even),
 .articles:nth-child(even) {
     background-color: var(--bg-secondary);
 }
 
 .experience h2,
 .projects h2,
-.research h2,
+.experiments h2,
 .articles h2 {
     font-size: 1.8rem;
     margin-bottom: 2rem;
@@ -369,52 +369,52 @@ body {
     background-color: var(--accent-hover);
 }
 
-/* ===== RESEARCH ===== */
-.research-list {
+/* ===== EXPERIMENTS ===== */
+.experiments-list {
     display: grid;
     gap: 2rem;
 }
 
-.research-item {
+.experiment-item {
     padding: 1.5rem;
     border-left: 3px solid var(--accent);
     background-color: var(--bg-primary);
     border-radius: 4px;
 }
 
-.research-title {
+.experiment-title {
     font-size: 1.1rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
     color: var(--text-primary);
 }
 
-.research-authors {
+.experiment-authors {
     color: var(--text-secondary);
     font-size: 0.95rem;
     margin-bottom: 0.5rem;
 }
 
-.research-venue {
+.experiment-venue {
     color: var(--accent);
     font-weight: 500;
     margin-bottom: 1rem;
 }
 
-.research-links {
+.experiment-links {
     display: flex;
     gap: 1rem;
     flex-wrap: wrap;
 }
 
-.research-link {
+.experiment-link {
     color: var(--accent);
     text-decoration: none;
     font-size: 0.9rem;
     font-weight: 500;
 }
 
-.research-link:hover {
+.experiment-link:hover {
     text-decoration: underline;
 }
 
@@ -525,7 +525,7 @@ body {
 
     .experience,
     .projects,
-    .research,
+    .experiments,
     .articles {
         padding: 2rem var(--spacing);
     }

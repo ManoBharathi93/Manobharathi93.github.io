@@ -12,7 +12,7 @@ Your personal portfolio has been completely redesigned with a **clean, academic,
 
 ### ✅ HTML Redesign
 - Replaced flowery design with clean, academic structure
-- Added sections: About, Experience, Projects, Research, Articles
+- Added sections: About, Experience, Projects, Experiments, Articles
 - Proper semantic HTML with meta tags
 - Contact information prominently displayed
 
@@ -27,14 +27,14 @@ Your personal portfolio has been completely redesigned with a **clean, academic,
 
 ### ✅ JavaScript Rewritten
 - Replaced all data loading logic
-- Now loads from: experience.json, projects.json, research.json, articles.json
+- Now loads from: experience.json, projects.json, experiments.json, articles.json
 - Clean rendering functions for each section
 - Error handling for missing data
 
 ### ✅ Data Files Created
 - `experience.json` - Your OpenText role + internship
 - `projects.json` - 4 real projects from your background
-- `research.json` - Your research paper
+- `experiments.json` - Notes on ideas, optimizations, experiments, and papers
 - `articles.json` - Empty, ready for your blog posts
 
 ### ✅ Documentation Complete
@@ -65,7 +65,7 @@ personal-portfolio/
 ├── data/
 │   ├── experience.json                 # ✅ NEW
 │   ├── projects.json                   # ✅ UPDATED
-│   ├── research.json                   # ✅ NEW
+│   ├── experiments.json                # ✅ NEW
 │   ├── articles.json                   # ✅ NEW
 │   ├── blogs.json                      # Old (can delete)
 │   ├── publications.json               # Old (can delete)
@@ -121,7 +121,7 @@ personal-portfolio/
 2. **Review content in data/ folder:**
    - Check experience.json - add/edit your jobs
    - Check projects.json - verify project descriptions
-   - Check research.json - add your papers
+   - Check experiments.json - add your notes or papers
    - Check articles.json - add your blog posts
 
 ### Medium-term (5 minutes)
@@ -206,7 +206,7 @@ Edit bio section in `index.html`:
 - ✅ HTML: Clean academic structure
 - ✅ CSS: 500+ lines, fully responsive
 - ✅ JavaScript: Loads all data correctly
-- ✅ Data: experience, projects, research, articles
+- ✅ Data: experience, projects, experiments, articles
 - ✅ Design: Minimal, borders-based, #0066cc accent
 - ✅ Mobile: Responsive at 768px and 480px
 - ✅ Git: 5 commits, working directory clean

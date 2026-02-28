@@ -1,55 +1,43 @@
 {
   "projects": [
+        {
+      "id": "cve-automation-system",
+      "name": "CVE Automation System",
+      "tldr": "Automated CVE-device matching from vendor advisories. Parses → finds vulnerable devices → LLM exploitability assessment → VEX compliance → analyst overrides.",
+      "description": "Enterprise security system for automating vulnerability assessment. Parses CVE advisories, matches to device inventory, performs LLM-based exploitability reasoning, generates VEX compliance reports, and maintains immutable audit trails.",
+      "technologies": ["Python", "LLM (LLaMA 2)", "Backend", "Security", "Compliance"],
+      "repolink": "https://manobharathi93.github.io/blog/cve-automation-system.html",
+      "impact": "99% reduction in manual effort. Processes 500+ CVEs/day in <5 minutes. Reduces response time from 2-4 hours to automated."
+    },
     {
       "id": "vertica-analytics-assistant",
       "name": "Vertica Analytics Assistant",
       "tldr": "NL→SQL conversion using RAG + LLM. 95% accuracy on simple queries, 70% on complex. Challenges: latency, version matching, accuracy/speed trade-offs.",
       "description": "Production system that converts natural language queries into Vertica SQL using retrieval-augmented generation (RAG) with vector search and LLMs. Handles metadata retrieval, prompt construction, LLM inference, and query execution.",
       "technologies": ["Python", "RAG", "LLM (LLaMA 2)", "Embeddings", "FAISS", "Streamlit", "Vertica"],
-      "documentation": "https://manobharathi93.github.io/blog/vertica-analytics-assistant.html",
+      "repolink": "https://manobharathi93.github.io/blog/vertica-analytics-assistant.html",
       "impact": "Reduces query writing from 10-30 minutes to <1 second. Eliminates need to know database schema."
-    },
-    {
-      "id": "cve-automation-system",
-      "name": "CVE Automation System",
-      "tldr": "Automated CVE-device matching from vendor advisories. Parses → finds vulnerable devices → LLM exploitability assessment → VEX compliance → analyst overrides.",
-      "description": "Enterprise security system for automating vulnerability assessment. Parses CVE advisories, matches to device inventory, performs LLM-based exploitability reasoning, generates VEX compliance reports, and maintains immutable audit trails.",
-      "technologies": ["Python", "LLM (LLaMA 2)", "Backend", "Security", "Compliance"],
-      "documentation": "https://manobharathi93.github.io/blog/cve-automation-system.html",
-      "impact": "99% reduction in manual effort. Processes 500+ CVEs/day in <5 minutes. Reduces response time from 2-4 hours to automated."
-    },
-    {
-      "id": "why-fixed-topk-rag",
-      "name": "RAG Retrieval Optimization",
-      "tldr": "Fixed K=5 wastes tokens on low-confidence chunks. Adaptive K strategies improve answer quality by 30% while reducing context by 25%.",
-      "description": "Optimization techniques for RAG systems showing why fixed top-K retrieval is suboptimal. Covers similarity decay, adaptive K strategies, and hybrid confidence+token-budget approach with empirical benchmarks.",
-      "technologies": ["Python", "RAG", "Embeddings", "Similarity Search", "LLM Optimization"],
-      "documentation": "https://manobharathi93.github.io/blog/why-fixed-topk-rag.html",
-      "impact": "Answer quality improves from 6.8/10 to 8.9/10 while reducing tokens used. Better cost-accuracy trade-offs."
     },
     {
       "name": "Cyber-Physical Power Grid False Data Injection Detection",
       "description": "ML-based system for detecting sophisticated false data injection attacks in power grid SCADA systems using statistical anomaly detection and deep learning.",
       "technologies": ["Python", "PyTorch", "Scikit-learn", "SCADA", "Anomaly Detection"],
-      "impact": "Achieved 95%+ detection accuracy for coordinated attacks on power grid measurements"
+      "impact": "Achieved 95%+ detection accuracy for coordinated attacks on power grid measurements",
+      "repolink": "https://github.com/ManoBharathi93/CPAD"
     },
     {
       "name": "Medical Imaging KNN Retrieval System",
       "description": "Content-based image retrieval system for medical imaging datasets using k-nearest neighbors and deep feature extraction from CNN models.",
       "technologies": ["Python", "PyTorch", "OpenCV", "Faiss", "Medical Imaging"],
-      "impact": "Enables fast similarity search across large medical image databases for research and diagnosis"
+      "impact": "Enables fast similarity search across large medical image databases for research and diagnosis",
+      "repolink": "https://manobharathi93.github.io/blog/medical-imaging-knn-retrieval-system.html"
     },
     {
       "name": "Line Outage Identification in Power Networks",
       "description": "Algorithm for identifying transmission line outages in power systems using real-time measurement data and topology information.",
       "technologies": ["Python", "NumPy", "Optimization", "Graph Theory", "Power Systems"],
-      "impact": "Reduces outage detection time from hours to minutes in real-time grid operations"
-    },
-    {
-      "name": "Observability Platform for Distributed Systems",
-      "description": "Built comprehensive monitoring, logging, and tracing infrastructure for microservices architecture using modern observability tools.",
-      "technologies": ["Java", "Spring Boot", "Prometheus", "Grafana", "ELK Stack", "Kubernetes"],
-      "impact": "Reduced MTTR by 40% through improved visibility into system health and performance"
+      "impact": "Reduces outage detection time from hours to minutes in real-time grid operations",
+      "repolink": "https://manobharathi93.github.io/blog/medical-imaging-knn-retrieval-system.html"
     }
   ]
 }

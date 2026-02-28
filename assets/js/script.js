@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     loadExperience();
     loadProjects();
-    loadResearch();
+    loadExperiments();
     loadArticles();
 });
 
@@ -93,38 +93,43 @@ function renderProjects(projects) {
     });
 }
 
-// ===== RESEARCH SECTION =====
-async function loadResearch() {
+// ===== EXPERIMENTS SECTION =====
+async function loadExperiments() {
     try {
-        const response = await fetch('data/research.json');
+        const response = await fetch('data/experiments.json');
         const data = await response.json();
-        renderResearch(data.research);
+        renderExperiments(data.experiments);
     } catch (error) {
-        console.error('Error loading research:', error);
-        document.getElementById('research-list').innerHTML = '<p>Error loading research data.</p>';
+        console.error('Error loading experiments:', error);
+        document.getElementById('experiments-list').innerHTML = '<p>Error loading experiments data.</p>';
     }
 }
 
-function renderResearch(research) {
-    const container = document.getElementById('research-list');
+function renderExperiments(experiments) {
+    const container = document.getElementById('experiments-list');
     container.innerHTML = '';
 
-    research.forEach(item => {
+    experiments.forEach(item => {
         const linksHTML = item.links
-            .map(link => `<a href="${link.url}" target="_blank" class="research-link">${link.label}</a>`)
-            .join('');
+            ? item.links.map(link => `<a href="${link.url}" target="_blank" class="experiment-link">${link.label}</a>`).join('')
+            : '';
 
-        const researchHTML = `
-            <div class="research-item">
-                <div class="research-title">${item.title}</div>
-                <div class="research-authors">${item.authors}</div>
-                <div class="research-venue">${item.venue}</div>
-                <div class="research-links">
+        const authorsHTML = item.authors ? `<div class="experiment-authors">${item.authors}</div>` : '';
+        const venueHTML = item.venue ? `<div class="experiment-venue">${item.venue}</div>` : '';
+        const descriptionHTML = item.description ? `<p class="experiment-description">${item.description}</p>` : '';
+
+        const experimentHTML = `
+            <div class="experiment-item">
+                <div class="experiment-title">${item.title}</div>
+                ${authorsHTML}
+                ${venueHTML}
+                ${descriptionHTML}
+                <div class="experiment-links">
                     ${linksHTML}
                 </div>
             </div>
         `;
-        container.innerHTML += researchHTML;
+        container.innerHTML += experimentHTML;
     });
 }
 

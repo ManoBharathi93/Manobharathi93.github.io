@@ -1,0 +1,33 @@
+{
+  "experiments": [
+    {
+      "title": "Adaptive Compute-Efficient Learning via Conceptual Criticality",
+      "authors": "Mano Bharathi M, et al.",
+      "venue": "Machine Learning and Systems (MLSys) 2024",
+      "links": [
+        {
+          "label": "Paper",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality"
+        },
+        {
+          "label": "GitHub",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality"
+        }
+      ]
+    },
+    {
+      "title": "Why Fixed Top-K Retrieval Is Secretly Hurting Your RAG System",
+      "description": "A deep dive into why fixed top‑K strategies waste tokens and how adaptive retrieval boosts quality and efficiency.",
+      "links": [
+        {
+          "label": "Article",
+          "url": "https://medium.com/@immanobharathi21/beyond-fixed-k-why-dynamic-context-selection-is-the-rag-game-changer-you-didnt-know-you-needed-c00f2a8c0517"
+        },
+        {
+          "label": "Project",
+          "url": "https://github.com/ManoBharathi93/Dynamic-Retriever/"
+        }
+      ]
+    }
+  ]
+}
