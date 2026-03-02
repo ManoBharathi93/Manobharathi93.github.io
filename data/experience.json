@@ -4,21 +4,24 @@
       "company": "OpenText",
       "title": "Associate Software Engineer",
       "duration": "Oct 2024 - Present",
-      "description": "Building backend systems and AI-driven features for enterprise content management and security platforms.",
+      "description": "Building scalable backend systems and AI-driven features for enterprise platforms.",
       "highlights": [
-        "Optimized UUID storage reducing database overhead by leveraging efficient data structures",
-        "Developed LLM-based CLI Assistant, SQL query generator, and Root Cause Analyzer MVPs",
-        "Automated CVE Identification and VEX report generation, reducing manual effort by 99%",
-        "Troubleshot performance bottlenecks in high-throughput services"
+        "Redesigned UUID storage architecture in cloud connectivity services, increasing supported inter-region network connections from 55 to 165 (3× scalability improvement) without database schema migration",
+        "Built time-series metric retrieval services with dynamic baseline computation and intelligent switching between raw and pre-aggregated tables to optimize performance",
+        "Designed automated CVE ingestion and remediation prototype integrating vendor advisories with Network Automation workflows, reducing manual security triage effort",
+        "Built internal LLM-based tools including AI-assisted Remote CLI and Text-to-SQL assistant for troubleshooting workflows",
+        "Worked with Docker, Kubernetes, Helm, and Linux-based deployment environments",
+        "Recognized 4 times within first year for high-impact feature delivery, AI-driven CVE automation, and customer demo excellence (\"Raise the Bar\" & \"Put Customers First\")"
       ]
     },
     {
-      "company": "Internship Experience",
+      "company": "OpenText",
       "title": "Software Engineering Intern",
-      "duration": "2023 - 2024",
-      "description": "Gained hands-on experience with backend development, distributed systems, and ML integration.",
+      "duration": "Apr 2024 - Sept 2024",
+      "description": "Contributed to enterprise platform development during internship period.",
       "highlights": [
-        "Developed a license consumption reporting platform for Network Operations Management, improving visibility into product usage; performance directly led to full-time conversion.",
+        "Designed and developed license consumption reporting platform for Network Operations Management products, improving internal visibility into usage",
+        "Delivered production-ready feature leading to full-time conversion"
       ]
     }
   ]
