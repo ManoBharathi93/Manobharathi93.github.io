@@ -418,6 +418,58 @@ body {
     text-decoration: underline;
 }
 
+/* ===== AWARDS ===== */
+.awards-list {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.award-item {
+    display: block;
+    padding: 2rem;
+    border: 2px solid var(--accent);
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    background-color: var(--bg-primary);
+    text-align: center;
+}
+
+.award-item:hover {
+    background-color: var(--bg-secondary);
+    box-shadow: 0 6px 16px rgba(0, 102, 204, 0.2);
+    transform: translateY(-4px);
+}
+
+.award-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.award-description {
+    color: var(--text-primary);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+}
+
+.award-link {
+    color: var(--accent);
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: inline-block;
+    transition: color 0.3s;
+}
+
+.award-item:hover .award-link {
+    color: var(--accent-hover);
+}
+
 /* ===== ARTICLES ===== */
 .articles-list {
     display: grid;
@@ -526,6 +578,7 @@ body {
     .experience,
     .projects,
     .experiments,
+    .awards,
     .articles {
         padding: 2rem var(--spacing);
     }

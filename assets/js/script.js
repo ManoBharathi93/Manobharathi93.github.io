@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadExperience();
     loadProjects();
     loadExperiments();
+    loadAwards();
     loadArticles();
 });
 
@@ -130,6 +131,34 @@ function renderExperiments(experiments) {
             </div>
         `;
         container.innerHTML += experimentHTML;
+    });
+}
+
+// ===== AWARDS SECTION =====
+async function loadAwards() {
+    try {
+        const response = await fetch('data/awards.json');
+        const data = await response.json();
+        renderAwards(data.awards);
+    } catch (error) {
+        console.error('Error loading awards:', error);
+        document.getElementById('awards-list').innerHTML = '<p>Error loading awards data.</p>';
+    }
+}
+
+function renderAwards(awards) {
+    const container = document.getElementById('awards-list');
+    container.innerHTML = '';
+
+    awards.forEach(award => {
+        const awardHTML = `
+            <a href="${award.folder}" target="_blank" class="award-item" rel="noopener">
+                <div class="award-title">🏆 ${award.title}</div>
+                <p class="award-description">${award.description}</p>
+                <div class="award-link">View Awards Folder →</div>
+            </a>
+        `;
+        container.innerHTML += awardHTML;
     });
 }
 
