@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fdfdfc;
+  --foreground: #1c1c1a;
+  --muted: #6f6f67;
+  --muted-background: #f4f4f0;
+  --border: #e2e2dc;
+  --accent: #2e8b57;
+  --accent-hover: #1e5a38;
+}
+
+[data-theme="dark"] {
+  --background: #0f0f0e;
+  --foreground: #e3e3dd;
+  --muted: #9a9a92;
+  --muted-background: #1a1a18;
+  --border: #2c2c2a;
+  --accent: #6abf8f;
+  --accent-hover: #8bd3c7;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* Base styling overrides for clean text layouts */
+.prose {
+  max-width: 68ch;
+  line-height: 1.625;
+}
+
+.text-justify-custom {
+  text-align: justify;
+  text-justify: inter-word;
+}

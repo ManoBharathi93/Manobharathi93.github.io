@@ -1,0 +1,28 @@
+{
+  "articles": [
+    {
+      "date": "2026",
+      "readTime": "6 min",
+      "title": "CDC vs Polling vs Dual Writes: Rebuilding Cache Consistency",
+      "excerpt": "An empirical systems analysis comparing write workloads, cache drift, and read amplification across database replication paths.",
+      "link": "https://github.com/ManoBharathi93/SyncStream/blob/main/docs/architecture/ARCHITECTURE.md",
+      "tags": ["Distributed Systems", "CDC", "Kafka", "PostgreSQL"]
+    },
+    {
+      "date": "2026",
+      "readTime": "8 min",
+      "title": "Why Fixed Top-K Retrieval Limits RAG Systems",
+      "excerpt": "A deep dive into why static retrieval windows degrade LLM output context quality and how dynamic memory boundaries optimize token consumption.",
+      "link": "https://medium.com/@immanobharathi21/beyond-fixed-k-why-dynamic-context-selection-is-the-rag-game-changer-you-didnt-know-you-needed-c00f2a8c0517",
+      "tags": ["AI Infrastructure", "RAG", "Milvus", "Vector Database"]
+    },
+    {
+      "date": "2026",
+      "readTime": "5 min",
+      "title": "Designing Memory Systems for Agents",
+      "excerpt": "Exploring memory decay, case caching, and hierarchical abstractions for persistent LLM agent state runtimes.",
+      "link": "https://github.com/ManoBharathi93/Dynamic-Retriever/",
+      "tags": ["Agent Systems", "State Runtimes", "Agent Architecture"]
+    }
+  ]
+}

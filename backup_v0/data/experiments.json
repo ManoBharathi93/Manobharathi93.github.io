@@ -1,0 +1,69 @@
+{
+  "experiments": [
+    {
+      "id": "rfc-001",
+      "rfcNumber": "RFC-001",
+      "date": "Jun 2026",
+      "readTime": "6 min",
+      "title": "Zero-Read Projections: Change Data Capture (CDC) vs. Polling vs. Dual Writes",
+      "problem": "Real-time dashboards often introduce database read bottlenecks. Most designs solve this via database polling, which increases read load, or dual writes, which produce cache drift under concurrent write updates.",
+      "hypothesis": "Change Data Capture (CDC) events streamed from the PostgreSQL WAL to a message bus (Kafka) can feed downstream read models (Redis) asynchronously, eliminating read amplification and cache drift.",
+      "methodology": "Subjected three competing architectures (Polling, Dual Writes, CDC WAL streaming) to the same synthetic workload: 2,000 inserts, 500 updates, 10 concurrent writes, and continuous dashboard queries.",
+      "results": "Polling saturated PostgreSQL CPU capacity (85% utilization); Dual Writes produced cache drift due to race conditions during database/cache updates. CDC WAL streaming (PostgreSQL → Debezium → Kafka → Redis) eliminated dashboard-related queries from PostgreSQL, resolving cache consistency.",
+      "tradeoffs": "Increased operational overhead (Kafka, Zookeeper, Debezium connector clusters) in exchange for near real-time consistency and removal of polling synchronization.",
+      "conclusion": "Real-time dashboards are a projection problem, not a query problem. Separating write-intensive sources from read models via CDC streams decouples database CPU and avoids data drift.",
+      "links": [
+        {
+          "label": "Github Codebase",
+          "url": "https://github.com/ManoBharathi93/SyncStream"
+        },
+        {
+          "label": "Architecture Guide",
+          "url": "https://github.com/ManoBharathi93/SyncStream/blob/main/docs/architecture/ARCHITECTURE.md"
+        }
+      ]
+    },
+    {
+      "id": "rfc-002",
+      "rfcNumber": "RFC-002",
+      "date": "Jul 2026",
+      "readTime": "8 min",
+      "title": "Why Fixed Top-K Retrieval Limits RAG Systems",
+      "problem": "Fixed top-K retrieval strategies in Retrieval-Augmented Generation (RAG) waste LLM token budgets on irrelevant context when queries are simple, and fail to retrieve enough context when queries require complex, multi-hop reasoning.",
+      "hypothesis": "An adaptive, context-selective retrieval architecture that uses semantic thresholding and dynamic memory caches can optimize token usage while preserving retrieval quality.",
+      "methodology": "Tested dynamic RAG retrieval against static top-K on support ticket datasets, measuring token count per request, retrieval latency, and accuracy under concurrent workflows.",
+      "results": "Adaptive memory caching and dynamic similarity thresholds reduced token consumption by 40% (from 4200 to 2520 tokens average) without degradation in retrieval metrics, resolving SLA budgets (<1s target).",
+      "tradeoffs": "Additional indexing and threshold calculation complexity in exchange for reduced token consumption costs.",
+      "conclusion": "Moving from static context counts to dynamic, case-aware memory thresholds is a critical RAG infrastructure optimization that significantly reduces API runtime bills.",
+      "links": [
+        {
+          "label": "Medium Article",
+          "url": "https://medium.com/@immanobharathi21/beyond-fixed-k-why-dynamic-context-selection-is-the-rag-game-changer-you-didnt-know-you-needed-c00f2a8c0517"
+        },
+        {
+          "label": "Github Project",
+          "url": "https://github.com/ManoBharathi93/Dynamic-Retriever/"
+        }
+      ]
+    },
+    {
+      "id": "mlsys-paper",
+      "rfcNumber": "Paper",
+      "date": "2024",
+      "readTime": "12 min",
+      "title": "Adaptive Compute-Efficient Learning via Conceptual Criticality",
+      "problem": "Deep learning models expend identical compute budgets on simple vs. complex training inputs, leading to high energy overhead and slow convergence.",
+      "hypothesis": "Measuring learning gradients of conceptual milestones allows the training process to allocate learning capacity dynamically to critical, hard-to-learn concepts.",
+      "methodology": "Evaluated adaptive milestones learning schemes against baseline training across MLSys benchmarks.",
+      "results": "Achieved 25% reduction in training energy overhead and training acceleration by prioritizing critical concepts.",
+      "tradeoffs": "Introduced conceptual milestone evaluation overhead in exchange for reduced training convergence times.",
+      "conclusion": "Compute-efficient deep learning can be guided dynamically by conceptual milestones metrics.",
+      "links": [
+        {
+          "label": "MLSys 2024 Submission",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality"
+        }
+      ]
+    }
+  ]
+}

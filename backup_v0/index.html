@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Mano Bharathi M - Backend and AI Infrastructure Engineer building distributed systems, observability, and agent infrastructure.">
+    <title>Mano Bharathi M | Backend & AI Infrastructure Engineer</title>
+    
+    <!-- Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Unified Stylesheet -->
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="control-plane">
+        <!-- TOP OBSERVABILITY HEADER -->
+        <header class="sys-header">
+            <div class="header-left">
+                <span class="pulse-indicator status-nominal" id="sys-status-dot"></span>
+                <span class="sys-title">Mano Bharathi M</span>
+                <span class="divider">/</span>
+                <span class="sys-meta" id="sys-status-text">Backend · AI Infrastructure · Distributed Systems</span>
+            </div>
+            <div class="header-right">
+                <span class="sys-clock" id="sys-clock">UTC 00:00:00</span>
+                <div class="theme-control">
+                    <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle visual theme">
+                        <span class="theme-icon-light">Light</span>
+                        <span class="theme-icon-dark">Dark</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN LAYOUT GRID -->
+        <div class="sys-body">
+            <!-- LEFT PANEL: SYSTEM SWITCHER -->
+            <nav class="sys-sidebar">
+                <div class="sidebar-header">
+                    <span class="label">Portfolio</span>
+                </div>
+                <ul class="sidebar-menu">
+                    <li class="menu-item active" data-target="overview.sys">
+                        <span class="key">01</span> <span class="name">Overview</span>
+                    </li>
+                    <li class="menu-item" data-target="services.sys">
+                        <span class="key">02</span> <span class="name">Projects</span>
+                    </li>
+                    <li class="menu-item" data-target="topology.sys">
+                        <span class="key">03</span> <span class="name">Architecture</span>
+                    </li>
+                    <li class="menu-item" data-target="research_lab.sys">
+                        <span class="key">04</span> <span class="name">Writing</span>
+                    </li>
+                    <li class="menu-item" data-target="achievements.sys">
+                        <span class="key">05</span> <span class="name">Awards</span>
+                    </li>
+                    <li class="menu-item" data-target="manifest.sys">
+                        <span class="key">06</span> <span class="name">Resume</span>
+                    </li>
+                    <li class="menu-item" data-target="endpoints.sys">
+                        <span class="key">07</span> <span class="name">Contact</span>
+                    </li>
+                    <li class="menu-item" data-target="console.sys">
+                        <span class="key">08</span> <span class="name">Console</span>
+                    </li>
+                </ul>
+                <div class="sidebar-footer">
+                    <span class="meta-label">Open to backend / infra roles</span>
+                    <span class="meta-label" id="latency-indicator">Response ready</span>
+                </div>
+            </nav>
+
+            <!-- CENTER & RIGHT PANEL: VIEWPORT CONTAINER -->
+            <main class="sys-viewport">
+                
+                <!-- VIEWPORT: OVERVIEW.SYS (Landing & Core Telemetry) -->
+                <section id="viewport-overview" class="viewport-panel active">
+                    <div class="overview-grid">
+                        
+                        <!-- 30-SECOND SUMMARY HEADER -->
+                        <div class="panel-card col-span-2 primary-card hero-card">
+                            <div class="hero-kicker">Backend and AI infrastructure engineer</div>
+                            <div class="summary-header">
+                                <div class="profile-title">
+                                    <h1>Mano Bharathi M</h1>
+                                    <p class="role-tag">I build production backend systems, observability platforms, event-driven pipelines, and agent runtime workflows.</p>
+                                </div>
+                                <div class="action-buttons">
+                                    <a href="assets/resume.pdf" class="btn btn-primary" target="_blank" rel="noopener">Resume</a>
+                                    <a href="#viewport-endpoints" class="btn btn-secondary nav-trigger" data-target="endpoints.sys">Contact</a>
+                                </div>
+                            </div>
+                            <p class="tagline">Currently at OpenText, where I ship enterprise platform features across cloud connectivity, automated security triaging, and time-series observability.</p>
+                            <div class="hero-proof-grid">
+                                <div>
+                                    <span class="proof-value">3x</span>
+                                    <span class="proof-label">connectivity scale increase without DB migration</span>
+                                </div>
+                                <div>
+                                    <span class="proof-value">Hours to minutes</span>
+                                    <span class="proof-label">CVE triage pipeline with local LLM evaluation</span>
+                                </div>
+                                <div>
+                                    <span class="proof-value">620+</span>
+                                    <span class="proof-label">algorithmic problems solved</span>
+                                </div>
+                                <div>
+                                    <span class="proof-value">6</span>
+                                    <span class="proof-label">systems projects with architecture notes</span>
+                                </div>
+                            </div>
+                            <p class="north-star">
+                                Target roles: backend platform engineering, distributed systems, AI infrastructure, agent runtime systems, and developer infrastructure.
+                            </p>
+                        </div>
+
+                        <!-- TELEMETRY BLOCK -->
+                        <div class="panel-card">
+                            <h2>Core Metrics</h2>
+                            <div class="telemetry-groups">
+                                <div class="telemetry-group">
+                                    <h3>Production</h3>
+                                    <div class="telemetry-item">
+                                        <span class="val">2 yrs</span>
+                                        <span class="lbl">shipping enterprise backend features</span>
+                                    </div>
+                                    <div class="telemetry-item">
+                                        <span class="val">3x</span>
+                                        <span class="lbl">infrastructure scaling impact</span>
+                                    </div>
+                                    <div class="telemetry-item">
+                                        <span class="val">LLM</span>
+                                        <span class="lbl">local LLM evaluation for security pipelines</span>
+                                    </div>
+                                </div>
+                                <div class="telemetry-group">
+                                    <h3>Engineering Depth</h3>
+                                    <div class="telemetry-item">
+                                        <span class="val">CDC</span>
+                                        <span class="lbl">Kafka/Debezium event-driven systems</span>
+                                    </div>
+                                    <div class="telemetry-item">
+                                        <span class="val">RAG</span>
+                                        <span class="lbl">case-aware retrieval and memory systems</span>
+                                    </div>
+                                    <div class="telemetry-item">
+                                        <span class="val">GNN</span>
+                                        <span class="lbl">graph-based anomaly detection research</span>
+                                    </div>
+                                </div>
+                                <div class="telemetry-group">
+                                    <h3>Foundations</h3>
+                                    <div class="telemetry-item">
+                                        <span class="val">620+</span>
+                                        <span class="lbl">DSA problems solved</span>
+                                    </div>
+                                    <div class="telemetry-item">
+                                        <span class="val">4</span>
+                                        <span class="lbl">technical essays / architecture notes</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TIMELINE & DIRS -->
+                        <div class="panel-card double-height col-span-1">
+                            <h2>Progression</h2>
+                            <ul class="timeline-list">
+                                <li>
+                                    <span class="year">2026</span>
+                                    <span class="text">Distributed systems, CDC, and agent memory prototypes</span>
+                                </li>
+                                <li>
+                                    <span class="year">2025</span>
+                                    <span class="text">Enterprise LLM workflows and observability platform delivery</span>
+                                </li>
+                                <li>
+                                    <span class="year">2024</span>
+                                    <span class="text">Associate Software Engineer Conversion</span>
+                                </li>
+                                <li>
+                                    <span class="year">2024</span>
+                                    <span class="text">OpenText Software Engineering Internship</span>
+                                </li>
+                            </ul>
+
+                            <h2 style="margin-top: 2rem;">Current Focus</h2>
+                            <ul class="focus-list">
+                                <li>AI agent infrastructure</li>
+                                <li>Runtime systems for agents</li>
+                                <li>Distributed memory architectures</li>
+                            </ul>
+                        </div>
+
+                        <!-- PRODUCTION IMPACT -->
+                        <div class="panel-card col-span-2">
+                            <h2>Production Impact at OpenText</h2>
+                            <div class="impact-grid">
+                                <div class="impact-item">
+                                    <div class="metric">3x scale</div>
+                                    <div class="detail">Redesigned UUID storage architecture in cloud connectivity services, increasing supported inter-region network connections from 55 to 165 without database migrations.</div>
+                                </div>
+                                <div class="impact-item">
+                                    <div class="metric">CVE evaluation</div>
+                                    <div class="detail">Designed automated CVE ingestion and triage pipeline mapping vendor advisories to software inventory via local LLM assessment (LLaMA-2), reducing manual assessment time from hours to minutes.</div>
+                                </div>
+                                <div class="impact-item">
+                                    <div class="metric">Observability</div>
+                                    <div class="detail">Built platform observability services and time-series metric retrieval engines with dynamic baseline computation, implementing rule-based query routing between raw and pre-aggregated tables.</div>
+                                </div>
+                                <div class="impact-item">
+                                    <div class="metric">Recognition</div>
+                                    <div class="detail">Received formal leadership recognition from the VP and Senior Principal Architect for rapid code integration and high-impact platform delivery.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TECHNICAL WRITING -->
+                        <div class="panel-card">
+                            <h2>Selected Technical Writing</h2>
+                            <div id="writing-list-container" class="writing-list">
+                                <!-- Loaded dynamically from json -->
+                            </div>
+                        </div>
+
+                        <!-- PRINCIPLES -->
+                        <div class="panel-card">
+                            <h2>Engineering Principles</h2>
+                            <ul class="principles-list">
+                                <li><span>•</span> Measure before optimizing.</li>
+                                <li><span>•</span> Prefer event-driven systems when polling becomes a tax.</li>
+                                <li><span>•</span> Design observability into the system, not after the incident.</li>
+                                <li><span>•</span> Keep operational complexity visible and justified.</li>
+                                <li><span>•</span> Quantify tradeoffs in latency, cost, reliability, and developer effort.</li>
+                                <li><span>•</span> Build systems that fail predictably and recover cleanly.</li>
+                            </ul>
+                        </div>
+
+                        <!-- ALIGNMENT & QUESTIONS -->
+                        <div class="panel-card">
+                            <h2>Best-Fit Teams</h2>
+                            <div class="align-tags">
+                                <span class="tag">Distributed Systems</span>
+                                <span class="tag">AI Infrastructure</span>
+                                <span class="tag">Backend Platforms</span>
+                                <span class="tag">Agent Runtime Systems</span>
+                                <span class="tag">Developer Infrastructure</span>
+                            </div>
+                        </div>
+
+                        <div class="panel-card">
+                            <h2>Questions I Am Exploring</h2>
+                            <ul class="questions-list">
+                                <li>What abstractions are missing for AI agents?</li>
+                                <li>What would an operating system for agents look like?</li>
+                                <li>How should memory hierarchies evolve for autonomous systems?</li>
+                                <li>Can event-driven architectures become the default primitive for AI systems?</li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- VIEWPORT: SERVICES.SYS (Projects Case Studies) -->
+                <section id="viewport-services" class="viewport-panel">
+                    <div class="section-header">
+                        <h2>Systems Case Studies</h2>
+                        <p class="section-desc">Evidence of engineering judgment: problem framing, architecture decisions, constraints, benchmarks, and next steps.</p>
+                        <div class="mode-toggle-container">
+                            <span class="mode-label">View</span>
+                            <div class="toggle-group">
+                                <button id="mode-summary-btn" class="toggle-btn active">Summary</button>
+                                <button id="mode-deep-btn" class="toggle-btn">Deep Dive</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="services-viewport-container" class="services-container summary-mode">
+                        <!-- Loaded dynamically from JSON -->
+                    </div>
+                </section>
+
+                <!-- VIEWPORT: TOPOLOGY.SYS (Observability Topology Explorer) -->
+                <section id="viewport-topology" class="viewport-panel">
+                    <div class="section-header">
+                        <h2>Architecture Explorer</h2>
+                        <p class="section-desc">Interactive maps for pipeline architecture, technology choices, and long-term AI infrastructure research direction.</p>
+                        
+                        <div class="mode-toggle-container" style="margin-top: 1rem; margin-bottom: 0.5rem;">
+                            <span class="mode-label">Map</span>
+                            <div class="toggle-group">
+                                <button id="topo-systems-btn" class="toggle-btn active">System Topologies</button>
+                                <button id="topo-tech-btn" class="toggle-btn">Technology Landscape</button>
+                                <button id="topo-research-btn" class="toggle-btn">Research Map</button>
+                            </div>
+                        </div>
+                        
+                        <!-- System flow sub-selectors -->
+                        <div id="topo-systems-selector" class="system-selector-group">
+                            <button class="sys-select-btn active" data-system="syncstream">SyncStream CDC</button>
+                            <button class="sys-select-btn" data-system="dual-memory-agent">Dual Memory Agent</button>
+                            <button class="sys-select-btn" data-system="cve-automation">CVE Pipeline</button>
+                            <button class="sys-select-btn" data-system="grid-security">Grid FDI Security</button>
+                            <button class="sys-select-btn reset-layout-btn" id="topology-reset-btn" type="button">Reset layout</button>
+                        </div>
+                    </div>
+                    <div class="topology-container">
+                        <div id="topology-graph-wrapper" class="graph-wrapper">
+                            <!-- SVG graph will be rendered dynamically by JavaScript -->
+                        </div>
+                        <div id="topology-detail-pane" class="detail-pane">
+                            <div class="pane-header">SYSTEM_INSPECTOR</div>
+                            <div id="pane-content" class="pane-content">
+                                <p class="placeholder-text">Select a system or hover graph nodes to inspect decisions, failure modes, and metrics.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEWPORT: RESEARCH_LAB.SYS (Experiments & RFCs) -->
+                <section id="viewport-research_lab" class="viewport-panel">
+                    <div class="section-header">
+                        <h2>Engineering RFCs & Writing</h2>
+                        <p class="section-desc">How I think through architecture: hypotheses, constraints, measurements, and tradeoffs.</p>
+                    </div>
+                    <div id="research-viewport-container" class="research-container">
+                        <!-- Loaded dynamically from JSON -->
+                    </div>
+                </section>
+
+                <!-- VIEWPORT: ACHIEVEMENTS.SYS (Awards & Appreciation Workspaces) -->
+                <section id="viewport-achievements" class="viewport-panel">
+                    <div class="section-header">
+                        <h2>Engineering Appreciations</h2>
+                        <p class="section-desc">Interactive dashboard workspace showcasing peer and leadership recognitions at OpenText.</p>
+                    </div>
+                    <div class="achievements-workspace-container">
+                        <div class="workspace-tip" style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--text-secondary); margin-bottom: 0.5rem; text-transform: uppercase;">💡 Double-click or click Open to read the PDF. Drag cards to reorganize workspace.</div>
+                        <div class="achievements-workspace" id="achievements-workspace" style="position: relative; border: 1px solid var(--border-color); border-radius: 8px; height: 38rem; background-color: var(--bg-secondary); overflow: hidden; background: radial-gradient(circle, var(--grid-bg) 1px, transparent 1px); background-size: 20px 20px;">
+                            <!-- Draggable award file cards rendered dynamically by script.js -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEWPORT: MANIFEST.SYS (Resume config parser) -->
+                <section id="viewport-manifest" class="viewport-panel">
+                    <div class="section-header">
+                        <h2>Resume Snapshot</h2>
+                        <p class="section-desc">Structured view of experience, skills, and production contributions.</p>
+                        <div class="mode-toggle-container">
+                            <span class="mode-label">Format</span>
+                            <div class="toggle-group">
+                                <button id="manifest-yaml-btn" class="toggle-btn active">YAML</button>
+                                <button id="manifest-json-btn" class="toggle-btn">JSON</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="manifest-container">
+                        <pre class="manifest-output"><code id="manifest-code-block" class="language-yaml"># Loading manifest.sys config...</code></pre>
+                    </div>
+                </section>
+
+                <!-- VIEWPORT: ENDPOINTS.SYS (Contact & REST Links) -->
+                <section id="viewport-endpoints" class="viewport-panel">
+                    <div class="section-header">
+                        <h2>Contact</h2>
+                        <p class="section-desc">Fast links for recruiters, hiring managers, and engineers reviewing my work.</p>
+                    </div>
+                    <div class="endpoints-grid">
+                        <div class="endpoints-left">
+                            <div class="panel-card">
+                                <h2>Links</h2>
+                                <div class="endpoint-links-list">
+                                    <div class="endpoint-link-row">
+                                        <span class="method get">GET</span>
+                                        <span class="path">/resume</span>
+                                        <button class="action-btn api-runner-btn" data-endpoint="/resume">Open</button>
+                                    </div>
+                                    <div class="endpoint-link-row">
+                                        <span class="method get">GET</span>
+                                        <span class="path">/github</span>
+                                        <button class="action-btn api-runner-btn" data-endpoint="/github">Open</button>
+                                    </div>
+                                    <div class="endpoint-link-row">
+                                        <span class="method get">GET</span>
+                                        <span class="path">/linkedin</span>
+                                        <button class="action-btn api-runner-btn" data-endpoint="/linkedin">Open</button>
+                                    </div>
+                                    <div class="endpoint-link-row">
+                                        <span class="method get">GET</span>
+                                        <span class="path">/email</span>
+                                        <button class="action-btn api-runner-btn" data-endpoint="/email">Open</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="endpoints-right">
+                            <div class="panel-card">
+                                <h2>Preview</h2>
+                                <div id="endpoints-sandbox-prompt" class="sandbox-placeholder">
+                                    <p class="placeholder-text" style="margin-top: 3rem;">Choose a link to open it and view the generated contact payload.</p>
+                                </div>
+                                <div id="endpoints-api-response" class="api-response hidden">
+                                    <div class="response-header">
+                                        <span class="status-code" id="sandbox-status-badge">HTTP 200 OK</span>
+                                    </div>
+                                    <pre class="response-body"><code id="sandbox-json-block"></code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIEWPORT: CONSOLE.SYS (Interactive Terminal) -->
+                <section id="viewport-console" class="viewport-panel">
+                    <div class="section-header">
+                        <h2>Console</h2>
+                        <p class="section-desc">Optional keyboard navigation for the portfolio.</p>
+                    </div>
+                    <div class="console-wrapper">
+                        <div class="console-output" id="console-output-area">
+                            <div class="line">Mano Bharathi M portfolio console</div>
+                            <div class="line">Type 'help' to view commands.</div>
+                            <div class="line">&nbsp;</div>
+                        </div>
+                        <div class="console-input-line">
+                            <span class="prompt">mb-core-01:~$</span>
+                            <input type="text" id="console-input-box" class="console-input" autofocus autocomplete="off" spellcheck="false">
+                        </div>
+                    </div>
+                </section>
+                
+            </main>
+        </div>
+
+        <!-- BOTTOM STATUS LOGS STREAM -->
+        <footer class="sys-footer">
+            <div class="log-stream-wrapper">
+                <span class="log-icon">Now:</span>
+                <div class="log-stream-container" id="log-stream-container">
+                    <div class="log-line">Loaded production impact and project evidence.</div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Core Script Logic -->
+    <script src="assets/js/db.js"></script>
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

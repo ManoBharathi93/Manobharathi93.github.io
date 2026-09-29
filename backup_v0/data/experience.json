@@ -1,0 +1,26 @@
+{
+  "experience": [
+    {
+      "company": "OpenText",
+      "title": "Associate Software Engineer",
+      "duration": "Oct 2024 - Present",
+      "description": "Building platform observability systems, enterprise AI workflows, and cloud infrastructure connectivity services.",
+      "highlights": [
+        "Redesigned UUID storage architecture in cloud connectivity services, increasing supported inter-region connections from 55 to 165 (3× scaling) without database schema migrations.",
+        "Built time-series metric retrieval services with dynamic baseline computation, implementing rule-based query routing between raw and pre-aggregated tables to optimize latency.",
+        "Designed automated CVE ingestion and triage pipeline mapping vendor advisories to software inventory, reducing manual assessment time from hours to minutes.",
+        "Received leadership recognition from the Vice President and Senior Principal Architect for delivering platform automation features and ramping quickly on complex backend codebases."
+      ]
+    },
+    {
+      "company": "OpenText",
+      "title": "Software Engineering Intern",
+      "duration": "Apr 2024 - Sept 2024",
+      "description": "Contributed to platform development during internship period.",
+      "highlights": [
+        "Designed and developed license consumption reporting platform for Network Operations Management products, improving visibility into license usage.",
+        "Delivered production-ready feature directly leading to full-time Associate Software Engineer conversion."
+      ]
+    }
+  ]
+}
