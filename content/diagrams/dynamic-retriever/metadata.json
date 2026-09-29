@@ -1,0 +1,19 @@
+{
+  "architecture": {
+    "title": "Shared retrieval, two context-selection strategies",
+    "description": "A synthetic notebook experiment compares fixed and score-based context sizes after the same embedding retrieval and cross-encoder reranking stages.",
+    "caption": "Both strategies retrieve and rerank 50 candidates from 100 synthetic documents. Evaluation checks known-answer presence in selected text; the notebook does not call an LLM to generate answers. Its token-cost proxy is a whitespace word count.",
+    "sources": [
+      { "label": "Retrieval and evaluation notebook", "url": "https://github.com/ManoBharathi93/Dynamic-Retriever/blob/0f7e3dd90cd36bc26f81bef8e0998ba5c4a89984/Dynamic_K_vs_Fixed_K_Retrieval_ipynb.ipynb" },
+      { "label": "Experiment design", "url": "https://github.com/ManoBharathi93/Dynamic-Retriever/blob/0f7e3dd90cd36bc26f81bef8e0998ba5c4a89984/README.md#experiment-design" }
+    ]
+  },
+  "sequence": {
+    "title": "Query evaluation and dynamic-selection fallback",
+    "description": "The comparison holds candidate retrieval and reranking constant while changing how many documents enter the final context.",
+    "caption": "Fixed selection keeps 10 documents. Dynamic selection uses 80% of the highest raw cross-encoder score, with a top-one fallback if nothing passes. The same 30 labeled synthetic queries drive both evaluations.",
+    "sources": [
+      { "label": "Selection and metric functions", "url": "https://github.com/ManoBharathi93/Dynamic-Retriever/blob/0f7e3dd90cd36bc26f81bef8e0998ba5c4a89984/Dynamic_K_vs_Fixed_K_Retrieval_ipynb.ipynb" }
+    ]
+  }
+}

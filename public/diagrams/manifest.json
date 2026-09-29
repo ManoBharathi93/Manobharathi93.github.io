@@ -1,0 +1,324 @@
+{
+  "adaptive-compute-efficient-learning": {
+    "architecture": {
+      "title": "Two experiments in adaptive computation",
+      "description": "Separate notebook prototypes study entropy-based difficulty prediction and confidence-based early-exit classification.",
+      "caption": "The criticality predictor is not connected to the early-exit loop in these notebooks. Training creates model weights; the early-exit experiment then sweeps inference thresholds against a full-depth baseline on AG News.",
+      "sources": [
+        {
+          "label": "Criticality training notebook",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality/blob/c60ec76b26b15acd6cdb459a8029b00b3a684005/notebooks/CriticalityModule.ipynb"
+        },
+        {
+          "label": "Early-exit training and evaluation",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality/blob/c60ec76b26b15acd6cdb459a8029b00b3a684005/notebooks/EarlyExit.ipynb"
+        }
+      ],
+      "source": "/diagrams/adaptive-compute-efficient-learning-architecture.mmd",
+      "light": {
+        "src": "/diagrams/adaptive-compute-efficient-learning-architecture.light.svg",
+        "width": 667,
+        "height": 1262
+      },
+      "dark": {
+        "src": "/diagrams/adaptive-compute-efficient-learning-architecture.dark.svg",
+        "width": 667,
+        "height": 1262
+      }
+    },
+    "sequence": {
+      "title": "Per-sample early-exit inference",
+      "description": "Classifier heads at layers 2, 4, and 6 decide whether a sample can return a prediction before full-depth computation.",
+      "caption": "This follows predict_until_exit with batch size one. Energy is estimated from a sampled GPU power reading multiplied by elapsed time. The notebook extrapolates baseline latency and energy; it does not directly measure those baseline costs.",
+      "sources": [
+        {
+          "label": "Early-exit inference and measurement",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality/blob/c60ec76b26b15acd6cdb459a8029b00b3a684005/notebooks/EarlyExit.ipynb"
+        }
+      ],
+      "source": "/diagrams/adaptive-compute-efficient-learning-sequence.mmd",
+      "light": {
+        "src": "/diagrams/adaptive-compute-efficient-learning-sequence.light.svg",
+        "width": 829,
+        "height": 1196
+      },
+      "dark": {
+        "src": "/diagrams/adaptive-compute-efficient-learning-sequence.dark.svg",
+        "width": 829,
+        "height": 1196
+      }
+    }
+  },
+  "adaptive-runbook-intelligence": {
+    "architecture": {
+      "title": "Runbook reuse with policy-controlled execution",
+      "description": "Two execution paths share local memory: reuse an eligible runbook or retrieve context for a new LLM proposal.",
+      "caption": "The repository is a local proof of concept. MCP actions are simulated Python functions; enterprise systems are not connected. Dashed arrows show persisted updates, with new candidates and cases created on the exploratory path.",
+      "sources": [
+        {
+          "label": "Workflow routing",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence/blob/f5f1391438c4c233ea813b0fb5cff5819017b63e/graph/workflow.py"
+        },
+        {
+          "label": "Simulated action registry",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence/blob/f5f1391438c4c233ea813b0fb5cff5819017b63e/mcp_tools/actions.py"
+        },
+        {
+          "label": "Feedback persistence",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence/blob/f5f1391438c4c233ea813b0fb5cff5819017b63e/feedback/feedback_collector.py"
+        }
+      ],
+      "source": "/diagrams/adaptive-runbook-intelligence-architecture.mmd",
+      "light": {
+        "src": "/diagrams/adaptive-runbook-intelligence-architecture.light.svg",
+        "width": 765,
+        "height": 1282
+      },
+      "dark": {
+        "src": "/diagrams/adaptive-runbook-intelligence-architecture.dark.svg",
+        "width": 765,
+        "height": 1282
+      }
+    },
+    "sequence": {
+      "title": "Known-good reuse and exploratory fallback",
+      "description": "A request bypasses model reasoning only after the runbook and reuse policy checks pass.",
+      "caption": "This sequence follows RUNBOOK_AWARE mode. The source requires a known-good match at similarity 0.75 or higher and a reuse policy score of at least 0.55; a rejected reuse gate falls back to exploratory reasoning.",
+      "sources": [
+        {
+          "label": "Request workflow",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence/blob/f5f1391438c4c233ea813b0fb5cff5819017b63e/graph/workflow.py"
+        },
+        {
+          "label": "Reasoning and execution agents",
+          "url": "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence/blob/f5f1391438c4c233ea813b0fb5cff5819017b63e/graph/agents.py"
+        }
+      ],
+      "source": "/diagrams/adaptive-runbook-intelligence-sequence.mmd",
+      "light": {
+        "src": "/diagrams/adaptive-runbook-intelligence-sequence.light.svg",
+        "width": 829,
+        "height": 1187
+      },
+      "dark": {
+        "src": "/diagrams/adaptive-runbook-intelligence-sequence.dark.svg",
+        "width": 829,
+        "height": 1187
+      }
+    }
+  },
+  "capability-runner": {
+    "architecture": {
+      "title": "Discovery, saved capabilities and deterministic replay",
+      "description": "A single Python backend separates model-assisted Discovery from model-free Replay, with shared browser controls and local artifacts.",
+      "caption": "Source-reviewed implementation view at commit 1b7eea0. Arrows show the principal runtime dependencies; both engines inspect fresh browser observations. Demonstrated on local banking apps with synthetic data. Sessions are process-local, and physical human-handoff acceptance remains outstanding.",
+      "sources": [
+        {
+          "label": "System flow and current limits",
+          "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/docs/submission/system-design.md"
+        },
+        {
+          "label": "Action Gateway implementation",
+          "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/src/capability_runner/interaction/action_gateway.py"
+        },
+        {
+          "label": "Capability Builder implementation",
+          "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/src/capability_runner/capabilities/capability_builder.py"
+        }
+      ],
+      "source": "/diagrams/capability-runner-architecture.mmd",
+      "light": {
+        "src": "/diagrams/capability-runner-architecture.light.svg",
+        "width": 756,
+        "height": 1224
+      },
+      "dark": {
+        "src": "/diagrams/capability-runner-architecture.dark.svg",
+        "width": 756,
+        "height": 1224
+      }
+    },
+    "sequence": {
+      "title": "Model-free replay and checked outcomes",
+      "description": "Saved steps execute through the same Action Gateway; current page evidence determines the final result.",
+      "caption": "Replay path condensed from the implementation at commit 1b7eea0. The loop shows authorized actions; blocked or uncertain actions stop execution or enter the explicit intervention path. A successful click alone does not establish task completion.",
+      "sources": [
+        {
+          "label": "Replay runtime composition",
+          "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/src/capability_runner/bootstrap.py"
+        },
+        {
+          "label": "Replay Engine implementation",
+          "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/src/capability_runner/replay/replay_engine.py"
+        },
+        {
+          "label": "State Evaluator implementation",
+          "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/src/capability_runner/replay/state_evaluator.py"
+        }
+      ],
+      "source": "/diagrams/capability-runner-sequence.mmd",
+      "light": {
+        "src": "/diagrams/capability-runner-sequence.light.svg",
+        "width": 826,
+        "height": 1527
+      },
+      "dark": {
+        "src": "/diagrams/capability-runner-sequence.dark.svg",
+        "width": 826,
+        "height": 1527
+      }
+    }
+  },
+  "dynamic-retriever": {
+    "architecture": {
+      "title": "Shared retrieval, two context-selection strategies",
+      "description": "A synthetic notebook experiment compares fixed and score-based context sizes after the same embedding retrieval and cross-encoder reranking stages.",
+      "caption": "Both strategies retrieve and rerank 50 candidates from 100 synthetic documents. Evaluation checks known-answer presence in selected text; the notebook does not call an LLM to generate answers. Its token-cost proxy is a whitespace word count.",
+      "sources": [
+        {
+          "label": "Retrieval and evaluation notebook",
+          "url": "https://github.com/ManoBharathi93/Dynamic-Retriever/blob/0f7e3dd90cd36bc26f81bef8e0998ba5c4a89984/Dynamic_K_vs_Fixed_K_Retrieval_ipynb.ipynb"
+        },
+        {
+          "label": "Experiment design",
+          "url": "https://github.com/ManoBharathi93/Dynamic-Retriever/blob/0f7e3dd90cd36bc26f81bef8e0998ba5c4a89984/README.md#experiment-design"
+        }
+      ],
+      "source": "/diagrams/dynamic-retriever-architecture.mmd",
+      "light": {
+        "src": "/diagrams/dynamic-retriever-architecture.light.svg",
+        "width": 564,
+        "height": 1471
+      },
+      "dark": {
+        "src": "/diagrams/dynamic-retriever-architecture.dark.svg",
+        "width": 564,
+        "height": 1471
+      }
+    },
+    "sequence": {
+      "title": "Query evaluation and dynamic-selection fallback",
+      "description": "The comparison holds candidate retrieval and reranking constant while changing how many documents enter the final context.",
+      "caption": "Fixed selection keeps 10 documents. Dynamic selection uses 80% of the highest raw cross-encoder score, with a top-one fallback if nothing passes. The same 30 labeled synthetic queries drive both evaluations.",
+      "sources": [
+        {
+          "label": "Selection and metric functions",
+          "url": "https://github.com/ManoBharathi93/Dynamic-Retriever/blob/0f7e3dd90cd36bc26f81bef8e0998ba5c4a89984/Dynamic_K_vs_Fixed_K_Retrieval_ipynb.ipynb"
+        }
+      ],
+      "source": "/diagrams/dynamic-retriever-sequence.mmd",
+      "light": {
+        "src": "/diagrams/dynamic-retriever-sequence.light.svg",
+        "width": 826,
+        "height": 1172
+      },
+      "dark": {
+        "src": "/diagrams/dynamic-retriever-sequence.dark.svg",
+        "width": 826,
+        "height": 1172
+      }
+    }
+  },
+  "syncstream": {
+    "architecture": {
+      "title": "CDC pipeline with independent cache and search projections",
+      "description": "PostgreSQL remains the source of truth; Kafka decouples Redis and Elasticsearch consumers from change capture.",
+      "caption": "Core product-event pipeline at commit 2c5f96e. Both Java consumers use shared bounded retry logic. Supporting services outside this view include the registry and admin UI, SQLite management metadata, Kafka exporter, Prometheus and Grafana. Replay requests are queued as metadata; automatic consumer replay is not implied. Infrastructure is a local development setup.",
+      "sources": [
+        {
+          "label": "Debezium connector configuration",
+          "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/debezium/connector-config-clean.json"
+        },
+        {
+          "label": "Implemented components and scope",
+          "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/README.md"
+        },
+        {
+          "label": "Registry service composition",
+          "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/consumers/consumer-registry-platform/src/main/java/com/syncstream/registry/app/RegistryPlatformBootstrap.java"
+        },
+        {
+          "label": "Replay request persistence",
+          "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/consumers/consumer-registry-platform/src/main/java/com/syncstream/registry/service/ManagementService.java"
+        }
+      ],
+      "source": "/diagrams/syncstream-architecture.mmd",
+      "light": {
+        "src": "/diagrams/syncstream-architecture.light.svg",
+        "width": 712,
+        "height": 1028
+      },
+      "dark": {
+        "src": "/diagrams/syncstream-architecture.dark.svg",
+        "width": 712,
+        "height": 1028
+      }
+    },
+    "sequence": {
+      "title": "Product updates, bounded retries and dead-letter handling",
+      "description": "The same processing pattern runs independently in the Redis and Elasticsearch consumers.",
+      "caption": "Current behavior at commit 2c5f96e: terminal processing errors trigger a dead-letter publish attempt, then offsets are committed. Dead-letter publication errors are logged and swallowed, so durable failure retention and exactly-once processing are not established by this implementation.",
+      "sources": [
+        {
+          "label": "Redis consumer processing loop",
+          "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/consumers/redis-sync/src/main/java/com/syncstream/redissync/app/RedisSyncBootstrap.java"
+        },
+        {
+          "label": "Elasticsearch consumer processing loop",
+          "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/consumers/elasticsearch-sync/src/main/java/com/syncstream/elasticsearchsync/app/ElasticsearchSyncBootstrap.java"
+        },
+        {
+          "label": "Dead-letter publisher behavior",
+          "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/consumers/redis-sync/src/main/java/com/syncstream/redissync/error/KafkaDeadLetterPublisher.java"
+        }
+      ],
+      "source": "/diagrams/syncstream-sequence.mmd",
+      "light": {
+        "src": "/diagrams/syncstream-sequence.light.svg",
+        "width": 990,
+        "height": 974
+      },
+      "dark": {
+        "src": "/diagrams/syncstream-sequence.dark.svg",
+        "width": 990,
+        "height": 974
+      }
+    }
+  },
+  "ticketless-enterprise": {
+    "architecture": {
+      "title": "Voice and screen support workflow — conceptual view",
+      "description": "Resume-based component map covering speech recognition, screen understanding, enterprise RAG, LangGraph and human-reviewed closure.",
+      "caption": "Conceptual view of the prototype capabilities described in my resume. The repository could not be inspected, so component boundaries are illustrative; providers, storage, and deployment are unspecified.",
+      "sources": [],
+      "source": "/diagrams/ticketless-enterprise-architecture.mmd",
+      "light": {
+        "src": "/diagrams/ticketless-enterprise-architecture.light.svg",
+        "width": 581,
+        "height": 1341
+      },
+      "dark": {
+        "src": "/diagrams/ticketless-enterprise-architecture.dark.svg",
+        "width": 581,
+        "height": 1341
+      }
+    },
+    "sequence": {
+      "title": "Human-reviewed support interaction — conceptual sequence",
+      "description": "An illustrative interaction showing context gathering, a proposed resolution, human approval and verification before closure.",
+      "caption": "Derived from the author's resume rather than inspected source code. This sequence communicates the described prototype capabilities, not a verified runtime trace or exact API contract.",
+      "sources": [],
+      "source": "/diagrams/ticketless-enterprise-sequence.mmd",
+      "light": {
+        "src": "/diagrams/ticketless-enterprise-sequence.light.svg",
+        "width": 988,
+        "height": 717
+      },
+      "dark": {
+        "src": "/diagrams/ticketless-enterprise-sequence.dark.svg",
+        "width": 988,
+        "height": 717
+      }
+    }
+  }
+}

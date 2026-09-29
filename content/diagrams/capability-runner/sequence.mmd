@@ -1,0 +1,35 @@
+sequenceDiagram
+    accTitle: Capability Runner model-free replay
+    accDescr: A saved capability is loaded and its inputs are validated. Replay checks fresh page state and sends each prescribed action through the Action Gateway. The final state determines typed success, an expected business outcome, or failure. Replay never calls the model.
+    autonumber
+    participant Runner as UI / Runner
+    participant Store as Artifact Store
+    participant Replay
+    participant Gateway
+    participant Browser
+
+    Runner->>Store: Load validated artifact and profile
+    Store-->>Runner: Typed steps, targets and conditions
+    Runner->>Replay: Start browser replay with new inputs
+    Replay->>Replay: Validate inputs and bind parameters
+    Note over Replay,Browser: Replay makes no model calls
+    loop Each prescribed step
+        Replay->>Browser: Observe current page state
+        Browser-->>Replay: Fresh evidence
+        Replay->>Replay: Check preconditions
+        Replay->>Gateway: Submit saved action
+        Gateway->>Gateway: Check policy and session ownership
+        Gateway->>Browser: Dispatch authorized action
+        Browser-->>Gateway: Action result
+        Gateway-->>Replay: Recorded execution outcome
+    end
+    Replay->>Browser: Collect final page evidence
+    Browser-->>Replay: Current identity and output fields
+    alt Success conditions match
+        Replay-->>Runner: SUCCESS with typed outputs
+    else Declared business condition matches
+        Replay-->>Runner: BUSINESS_OUTCOME, e.g. MEMBER_NOT_FOUND
+    else Completion cannot be verified
+        Replay-->>Runner: FAILURE with evidence context
+    end
+    Runner->>Runner: Present structured result

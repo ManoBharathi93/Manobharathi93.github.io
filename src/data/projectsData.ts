@@ -29,8 +29,6 @@ export interface Project {
   tech: string[];
   problem: string;
   motivation: string;
-  architectureDiagram: string;
-  sequenceDiagram: string;
   failureModes: FailureMode[];
   scalingStrategy: string;
   security: string;
@@ -61,29 +59,6 @@ export const projectsData: Project[] = [
     tech: ["Python", "Playwright", "React", "TypeScript", "LLM Tool Calling"],
     problem: "Repeating model-driven browser reasoning for familiar tasks adds cost and makes outcomes harder to reproduce.",
     motivation: "Separate learning a workflow from executing it, while checking that each saved action still matches the current page.",
-    architectureDiagram: `
-Natural-language goal
-         |
-         v
-LLM Discovery --> Action Gateway --> Playwright Browser
-         |              ^                   |
-         v              |                   v
-Saved Capability --> Replay Engine <-- Page Evidence
-                            |
-                            v
-                    Result / Human Handoff
-`,
-    sequenceDiagram: `
-User       Discovery        Saved Artifact       Replay        Browser
- |-- goal ---->|                  |                  |              |
- |             |-- validate and discover actions ----------------->|
- |             |-- save -------->|                  |              |
- |-- new inputs ---------------------------------->|              |
- |                                |-- load -------->|              |
- |                                                  |-- act ------>|
- |                                                  |<-- evidence -|
- |<-- checked result; zero replay model calls -------|              |
-`,
     failureModes: [
       { scenario: "Stale or ambiguous page target", impact: "A saved action may point at the wrong control.", mitigation: "Validate fresh evidence and fail when target resolution is uncertain." },
       { scenario: "Action needs human intervention", impact: "Replay cannot safely continue automatically.", mitigation: "Pause for takeover and validate fresh state before resuming." },
@@ -117,31 +92,9 @@ User       Discovery        Saved Artifact       Replay        Browser
     tech: ["Java", "PostgreSQL", "Debezium", "Kafka", "Redis", "Elasticsearch", "Docker"],
     problem: "Synchronizing caches and search indexes through application dual writes creates failure windows and duplicated integration logic.",
     motivation: "Keep PostgreSQL as the source of truth and propagate its changes to independent downstream consumers.",
-    architectureDiagram: `
-PostgreSQL WAL --> Debezium --> Kafka
-                                 |
-                    +------------+------------+
-                    |                         |
-             Redis Consumer          Elasticsearch Consumer
-                    |                         |
-                  Redis                  Search Index
-
-Shared Retry / Dead-Letter Queues
-Consumer Registry + Dashboard    Prometheus + Grafana
-`,
-    sequenceDiagram: `
-Database       Debezium           Kafka          Consumers       Read Models
-   |-- change ---->|                |                |                |
-   |               |-- event ------>|                |                |
-   |               |                |-- consume ---->|                |
-   |               |                |                |-- project ---->|
-   |               |                |                |<-- result -----|
-   |               |                |<-- offset -----|                |
-   |               |                |<-- retry / DLQ on failure -------|
-`,
     failureModes: [
-      { scenario: "Downstream projection fails", impact: "Cache or search updates can lag behind PostgreSQL.", mitigation: "Retry policies and dead-letter topics retain failures for investigation." },
-      { scenario: "Consumer needs recovery", impact: "Previously read events may need reprocessing.", mitigation: "Registry APIs include replay requests and verification workflows." },
+      { scenario: "Downstream projection fails", impact: "Cache or search updates can lag behind PostgreSQL.", mitigation: "Bounded retries are followed by a dead-letter publish attempt. Publish errors are logged; durable failure retention is not guaranteed." },
+      { scenario: "Consumer needs recovery", impact: "Previously read events may need reprocessing.", mitigation: "Registry APIs persist replay requests for management workflows; consumer replay execution is not wired to those requests." },
     ],
     scalingStrategy: "Kafka decouples capture from projection. Partitioning and consumer groups provide a path to parallel processing; no production capacity figure is claimed.",
     security: "The local setup uses role headers. Signed identity and production credential management remain deployment work.",
@@ -172,29 +125,6 @@ Database       Debezium           Kafka          Consumers       Read Models
     tech: ["Speech Recognition", "WebSockets", "VLM/OCR", "RAG", "LangGraph"],
     problem: "Support requests often need both a spoken description and the context visible on an employee's screen.",
     motivation: "Bring voice, screen context, and enterprise knowledge into one guided support workflow.",
-    architectureDiagram: `
-Voice Input --> Speech Recognition ----+
-                                      |
-Screen Context --> VLM / OCR ----------+--> LangGraph Orchestration
-                                      |              |
-Enterprise Knowledge --> RAG ---------+              v
-                                              Human Approval
-                                                     |
-                                                     v
-                                           Structured Verification
-                                                     |
-                                                     v
-                                               Support Closure
-`,
-    sequenceDiagram: `
-Employee       Voice / Screen       Agent + RAG      Approval      Verification
-   |-- request ---->|                    |              |              |
-   |                |-- context -------->|              |              |
-   |                |                    |-- proposal -->|              |
-   |<-- review and approve -----------------------------|              |
-   |                |                    |-- workflow ----------------->|
-   |<-- verified outcome ----------------------------------------------|
-`,
     failureModes: [
       { scenario: "Incomplete voice or screen interpretation", impact: "The workflow may lack enough context to resolve the request.", mitigation: "Human review and structured verification provide a check before closure." },
       { scenario: "An action needs approval", impact: "Execution requires a human decision.", mitigation: "Keep human approval in the support workflow." },
@@ -228,33 +158,6 @@ Employee       Voice / Screen       Agent + RAG      Approval      Verification
     tech: ["Python", "ChromaDB", "SQLite", "Streamlit", "MCP", "Embeddings"],
     problem: "Repeated support requests can trigger the same retrieval and reasoning even after a successful resolution is already known.",
     motivation: "Reuse validated resolution steps and retain feedback about when a runbook succeeds or fails.",
-    architectureDiagram: `
-Incoming Query --> Runbook Similarity Search
-                            |
-               +------------+------------+
-               |                         |
-        Known-Good Match              No Match
-               |                         |
-          Policy Gate           Knowledge + Case Memory
-               |                         |
-       Direct MCP Actions          LLM Reasoning
-               |                         |
-               |                    Policy Gate
-               |                         |
-               +----------+--------------+
-                          |
-               Feedback + Runbook Updates
-`,
-    sequenceDiagram: `
-Query          Runbook Store       Policy          Executor       Feedback
-  |-- match ------>|                 |                |              |
-  |<-- known-good -|                 |                |              |
-  |-- candidate ------------------->|                |              |
-  |                                 |-- approved --->|              |
-  |                                 |                |-- outcome -->|
-  |                |<-- update counters and status -----------------|
-  |<-- result; fast path avoids LLM calls ------------|              |
-`,
     failureModes: [
       { scenario: "No suitable runbook", impact: "A saved resolution cannot be reused confidently.", mitigation: "Route through exploratory retrieval and reasoning." },
       { scenario: "Runbook repeatedly fails or reopens", impact: "A previously useful procedure may no longer be reliable.", mitigation: "Update lifecycle counters and exclude known-bad runbooks from matching." },
@@ -278,50 +181,26 @@ Query          Runbook Store       Policy          Executor       Feedback
   {
     id: "adaptive-compute-efficient-learning",
     name: "Adaptive Compute Efficient Learning via Conceptual-Criticality",
-    summary: "Research into allocating model compute according to input difficulty and early-exit confidence.",
+    summary: "Research prototypes for entropy-based difficulty prediction and confidence-based early-exit inference.",
     tag: "AI Research",
     status: "Prototype",
-    whatIBuilt: "Co-authored the AAAI 2026 Student Abstract and contributed to a proof of concept for criticality estimation and early-exit inference.",
-    measuredResult: "The proof of concept retained about 90.7% accuracy while reducing energy use by about 65% versus a 6-layer baseline.",
-    limitations: "These are results for the evaluated proof of concept, not a general energy or accuracy guarantee for other models and datasets.",
+    whatIBuilt: "Co-authored the AAAI 2026 Student Abstract and contributed to separate notebook prototypes for criticality estimation and early-exit inference.",
+    measuredResult: "Resume-reported proof-of-concept result: about 90.7% accuracy and about 65% lower energy use versus a 6-layer baseline. The notebook estimates energy and extrapolates baseline cost.",
+    limitations: "Criticality prediction and early exit are separate notebook experiments. Energy is estimated from sampled GPU power and elapsed time; six-layer baseline cost is extrapolated.",
     evidence: "The research repository contains the paper, notebooks, and experiment code. Results here follow the resume summary.",
     tech: ["Python", "PyTorch", "Transformers", "Jupyter", "Early Exit"],
     problem: "A fixed inference depth spends the same computation on easy and difficult inputs.",
-    motivation: "Explore whether input difficulty and confidence can guide compute use while retaining predictive accuracy.",
-    architectureDiagram: `
-Input --> Criticality Estimation --> Adaptive Compute Decision
-                                               |
-                                               v
-                                      Transformer Layers
-                                               |
-                                      Early-Exit Heads
-                                               |
-                                  Confidence Threshold Met?
-                                      |              |
-                                     Yes             No
-                                      |              |
-                                 Prediction     Continue Layers
-`,
-    sequenceDiagram: `
-Input          Criticality         Transformer       Exit Head      Evaluation
-  |-- score ------>|                    |                |              |
-  |                |-- allocation ---->|                |              |
-  |                                     |-- hidden ---->|              |
-  |                                     |<-- confidence-|              |
-  |                                     |-- exit / continue            |
-  |                                     |-- prediction + compute ----->|
-  |<-- accuracy and energy comparison --------------------------------|
-`,
+    motivation: "Study entropy-based input difficulty and confidence-based early exit in separate prototypes while tracking prediction quality.",
     failureModes: [
       { scenario: "An input exits too early", impact: "Compute savings may reduce prediction quality.", mitigation: "Evaluate accuracy alongside exit thresholds and compute usage." },
       { scenario: "Results vary across workloads", impact: "Savings may not transfer to another model or dataset.", mitigation: "Report the evaluated baseline and experimental scope." },
     ],
-    scalingStrategy: "The work explores per-input compute allocation. Larger-model and broader-dataset validation remain further research.",
+    scalingStrategy: "Separate notebook experiments explore difficulty prediction and early-exit inference. An integrated allocator and larger-workload validation remain further research.",
     security: "This is experimental research code rather than an exposed inference service; no service security model is claimed.",
-    performance: "About 90.7% accuracy with about 65% lower energy use than the 6-layer baseline in the proof of concept.",
-    benchmarks: ["Baseline: fixed 6-layer computation.", "Evaluation: prediction accuracy and energy use within the proof-of-concept setup."],
+    performance: "Reported proof-of-concept figures: about 90.7% accuracy and about 65% estimated energy reduction versus the six-layer baseline.",
+    benchmarks: ["Baseline: extrapolated cost for fixed six-layer computation.", "Evaluation: accuracy, exit layer, elapsed time, and GPU power-based energy estimates."],
     tradeoffs: [
-      { decision: "Adapt compute to input difficulty", alternative: "Run full fixed-depth inference for every input", rationale: "Easier inputs may require fewer computation steps." },
+      { decision: "Learn an entropy-based difficulty predictor", alternative: "Use manually assigned difficulty labels", rationale: "A pooled-embedding MLP learns difficulty buckets derived from LSTM prediction entropy in a separate experiment." },
       { decision: "Use confidence-based early exits", alternative: "Always use the final layer", rationale: "Threshold selection makes the accuracy-versus-compute tradeoff explicit." },
     ],
     monitoring: ["Accuracy: Predictive quality in the evaluated experiment.", "Compute use: Energy, layers used, and inference-cost comparisons."],
@@ -339,51 +218,25 @@ Input          Criticality         Transformer       Exit Head      Evaluation
     tag: "Retrieval & Evaluation",
     status: "Prototype",
     whatIBuilt: "Built a notebook comparison using embeddings, FAISS retrieval, cross-encoder reranking, and fixed versus score-based dynamic context selection.",
-    measuredResult: "On the documented synthetic experiment, estimated average context tokens fell from 125.17 to 13.00 while answer presence in context remained 1.00 for both methods.",
-    limitations: "Uses 100 synthetic documents and 30 queries. Token cost is estimated; answer presence measures retrieved context, not generated-answer correctness.",
+    measuredResult: "In the documented synthetic experiment, mean context word count fell from 125.17 to 13.00 while answer presence in context remained 1.00 for both methods.",
+    limitations: "Uses 100 synthetic documents and 30 queries. The notebook uses word count as a token-cost proxy; answer presence measures retrieved context, not generated-answer correctness.",
     evidence: "The repository contains the comparison notebook, experiment design, evaluation definitions, and aggregate results.",
     tech: ["Python", "Sentence Transformers", "FAISS", "Cross-Encoder", "Jupyter"],
     problem: "A fixed document count can add irrelevant context for simple queries or omit context for broader queries.",
     motivation: "Compare selection strategies by measuring both context quality and the amount of text selected.",
-    architectureDiagram: `
-Synthetic Documents --> Embeddings --> FAISS Index
-                                           ^
-                                           |
-Query --> Embedding --> Candidate Retrieval
-                              |
-                       Cross-Encoder Reranking
-                              |
-                  +-----------+-----------+
-                  |                       |
-             Fixed-K Context        Dynamic-K Context
-                  |                       |
-                  +-----------+-----------+
-                              |
-                     Retrieval Evaluation
-`,
-    sequenceDiagram: `
-Query             FAISS          Reranker        Selection       Evaluation
-  |-- retrieve ---->|               |               |               |
-  |<-- candidates -|               |               |               |
-  |-- score candidates ----------->|               |               |
-  |                                |-- ranking ---->|               |
-  |                                                 |-- fixed K --->|
-  |                                                 |-- dynamic K ->|
-  |<-- compare context quality and estimated tokens ----------------|
-`,
     failureModes: [
       { scenario: "Threshold discards useful context", impact: "Selection could omit information needed for an answer.", mitigation: "Compare answer presence, ranking metrics, and context precision." },
       { scenario: "Synthetic results do not generalize", impact: "Gains may differ on real document collections.", mitigation: "Keep dataset scope explicit and validate separately on new corpora." },
     ],
     scalingStrategy: "The notebook uses a small synthetic corpus and FAISS IndexFlatL2. Large-corpus throughput is outside the measured experiment.",
     security: "The experiment uses synthetic documents. Enterprise document permissions and tenant isolation are outside its scope.",
-    performance: "README-reported synthetic results compare context quality and estimated token cost.",
-    benchmarks: ["Precision: 0.11 fixed K; 0.98 dynamic K.", "Average selected documents: 10.00 fixed K; 1.03 dynamic K.", "Estimated average context tokens: 125.17 fixed K; 13.00 dynamic K."],
+    performance: "The synthetic experiment compares context quality and word count as a token-cost proxy.",
+    benchmarks: ["Precision: 0.11 fixed K; 0.98 dynamic K.", "Average selected documents: 10.00 fixed K; 1.03 dynamic K.", "Average context word count: 125.17 fixed K; 13.00 dynamic K."],
     tradeoffs: [
       { decision: "Select by relative reranker score", alternative: "Always keep a fixed document count", rationale: "Context size follows relevance but becomes sensitive to the selection threshold." },
       { decision: "Evaluate retrieval independently", alternative: "Judge only final generated answers", rationale: "Context metrics isolate the effect of document selection." },
     ],
-    monitoring: ["Context quality: Answer presence, precision, MRR, and NDCG.", "Context size: Selected document count and estimated tokens."],
+    monitoring: ["Context quality: Answer presence, precision, MRR, and NDCG.", "Context size: Selected document count and whitespace-delimited word count."],
     testing: "Both strategies are compared on the same synthetic documents and queries with known answers.",
     cicd: "The project provides a notebook and README with setup and execution instructions.",
     futureWork: "Further evaluation would use real corpora, additional query types, and generated-answer measurements.",

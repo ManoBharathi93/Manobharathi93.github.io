@@ -1,0 +1,28 @@
+sequenceDiagram
+  accTitle: Retrieval, reranking, and context selection
+  accDescr: The notebook runs each query through FAISS and cross-encoder reranking. Fixed selection retains ten documents. Dynamic selection applies a relative threshold and falls back to the top document when nothing qualifies. Metrics evaluate retrieved context rather than generated answers.
+  autonumber
+  participant Run as Notebook
+  participant Search as MiniLM and FAISS
+  participant Rank as Cross-encoder
+  participant Select as Selector
+  participant Metrics
+
+  Note over Run,Search: Corpus embeddings are indexed before evaluation
+  Run->>Search: Encode query and retrieve 50 candidates
+  Search-->>Run: Candidate document texts
+  Run->>Rank: Score each query-document pair
+  Rank-->>Run: Documents and scores, highest first
+  Run->>Select: Apply the configured strategy
+  alt Fixed K
+    Select->>Select: Keep the first 10 documents
+  else Dynamic K
+    Select->>Select: Keep scores >= 0.8 x highest score
+    opt Empty set
+      Select->>Select: Keep the top-ranked document
+    end
+  end
+  Select-->>Run: Selected context documents
+  Run->>Metrics: Context plus known answer
+  Metrics-->>Run: Answer presence, precision, MRR, NDCG, word count
+  Note over Run,Metrics: Repeat for 30 synthetic queries under each strategy

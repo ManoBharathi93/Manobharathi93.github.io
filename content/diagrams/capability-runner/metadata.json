@@ -1,0 +1,22 @@
+{
+  "architecture": {
+    "title": "Discovery, saved capabilities and deterministic replay",
+    "description": "A single Python backend separates model-assisted Discovery from model-free Replay, with shared browser controls and local artifacts.",
+    "caption": "Source-reviewed implementation view at commit 1b7eea0. Arrows show the principal runtime dependencies; both engines inspect fresh browser observations. Demonstrated on local banking apps with synthetic data. Sessions are process-local, and physical human-handoff acceptance remains outstanding.",
+    "sources": [
+      { "label": "System flow and current limits", "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/docs/submission/system-design.md" },
+      { "label": "Action Gateway implementation", "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/src/capability_runner/interaction/action_gateway.py" },
+      { "label": "Capability Builder implementation", "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/src/capability_runner/capabilities/capability_builder.py" }
+    ]
+  },
+  "sequence": {
+    "title": "Model-free replay and checked outcomes",
+    "description": "Saved steps execute through the same Action Gateway; current page evidence determines the final result.",
+    "caption": "Replay path condensed from the implementation at commit 1b7eea0. The loop shows authorized actions; blocked or uncertain actions stop execution or enter the explicit intervention path. A successful click alone does not establish task completion.",
+    "sources": [
+      { "label": "Replay runtime composition", "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/src/capability_runner/bootstrap.py" },
+      { "label": "Replay Engine implementation", "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/src/capability_runner/replay/replay_engine.py" },
+      { "label": "State Evaluator implementation", "url": "https://github.com/ManoBharathi93/capability-runner/blob/1b7eea07ca58de435693bcbed2e374a95c38240a/src/capability_runner/replay/state_evaluator.py" }
+    ]
+  }
+}

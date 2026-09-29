@@ -1,0 +1,30 @@
+sequenceDiagram
+  accTitle: Runbook reuse and exploratory resolution
+  accDescr: In runbook-aware mode, an eligible known-good runbook can bypass LLM reasoning. Otherwise the workflow retrieves context and asks the LLM for a proposal. Both paths use local simulated actions and persist the relevant memory updates.
+  autonumber
+  participant User
+  participant Flow as Workflow
+  participant Memory as Local stores
+  participant LLM
+  participant Actions as Simulated actions
+
+  User->>Flow: Submit support query
+  Flow->>Memory: Find matching runbook
+  Memory-->>Flow: Candidate, similarity, and history
+  Flow->>Flow: Check status and reuse policy
+  alt Known-good match and policy approved
+    Note over Flow,LLM: Fast path skips the LLM
+    Flow->>Actions: Execute saved steps
+    Actions-->>Flow: Structured simulated result
+    Flow->>Memory: Record runbook usage and status
+  else No eligible match or reuse policy rejected
+    Flow->>Memory: Retrieve documents and past cases
+    Memory-->>Flow: Context and case history
+    Flow->>LLM: Propose action with context
+    LLM-->>Flow: Action, confidence, and risk
+    Flow->>Flow: Resolve, partially automate, or escalate
+    Flow->>Actions: Execute selected action or escalation
+    Actions-->>Flow: Structured simulated result
+    Flow->>Memory: Save case and eligible runbook candidate
+  end
+  Flow-->>User: Outcome, path, and execution metrics

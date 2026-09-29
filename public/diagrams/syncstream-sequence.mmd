@@ -1,0 +1,28 @@
+sequenceDiagram
+    accTitle: SyncStream product projection and failure handling
+    accDescr: Debezium publishes PostgreSQL changes to Kafka. Each independent consumer applies a product projection, retries eligible failures with bounded backoff, and attempts dead-letter publication if processing still fails. The current implementation commits offsets even if dead-letter publication fails.
+    autonumber
+    participant DB as PostgreSQL
+    participant CDC as Debezium
+    participant Kafka
+    participant Consumer as Java Consumer
+    participant Store as Redis or Elasticsearch
+    participant DLQ as Dead-letter Topic
+
+    DB-->>CDC: Committed row change via logical WAL
+    CDC->>Kafka: Publish keyed product event
+    Consumer->>Kafka: Poll subscribed product topic
+    Kafka-->>Consumer: CDC event with source offset
+    Consumer->>Store: Apply set, upsert or delete by ID
+    alt Projection succeeds
+        Store-->>Consumer: Operation completes
+    else Projection fails
+        Store-->>Consumer: Error
+        Consumer->>Consumer: Classify error and retry within policy
+        opt Still failing or not retryable
+            Consumer->>DLQ: Attempt publish with error + source offset
+            Note over Consumer,DLQ: Publication errors are logged
+        end
+    end
+    Consumer->>Kafka: Commit current consumer offsets
+    Note over Kafka,DLQ: Current code commits even if DLQ publish fails

@@ -1,0 +1,33 @@
+flowchart TB
+  accTitle: Fixed and dynamic context selection experiment
+  accDescr: A synthetic corpus is embedded into FAISS. Each query retrieves fifty candidates, which a cross-encoder reranks. The notebook compares ten-document fixed selection with a relative score threshold and top-one fallback, then evaluates context quality and word count without generating LLM answers.
+
+  subgraph indexing["Synthetic corpus indexing"]
+    DOCS["100 synthetic documents"]
+    EMBED["MiniLM document embeddings"]
+    INDEX[("FAISS IndexFlatL2")]
+    DOCS --> EMBED --> INDEX
+  end
+
+  subgraph retrieval["Shared retrieval and reranking"]
+    QUERY["30 queries with known answers"]
+    ENCODE["MiniLM query embedding"]
+    SEARCH["Retrieve 50 candidates"]
+    RANK["MS MARCO cross-encoder"]
+    QUERY --> ENCODE --> SEARCH --> RANK
+  end
+
+  INDEX --> SEARCH
+
+  subgraph selection["Compared context-selection strategies"]
+    FIXED["Fixed: top 10 documents"]
+    DYNAMIC["Dynamic: at least 80% of top score"]
+    FALLBACK["If empty: keep top document"]
+    DYNAMIC --> FALLBACK
+  end
+
+  RANK --> FIXED
+  RANK --> DYNAMIC
+  FIXED --> METRICS["Context quality and word count"]
+  FALLBACK --> METRICS
+  METRICS --> REPORT["Comparison table and plots"]

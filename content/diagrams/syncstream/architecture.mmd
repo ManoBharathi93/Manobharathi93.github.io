@@ -1,0 +1,27 @@
+flowchart TB
+    accTitle: SyncStream change-data-capture architecture
+    accDescr: PostgreSQL changes flow through Debezium and Kafka to independent Java product projectors for Redis and Elasticsearch. Each projector applies bounded retries and attempts to publish terminal failures to its dead-letter topic. This overview focuses on the core data plane.
+
+    subgraph Capture["Change capture"]
+        direction LR
+        Postgres[("PostgreSQL / logical WAL")]
+        Debezium["Debezium / Kafka Connect"]
+        Kafka[("Kafka product events")]
+        Postgres -->|"initial snapshot + row changes"| Debezium
+        Debezium -->|"CDC envelopes"| Kafka
+    end
+
+    subgraph Projection["Independent product projections"]
+        RedisConsumer["Java Redis projector + retry"]
+        SearchConsumer["Java search projector + retry"]
+        Redis[("Redis product cache")]
+        Search[("Elasticsearch product index")]
+        DLQ[("Per-consumer dead-letter topics")]
+        RedisConsumer -->|"set / delete by ID"| Redis
+        SearchConsumer -->|"upsert / delete by ID"| Search
+        RedisConsumer -->|"failed event"| DLQ
+        SearchConsumer -->|"failed event"| DLQ
+    end
+
+    Kafka -->|"consumer group A"| RedisConsumer
+    Kafka -->|"consumer group B"| SearchConsumer

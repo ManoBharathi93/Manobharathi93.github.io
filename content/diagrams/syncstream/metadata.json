@@ -1,0 +1,23 @@
+{
+  "architecture": {
+    "title": "CDC pipeline with independent cache and search projections",
+    "description": "PostgreSQL remains the source of truth; Kafka decouples Redis and Elasticsearch consumers from change capture.",
+    "caption": "Core product-event pipeline at commit 2c5f96e. Both Java consumers use shared bounded retry logic. Supporting services outside this view include the registry and admin UI, SQLite management metadata, Kafka exporter, Prometheus and Grafana. Replay requests are queued as metadata; automatic consumer replay is not implied. Infrastructure is a local development setup.",
+    "sources": [
+      { "label": "Debezium connector configuration", "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/debezium/connector-config-clean.json" },
+      { "label": "Implemented components and scope", "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/README.md" },
+      { "label": "Registry service composition", "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/consumers/consumer-registry-platform/src/main/java/com/syncstream/registry/app/RegistryPlatformBootstrap.java" },
+      { "label": "Replay request persistence", "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/consumers/consumer-registry-platform/src/main/java/com/syncstream/registry/service/ManagementService.java" }
+    ]
+  },
+  "sequence": {
+    "title": "Product updates, bounded retries and dead-letter handling",
+    "description": "The same processing pattern runs independently in the Redis and Elasticsearch consumers.",
+    "caption": "Current behavior at commit 2c5f96e: terminal processing errors trigger a dead-letter publish attempt, then offsets are committed. Dead-letter publication errors are logged and swallowed, so durable failure retention and exactly-once processing are not established by this implementation.",
+    "sources": [
+      { "label": "Redis consumer processing loop", "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/consumers/redis-sync/src/main/java/com/syncstream/redissync/app/RedisSyncBootstrap.java" },
+      { "label": "Elasticsearch consumer processing loop", "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/consumers/elasticsearch-sync/src/main/java/com/syncstream/elasticsearchsync/app/ElasticsearchSyncBootstrap.java" },
+      { "label": "Dead-letter publisher behavior", "url": "https://github.com/ManoBharathi93/SyncStream/blob/2c5f96e83aa9feee7aa2f2851242811a5759b784/consumers/redis-sync/src/main/java/com/syncstream/redissync/error/KafkaDeadLetterPublisher.java" }
+    ]
+  }
+}

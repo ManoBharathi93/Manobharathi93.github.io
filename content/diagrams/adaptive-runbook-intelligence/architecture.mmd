@@ -1,0 +1,27 @@
+flowchart TB
+  accTitle: Adaptive Runbook Intelligence architecture
+  accDescr: A local support automation prototype chooses saved steps from an eligible runbook or retrieves context for LLM reasoning. Both paths apply an execution policy before simulated MCP actions. ChromaDB and SQLite persist memory and outcomes.
+
+  UI["Streamlit interface"] --> LOOKUP
+  MEMORY[("ChromaDB + SQLite")] -->|Stored memory| LOOKUP
+
+  subgraph routing["Choose an execution path"]
+    LOOKUP{"Eligible runbook?"}
+    REUSE["Saved runbook steps"]
+    REASON["Retrieval + LLM"]
+    LOOKUP -->|Yes| REUSE
+    LOOKUP -->|No| REASON
+  end
+
+  subgraph execution["Policy-controlled prototype execution"]
+    POLICY["Execution policy"]
+    ACTIONS["Simulated MCP actions"]
+    RESULT["Outcome + metrics"]
+    POLICY -->|Resolve, partial, or escalate| ACTIONS
+    ACTIONS --> RESULT
+  end
+
+  REUSE -->|No LLM call| POLICY
+  REASON -->|New proposal| POLICY
+  POLICY -->|Reuse gate rejected| REASON
+  RESULT -.->|Persist updates| MEMORY

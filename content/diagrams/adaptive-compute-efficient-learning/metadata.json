@@ -1,0 +1,19 @@
+{
+  "architecture": {
+    "title": "Two experiments in adaptive computation",
+    "description": "Separate notebook prototypes study entropy-based difficulty prediction and confidence-based early-exit classification.",
+    "caption": "The criticality predictor is not connected to the early-exit loop in these notebooks. Training creates model weights; the early-exit experiment then sweeps inference thresholds against a full-depth baseline on AG News.",
+    "sources": [
+      { "label": "Criticality training notebook", "url": "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality/blob/c60ec76b26b15acd6cdb459a8029b00b3a684005/notebooks/CriticalityModule.ipynb" },
+      { "label": "Early-exit training and evaluation", "url": "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality/blob/c60ec76b26b15acd6cdb459a8029b00b3a684005/notebooks/EarlyExit.ipynb" }
+    ]
+  },
+  "sequence": {
+    "title": "Per-sample early-exit inference",
+    "description": "Classifier heads at layers 2, 4, and 6 decide whether a sample can return a prediction before full-depth computation.",
+    "caption": "This follows predict_until_exit with batch size one. Energy is estimated from a sampled GPU power reading multiplied by elapsed time. The notebook extrapolates baseline latency and energy; it does not directly measure those baseline costs.",
+    "sources": [
+      { "label": "Early-exit inference and measurement", "url": "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality/blob/c60ec76b26b15acd6cdb459a8029b00b3a684005/notebooks/EarlyExit.ipynb" }
+    ]
+  }
+}

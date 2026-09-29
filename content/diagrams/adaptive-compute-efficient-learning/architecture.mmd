@@ -1,0 +1,30 @@
+flowchart TB
+  accTitle: Criticality estimation and early-exit research experiments
+  accDescr: Two independent AG News notebook experiments share text tokenization. One trains a difficulty predictor from normalized LSTM entropy. The other trains a six-layer Transformer with classifier heads at layers two, four, and six, then evaluates confidence-based early exits.
+
+  DATA["AG News text and labels"] --> TOKENS["BERT tokenization"]
+
+  subgraph criticality["Experiment A: difficulty estimation"]
+    LSTM["Train LSTM text classifier"]
+    LABELS["Entropy to four difficulty labels"]
+    MLP["Train pooled-embedding MLP"]
+    BUCKET["Predict difficulty of new text"]
+    LSTM --> LABELS --> MLP --> BUCKET
+  end
+
+  subgraph earlyexit["Experiment B: early-exit classification"]
+    TRAIN["Train six-layer Transformer"]
+    HEADS["Joint loss: heads at 2, 4, 6"]
+    WEIGHTS[("Trained model checkpoint")]
+    SAMPLE["Single-sample inference"]
+    BLOCK["Next Transformer block"]
+    GATE{"Confident exit or layer 6?"}
+    METRICS["Prediction and evaluation"]
+    TRAIN --> HEADS --> WEIGHTS --> SAMPLE
+    SAMPLE --> BLOCK --> GATE
+    GATE -->|No: continue| BLOCK
+    GATE -->|Yes: return| METRICS
+  end
+
+  TOKENS --> LSTM
+  TOKENS --> TRAIN

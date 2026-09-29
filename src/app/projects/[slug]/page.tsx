@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, FileText, Cpu, AlertTriangle } from "lucide-react";
 import { projectsData } from "@/data/projectsData";
+import { ProjectDiagram } from "@/components/ProjectDiagram";
 
 interface PageProps {
   params: Promise<{
@@ -94,7 +95,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
       {/* Main Core Section */}
       <div className="grid md:grid-cols-3 gap-8">
         {/* Left column (2/3 width) - Technical Outline */}
-        <div className="md:col-span-2 space-y-10">
+        <div className="md:col-span-2 space-y-10 min-w-0">
           {/* Problem Statement */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold tracking-tight">1. Problem Statement</h2>
@@ -114,23 +115,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           {/* System Architecture */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold tracking-tight">3. System Architecture</h2>
-            <div className="p-4 rounded border border-[var(--border)] bg-[var(--muted-background)]/50 overflow-x-auto">
-              <pre className="font-mono text-[10px] leading-normal text-[var(--foreground)] whitespace-pre">
-                {project.architectureDiagram.trim()}
-              </pre>
-            </div>
-            <p className="text-[11px] text-[var(--muted)] italic">Figure 1.0: High-level project components and information flow.</p>
+            <ProjectDiagram projectId={project.id} kind="architecture" />
           </section>
 
           {/* Sequence Diagram */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold tracking-tight">4. Pipeline Data Flow</h2>
-            <div className="p-4 rounded border border-[var(--border)] bg-[var(--muted-background)]/50 overflow-x-auto">
-              <pre className="font-mono text-[10px] leading-normal text-[var(--foreground)] whitespace-pre">
-                {project.sequenceDiagram.trim()}
-              </pre>
-            </div>
-            <p className="text-[11px] text-[var(--muted)] italic">Figure 1.1: Main workflow and validation steps.</p>
+            <ProjectDiagram projectId={project.id} kind="sequence" />
           </section>
 
           {/* Failure Modes & Mitigations */}

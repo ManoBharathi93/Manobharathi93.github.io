@@ -1,0 +1,33 @@
+flowchart TB
+    accTitle: Capability Runner architecture
+    accDescr: A React interface and command line invoke one Python backend. Discovery uses a model and compiles and validates traces into JSON artifacts. Replay reads those artifacts without a model. Both engines use the Action Gateway with policy and session checks, then the Playwright browser adapter. Action evidence is recorded locally.
+
+    UI["React UI / CLI"]
+    LLM["Configured LLM provider"]
+
+    subgraph Backend["Single Python backend"]
+        Run["Run orchestration"]
+        Discover["Discovery + Model Client"]
+        Replay["Replay + state checks"]
+        Gateway["Action Gateway + control checks"]
+        Browser["Playwright adapter"]
+    end
+
+    subgraph Files["Local persistence"]
+        Artifact[("Capability JSON + profile")]
+        Evidence[("Sanitized JSONL")]
+    end
+
+    Target["Target web app"]
+
+    UI -->|"goal / workflow"| Run
+    Run -->|"discover"| Discover
+    Run -->|"replay"| Replay
+    LLM -->|"action proposals"| Discover
+    Discover -->|"compile + validate"| Artifact
+    Replay -->|"load saved steps"| Artifact
+    Discover -->|"proposals"| Gateway
+    Replay -->|"saved steps"| Gateway
+    Gateway -->|"authorized actions"| Browser
+    Gateway -->|"events"| Evidence
+    Browser <-->|"actions / state"| Target

@@ -1,0 +1,30 @@
+sequenceDiagram
+  accTitle: Confidence-based early-exit inference
+  accDescr: After training, a single AG News sample runs through Transformer layers. Classifier heads at layers two, four, and six produce confidence scores. Inference returns when confidence reaches the chosen threshold or the last head is reached.
+  autonumber
+  participant Eval as Evaluator
+  participant Token as Tokenizer
+  participant Model as Transformer
+  participant Heads as Exit heads
+  participant Metrics
+
+  Note over Eval,Heads: Inference uses the jointly trained checkpoint
+  Eval->>Token: Tokenize one test sample
+  Token-->>Eval: Token IDs and attention mask
+  Eval->>Model: Predict with threshold tau
+  Model->>Model: Add token and position embeddings
+  loop Remaining layers, until a prediction returns
+    Model->>Model: Compute next Transformer block
+    opt Head after layer 2, 4, or 6
+      Model->>Heads: Pool unmasked hidden states
+      Heads-->>Model: Class logits and max softmax confidence
+      alt Confidence meets tau or final layer reached
+        break Return prediction
+          Model-->>Eval: Logits, exit layer, and confidence
+        end
+      else Below tau before the final layer
+        Model->>Model: Continue to the next layer
+      end
+    end
+  end
+  Eval->>Metrics: Record accuracy, elapsed time, and power estimate

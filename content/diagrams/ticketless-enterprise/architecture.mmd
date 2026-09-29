@@ -1,0 +1,32 @@
+flowchart TB
+    accTitle: Ticketless Enterprise conceptual support flow
+    accDescr: Conceptual component map based on the author's resume, not verified repository code. Voice interactions and screen understanding feed a LangGraph support workflow. Enterprise retrieval supplies context. Human approval and structured verification precede closure. Model providers, storage and deployment are unspecified.
+
+    User["Employee support request"]
+
+    subgraph Inputs["Voice and screen context"]
+        Voice["Speech recognition + WebSocket voice"]
+        Screen["VLM / OCR screen understanding"]
+    end
+
+    subgraph Support["Support orchestration"]
+        Graph["LangGraph workflow"]
+        RAG["Enterprise RAG"]
+        Proposal["Proposed resolution"]
+    end
+
+    subgraph Review["Human review and closure"]
+        Approval["Human approval"]
+        Verify["Structured verification"]
+        Closed["Verified closure"]
+    end
+
+    User -->|"spoken request"| Voice
+    User -->|"screen context"| Screen
+    Voice -->|"recognized request"| Graph
+    Screen -->|"screen observations"| Graph
+    Graph <-->|"retrieve supporting knowledge"| RAG
+    Graph -->|"support guidance"| Proposal
+    Proposal -->|"review"| Approval
+    Approval -->|"approved path"| Verify
+    Verify -->|"outcome confirmed"| Closed

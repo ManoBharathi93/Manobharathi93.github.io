@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #fdfdfc;
   --foreground: #1c1c1a;
@@ -10,7 +12,7 @@
   --accent-hover: #1e5a38;
 }
 
-[data-theme="dark"] {
+:root.dark {
   --background: #0f0f0e;
   --foreground: #e3e3dd;
   --muted: #9a9a92;

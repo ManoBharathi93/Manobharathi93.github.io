@@ -1,0 +1,14 @@
+{
+  "architecture": {
+    "title": "Voice and screen support workflow — conceptual view",
+    "description": "Resume-based component map covering speech recognition, screen understanding, enterprise RAG, LangGraph and human-reviewed closure.",
+    "caption": "Conceptual view of the prototype capabilities described in my resume. The repository could not be inspected, so component boundaries are illustrative; providers, storage, and deployment are unspecified.",
+    "sources": []
+  },
+  "sequence": {
+    "title": "Human-reviewed support interaction — conceptual sequence",
+    "description": "An illustrative interaction showing context gathering, a proposed resolution, human approval and verification before closure.",
+    "caption": "Derived from the author's resume rather than inspected source code. This sequence communicates the described prototype capabilities, not a verified runtime trace or exact API contract.",
+    "sources": []
+  }
+}

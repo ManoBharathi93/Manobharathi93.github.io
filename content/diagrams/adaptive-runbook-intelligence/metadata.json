@@ -1,0 +1,21 @@
+{
+  "architecture": {
+    "title": "Runbook reuse with policy-controlled execution",
+    "description": "Two execution paths share local memory: reuse an eligible runbook or retrieve context for a new LLM proposal.",
+    "caption": "The repository is a local proof of concept. MCP actions are simulated Python functions; enterprise systems are not connected. Dashed arrows show persisted updates, with new candidates and cases created on the exploratory path.",
+    "sources": [
+      { "label": "Workflow routing", "url": "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence/blob/f5f1391438c4c233ea813b0fb5cff5819017b63e/graph/workflow.py" },
+      { "label": "Simulated action registry", "url": "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence/blob/f5f1391438c4c233ea813b0fb5cff5819017b63e/mcp_tools/actions.py" },
+      { "label": "Feedback persistence", "url": "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence/blob/f5f1391438c4c233ea813b0fb5cff5819017b63e/feedback/feedback_collector.py" }
+    ]
+  },
+  "sequence": {
+    "title": "Known-good reuse and exploratory fallback",
+    "description": "A request bypasses model reasoning only after the runbook and reuse policy checks pass.",
+    "caption": "This sequence follows RUNBOOK_AWARE mode. The source requires a known-good match at similarity 0.75 or higher and a reuse policy score of at least 0.55; a rejected reuse gate falls back to exploratory reasoning.",
+    "sources": [
+      { "label": "Request workflow", "url": "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence/blob/f5f1391438c4c233ea813b0fb5cff5819017b63e/graph/workflow.py" },
+      { "label": "Reasoning and execution agents", "url": "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence/blob/f5f1391438c4c233ea813b0fb5cff5819017b63e/graph/agents.py" }
+    ]
+  }
+}

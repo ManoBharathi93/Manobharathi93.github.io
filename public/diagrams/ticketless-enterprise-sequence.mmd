@@ -1,0 +1,24 @@
+sequenceDiagram
+    accTitle: Ticketless Enterprise conceptual support interaction
+    accDescr: Illustrative interaction derived from the author's resume. Voice and screen context inform an enterprise-retrieval-supported workflow. A human reviews the proposed resolution and closure requires structured verification. Repository behavior has not been independently verified.
+    autonumber
+    participant User as Employee
+    participant Context as Voice / Screen Context
+    participant Agent as LangGraph Workflow
+    participant RAG as Enterprise RAG
+    participant Reviewer as Human Reviewer
+    participant Verify as Structured Verification
+
+    User->>Context: Describe issue and provide screen context
+    Context->>Agent: Recognized speech + VLM/OCR observations
+    Agent->>RAG: Retrieve relevant enterprise knowledge
+    RAG-->>Agent: Supporting context
+    Agent->>Reviewer: Present proposed resolution for approval
+    alt Approval and verification succeed
+        Reviewer-->>Agent: Approve resolution
+        Agent->>Verify: Check resolution outcome
+        Verify-->>Agent: Outcome confirmed
+        Agent-->>User: Verified closure
+    else Approval or verification incomplete
+        Agent-->>User: Continue support without closure
+    end
