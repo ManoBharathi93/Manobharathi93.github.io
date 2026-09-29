@@ -1,4 +1,5 @@
 import * as React from "react";
+import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { projectsData } from "@/data/projectsData";
 
@@ -7,9 +8,9 @@ export default function ProjectsIndexPage() {
     <div className="space-y-8">
       {/* Page Header */}
       <div className="border-b border-[var(--border)] pb-4">
-        <h1 className="text-3xl font-extrabold tracking-tight">Systems Engineering Products</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight">Selected Engineering Projects</h1>
         <p className="text-sm text-[var(--muted)] mt-1">
-          An honest build log of systems projects, including current status, decisions, limitations, and reproducible evidence.
+          Backend systems, AI-agent workflows, and research experiments, with implementation details and project evidence.
         </p>
       </div>
 
@@ -53,7 +54,7 @@ export default function ProjectsIndexPage() {
                   <span className="text-[var(--muted)]">{project.tradeoffs.map((item) => item.decision).join("; ")}.</span>
                 </div>
                 <div>
-                  <strong className="text-[var(--foreground)] font-semibold">Measured result:</strong>{" "}
+                  <strong className="text-[var(--foreground)] font-semibold">Results:</strong>{" "}
                   <span className="text-[var(--muted)]">{project.measuredResult}</span>
                 </div>
                 <div>
@@ -62,18 +63,18 @@ export default function ProjectsIndexPage() {
                 </div>
                 <div>
                   <strong className="text-[var(--foreground)] font-semibold">Evidence:</strong>{" "}
-                  <span className="text-[var(--muted)]">Repository / design doc / demo / benchmark status on the project page.</span>
+                  <span className="text-[var(--muted)]">{project.evidence}</span>
                 </div>
               </div>
             </div>
 
             <div className="pt-6">
-              <a
+              <Link
                 href={`/projects/${project.id}`}
                 className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded bg-[var(--foreground)] text-[var(--background)] hover:opacity-90 transition-all cursor-pointer"
               >
                 View project evidence <ArrowRight className="w-3.5 h-3.5" />
-              </a>
+              </Link>
             </div>
           </div>
         ))}

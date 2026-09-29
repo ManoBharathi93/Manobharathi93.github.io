@@ -1,15 +1,18 @@
 import * as React from "react";
-import { Mail, ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { Mail, ArrowUpRight } from "lucide-react";
 
 export default function ContactPage() {
   const contactJson = {
-    name: "Mano Bharathi",
-    role: "Systems & Platform Engineer",
-    status: "active_seeking_opportunities",
+    name: "Mano Bharathi M",
+    role: "Software Engineer",
+    focus: ["Backend", "Distributed Systems", "AI"],
+    location: "Bengaluru, India",
+    phone: "+919360425733",
     networks: {
       email: "immanobharathi21@gmail.com",
       github: "https://github.com/ManoBharathi93",
-      linkedin: "https://linkedin.com/in/manobharathi"
+      linkedin: "https://linkedin.com/in/manobharathi-m",
+      website: "https://manobharathi93.github.io"
     }
   };
 
@@ -17,9 +20,9 @@ export default function ContactPage() {
     <div className="space-y-8">
       {/* Header */}
       <div className="border-b border-[var(--border)] pb-4">
-        <h1 className="text-3xl font-extrabold tracking-tight">API Contact Endpoints</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight">Contact Information</h1>
         <p className="text-sm text-[var(--muted)] mt-1">
-          Direct links and structured endpoints for recruiters and hiring managers.
+          Direct links and contact details for professional connections.
         </p>
       </div>
 
@@ -27,7 +30,7 @@ export default function ContactPage() {
         {/* Left Side: Traditional Links */}
         <div className="space-y-6">
           <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-[var(--muted)] border-b border-[var(--border)] pb-1">
-            Communication Endpoints
+            Contact Links
           </h2>
 
           <div className="space-y-4">
@@ -75,20 +78,20 @@ export default function ContactPage() {
                 </div>
                 <div>
                   <div className="text-xs font-mono text-[var(--muted)]">LINKEDIN</div>
-                  <div className="text-sm font-bold">linkedin.com/in/manobharathi</div>
+                  <div className="text-sm font-bold">linkedin.com/in/manobharathi-m</div>
                 </div>
               </div>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="p-1 rounded bg-[var(--muted-background)] hover:bg-[var(--border)] transition-colors">
+              <a href="https://linkedin.com/in/manobharathi-m" target="_blank" rel="noopener noreferrer" className="p-1 rounded bg-[var(--muted-background)] hover:bg-[var(--border)] transition-colors">
                 <ArrowUpRight className="w-4 h-4" />
               </a>
             </div>
           </div>
         </div>
 
-        {/* Right Side: Mock Endpoint Payload JSON */}
+        {/* Right Side: Static Contact JSON */}
         <div className="space-y-4">
           <h2 className="text-sm font-mono font-bold uppercase tracking-wider text-[var(--muted)] border-b border-[var(--border)] pb-1 flex items-center justify-between">
-            JSON Response payload <span className="text-[10px] font-semibold text-[var(--accent)]">HTTP 200 OK</span>
+            Contact JSON <span className="text-[10px] font-semibold text-[var(--accent)]">STATIC PROFILE</span>
           </h2>
           
           <div className="p-5 rounded border border-[var(--border)] bg-[var(--muted-background)]/50 overflow-x-auto">

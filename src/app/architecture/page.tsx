@@ -15,111 +15,106 @@ interface TechTopic {
 
 const topics: TechTopic[] = [
   {
-    title: "Consensus & State Replication",
+    title: "Browser Workflow Discovery & Replay",
     icon: <GitBranch className="w-5 h-5 text-[var(--accent)]" />,
-    description: "Replicating transaction state across independent servers to maintain consistency and high availability under machine crashes and network partitions.",
-    concepts: ["Raft Leader Election", "Log Replication", "Membership Changes", "Split-brain fencing"],
+    description: "Using an LLM to discover browser workflows once, then saving successful workflows for deterministic, model-free replay.",
+    concepts: ["LLM-guided discovery", "Saved workflows", "Deterministic replay", "Model-free execution"],
     demonstratingProjects: [
       {
-        name: "ZenithDB",
-        slug: "zenithdb",
-        details: "Implements a custom Raft consensus state machine to replicate writes across follower logs safely."
+        name: "Capability Runner",
+        slug: "capability-runner",
+        details: "Separates workflow discovery from replay so saved browser workflows can run without repeated model calls."
       }
     ]
   },
   {
-    title: "Storage Engines & Log Structuring",
+    title: "Change Data Capture & Data Synchronization",
     icon: <Database className="w-5 h-5 text-[var(--accent)]" />,
-    description: "Optimizing database read and write paths for sequential disk access and cache locality.",
-    concepts: ["LSM-Tree compaction", "Write-Ahead Logging (WAL)", "Sparse Index Mappings", "Bloom filter lookup optimization"],
+    description: "Propagating database changes through a distributed pipeline for downstream caching and indexed search.",
+    concepts: ["PostgreSQL change capture", "Debezium connectors", "Kafka data propagation", "Redis and Elasticsearch"],
     demonstratingProjects: [
       {
-        name: "ZenithDB",
-        slug: "zenithdb",
-        details: "Implements an in-memory Red-Black tree memtable, segment write-ahead logging, and background leveled compaction."
+        name: "SyncStream",
+        slug: "syncstream",
+        details: "Connects PostgreSQL, Debezium, Kafka, Redis, and Elasticsearch in a change-data-capture pipeline."
       }
     ]
   },
   {
-    title: "High-Performance Networking & I/O",
+    title: "Voice Interactions & Agent Orchestration",
     icon: <Network className="w-5 h-5 text-[var(--accent)]" />,
-    description: "Bypassing context switches, buffer copies, and locking bottlenecks in socket servers under heavy concurrency load.",
-    concepts: ["Zero-copy networking (sendfile/splice)", "epoll event loop concurrency", "Asynchronous I/O via io_uring", "Socket ring buffers"],
+    description: "Combining speech recognition and WebSocket-based voice interactions with retrieval and agent orchestration for an IT/HR support prototype.",
+    concepts: ["Speech recognition", "WebSocket interactions", "LangGraph orchestration", "Enterprise RAG"],
     demonstratingProjects: [
       {
-        name: "AetherFlow",
-        slug: "aetherflow",
-        details: "Uses Linux sendfile/splice and custom epoll loops to achieve line-rate network card saturation."
-      },
-      {
-        name: "ChronosCache",
-        slug: "chronoscache",
-        details: "Utilizes the kernel io_uring interface to register asynchronous socket reads and offload allocations off-heap."
+        name: "Ticketless IT/HR Voice Support",
+        slug: "ticketless-enterprise",
+        details: "Brings voice interactions, enterprise knowledge retrieval, and support workflow orchestration into one prototype."
       }
     ]
   },
   {
-    title: "Low-Latency Caching & Memory Allocations",
+    title: "Action Validation & Human Takeover",
     icon: <Zap className="w-5 h-5 text-[var(--accent)]" />,
-    description: "Building fast, in-memory caches that optimize RAM consumption and avoid GC latency spikes.",
-    concepts: ["Slab memory allocation", "Off-heap pointer safety", "Lock-free key lookup tables", "Adaptive cache eviction (LRU/LFU)"],
+    description: "Checking browser actions against page evidence and handing unsupported states back to a person.",
+    concepts: ["Action validation", "Page-evidence checks", "Expected-error handling", "Human takeover"],
     demonstratingProjects: [
       {
-        name: "ChronosCache",
-        slug: "chronoscache",
-        details: "Implements an off-heap slab memory allocator in Go/C++ to guarantee zero garbage-collection pauses under 1.5M ops/sec."
+        name: "Capability Runner",
+        slug: "capability-runner",
+        details: "Validates actions and page evidence, handles expected errors, and supports human takeover when automation cannot proceed."
       }
     ]
   },
   {
-    title: "Stream Processing & Change Data Capture (CDC)",
+    title: "Case-Aware Retrieval & Reusable Memory",
     icon: <Terminal className="w-5 h-5 text-[var(--accent)]" />,
-    description: "Ingesting raw database mutations directly from logs and streaming them with low replication lag and transaction safety.",
-    concepts: ["PostgreSQL WAL byte parsing", "Transaction boundary reconstruction", "Sliding-window de-duplication", "Exactly-once streaming semantics"],
+    description: "Combining enterprise RAG with reusable case memory to support case-aware agent workflows.",
+    concepts: ["Enterprise retrieval", "Reusable case memory", "Dual-memory agents", "Staged evaluation"],
     demonstratingProjects: [
       {
-        name: "SyncMirror",
-        slug: "syncmirror",
-        details: "Parses raw PostgreSQL WAL output and routes transactions to Kafka partitions with sliding deduplication trackers."
+        name: "Adaptive Runbook Intelligence Platform",
+        slug: "adaptive-runbook-intelligence",
+        details: "Explores support-agent workflows that combine retrieved knowledge with reusable case context."
       }
     ]
   },
   {
-    title: "AI Retrieval & Dense Vector Indexes",
+    title: "Retrieval Reranking & Context Selection",
     icon: <Cpu className="w-5 h-5 text-[var(--accent)]" />,
-    description: "Accelerating similarity lookups over high-dimensional vector spaces using compiler-level instruction sets.",
-    concepts: ["HNSW graph construction", "SIMD vector arithmetic (AVX-512)", "Product Quantization (PQ) compression", "Recall/latency trade-off optimizations"],
+    description: "Exploring how dynamic and fixed-K reranking select retrieved context for language models.",
+    concepts: ["Retrieval-augmented generation", "Dynamic K selection", "Fixed-K reranking", "LLM context selection"],
     demonstratingProjects: [
       {
-        name: "VektorIndex",
-        slug: "vektorindex",
-        details: "Implements SIMD-aligned cosine distance calculations and HNSW graphs in C++ to achieve sub-5ms recall latency."
+        name: "Dynamic Retriever",
+        slug: "dynamic-retriever",
+        details: "Compares dynamic and fixed-K reranking approaches for choosing context in RAG workflows."
       }
     ]
   },
   {
-    title: "Cluster Resource Scheduling",
+    title: "Compute-Efficient Learning",
     icon: <Network className="w-5 h-5 text-[var(--accent)] text-purple-500" />,
-    description: "Placing massive compute jobs onto physical clusters while accounting for complex hardware topology and communication costs.",
-    concepts: ["Kubernetes scheduler scheduler-plugins", "NVLink bandwidth routing path cost", "Hardware topology discovery mappings", "Cluster state caching"],
+    description: "Studying adaptive computation through conceptual criticality and measuring the trade-off between model accuracy and energy use.",
+    concepts: ["Adaptive computation", "Conceptual criticality", "Energy measurement", "Accuracy evaluation"],
     demonstratingProjects: [
       {
-        name: "KubeSched-GPU",
-        slug: "kubesched-gpu",
-        details: "Uses topology maps and custom Kubernetes placement logic to route distributed LLM training jobs to NVLink-adjacent GPUs."
+        name: "Adaptive Compute-Efficient Learning",
+        slug: "adaptive-compute-efficient-learning",
+        details: "AAAI 2026 Student Abstract proof of concept retained about 90.7% accuracy while reducing energy use by about 65% versus a 6-layer baseline."
       }
     ]
   },
   {
-    title: "System Observability & Baseline Diagnostics",
+    title: "Screen Understanding & Support Verification",
     icon: <Eye className="w-5 h-5 text-[var(--accent)]" />,
-    description: "Tracking end-to-end data pipeline diagnostics, system health thresholds, and metric aggregates under high-frequency writes.",
-    concepts: ["Dynamic query baseline routing", "Prometheus exporters", "Distributed tracer context propagation", "Load testing diagnostics metrics"],
+    description: "Using screen context to support IT/HR assistance, with human approval and structured verification before closing a support workflow.",
+    concepts: ["VLM screen understanding", "OCR", "Human approval", "Structured verification"],
     demonstratingProjects: [
       {
-        name: "SyncMirror",
-        slug: "syncmirror",
-        details: "Exposes real-time Kafka partition offsets, ingestion lag metrics, and memory-buffer consumption stats."
+        name: "Ticketless IT/HR Voice Support",
+        slug: "ticketless-enterprise",
+        details: "Combines VLM/OCR screen understanding with voice support, enterprise retrieval, and approval before closure."
       }
     ]
   }
@@ -132,7 +127,7 @@ export default function ArchitecturePage() {
       <div className="border-b border-[var(--border)] pb-4">
         <h1 className="text-3xl font-extrabold tracking-tight">Systems Architecture Library</h1>
         <p className="text-sm text-[var(--muted)] mt-1">
-          A cross-linked catalog of core engineering concepts mapped directly to their implementations.
+          Engineering concepts explored in my projects, prototypes, and research.
         </p>
       </div>
 

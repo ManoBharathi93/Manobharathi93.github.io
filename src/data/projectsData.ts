@@ -25,6 +25,7 @@ export interface Project {
   whatIBuilt: string;
   measuredResult: string;
   limitations: string;
+  evidence: string;
   tech: string[];
   problem: string;
   motivation: string;
@@ -45,505 +46,349 @@ export interface Project {
   doc: string;
 }
 
+// Public projects only. Unstarted project ideas are intentionally excluded.
 export const projectsData: Project[] = [
   {
-    id: "zenithdb",
-    name: "ZenithDB",
-    summary: "Distributed LSM-Tree Storage Engine",
-    tag: "Storage & Consensus",
-    status: "In Progress",
-    whatIBuilt: "Building the storage-engine core in Go: an in-memory write path, write-ahead log, immutable sorted-table format, and the first compaction workflow. Raft replication and fault testing remain milestone work.",
-    measuredResult: "No verified performance result published yet. The figures below are engineering targets until a reproducible benchmark report is linked.",
-    limitations: "Does not yet provide production-ready transactions, multi-Raft sharding, recovery validation under injected failures, or a published Jepsen report.",
-    tech: ["Go", "Raft", "LSM-Tree", "gRPC", "Jepsen"],
-    problem: "Traditional relational engines incur high disk write-amplification under massive append-only write loads, leading to disk I/O bottlenecks and degraded throughput.",
-    motivation: "High-frequency telemetry logging, transaction ingestion, and system auditing services require a partitionable storage engine that guarantees sequential disk writes and strict consistency under node crash failures.",
+    id: "capability-runner",
+    name: "Capability Runner",
+    summary: "Discover browser workflows once, then replay them with new inputs without calling a model.",
+    tag: "Browser Automation",
+    status: "Prototype",
+    whatIBuilt: "Built LLM-assisted workflow discovery, saved capability artifacts, deterministic replay, action validation, page-evidence checks, expected-error handling, and human takeover.",
+    measuredResult: "Recorded local banking demos show saved workflows replaying with different inputs and zero replay model calls.",
+    limitations: "Demonstrated on local banking apps with synthetic data. General website support, production authentication, and cross-tenant reuse are outside the demonstrated scope.",
+    evidence: "Repository, design report, screenshot guide, and recorded discovery/replay evidence are available on GitHub.",
+    tech: ["Python", "Playwright", "React", "TypeScript", "LLM Tool Calling"],
+    problem: "Repeating model-driven browser reasoning for familiar tasks adds cost and makes outcomes harder to reproduce.",
+    motivation: "Separate learning a workflow from executing it, while checking that each saved action still matches the current page.",
     architectureDiagram: `
-+-------------------------------------------------------------------+
-|                           ZenithDB Cluster                        |
-|                                                                   |
-|  +-------------------+   Raft Replication   +------------------+  |
-|  |     Raft Leader   | ===================> |   Raft Follower  |  |
-|  | +---------------+ |                      | +--------------+ |  |
-|  | | Memtable (RB) | |                      | | Memtable (RB) | |  |
-|  | +---------------+ |                      | +--------------+ |  |
-|  |         |         |                      |        |         |  |
-|  |     (Flush)       |                      |     (Flush)     |  |
-|  |         v         |                      |        v         |  |
-|  | +---------------+ |                      | +--------------+ |  |
-|  | | SSTables (L0)  | |                      | | SSTables (L0)  | |  |
-|  | +---------------+ |                      | +--------------+ |  |
-|  +---------|---------+                      +--------|---------+  |
-|            |                                         |            |
-|            v (Background Compaction)                 v            |
-|     [SSTables (L1..LN) + Bloom Filters]       [SSTables L1..LN]   |
-+-------------------------------------------------------------------+
+Natural-language goal
+         |
+         v
+LLM Discovery --> Action Gateway --> Playwright Browser
+         |              ^                   |
+         v              |                   v
+Saved Capability --> Replay Engine <-- Page Evidence
+                            |
+                            v
+                    Result / Human Handoff
 `,
     sequenceDiagram: `
-Client          Raft Leader        Follower Nodes      Active Memtable     WAL (Disk)
-  |                  |                   |                    |                |
-  |-- write(k,v) --->|                   |                    |                |
-  |                  |-- replicate() --->|                    |                |
-  |                  |<-- ack_raft ------|                    |                |
-  |                  |-- append_WAL ------------------------------------------>|
-  |                  |-- write_memtable --------------------->|                |
-  |                  |                                        |                |
-  |                  | (If Memtable size > 64MB)              |                |
-  |                  |-- freeze_and_flush ------------------->|                |
-  |                  |                                        |                |
-  |                  |====================(Background Compaction)==============|
-  |                  |-- merge_SSTables_and_generate_Bloom_filters ----------->|
-  |<-- success ------|                   |                    |                |
+User       Discovery        Saved Artifact       Replay        Browser
+ |-- goal ---->|                  |                  |              |
+ |             |-- validate and discover actions ----------------->|
+ |             |-- save -------->|                  |              |
+ |-- new inputs ---------------------------------->|              |
+ |                                |-- load -------->|              |
+ |                                                  |-- act ------>|
+ |                                                  |<-- evidence -|
+ |<-- checked result; zero replay model calls -------|              |
 `,
     failureModes: [
-      {
-        scenario: "Leader Crash During Active Write replication",
-        impact: "Partial log entries written to leader but not committed by a quorum.",
-        mitigation: "New leader is elected via Raft term logic. Followers discard uncommitted log entries that diverge from the new leader's log history."
-      },
-      {
-        scenario: "Follower Node Recovery after Network Partition",
-        impact: "Follower log is stale by thousands of mutations.",
-        mitigation: "Leader tracks follower log indices and sends missing journal frames (or installs whole snapshots if the follower is too far behind)."
-      },
-      {
-        scenario: "Write Stall during Memtable Flush Bottleneck",
-        impact: "Active writes are blocked because background thread cannot write to disk fast enough.",
-        mitigation: "Implemented rate-limiting write throttling when the count of L0 SSTables exceeds 8, allowing compaction to catch up."
-      }
+      { scenario: "Stale or ambiguous page target", impact: "A saved action may point at the wrong control.", mitigation: "Validate fresh evidence and fail when target resolution is uncertain." },
+      { scenario: "Action needs human intervention", impact: "Replay cannot safely continue automatically.", mitigation: "Pause for takeover and validate fresh state before resuming." },
     ],
-    scalingStrategy: "Hash-partitioning (sharding) of key ranges across independent Raft replication groups (multi-Raft configuration), allowing linear throughput scaling with cluster size.",
-    security: "mTLS encryption (TLS 1.3) for all inter-node consensus and log replication traffic, combined with AES-GCM-256 encryption at rest for immutable SSTables.",
-    performance: "Sustained write throughput of 80,000 requests/second under 1KB payload structures, preserving a p99 write latency ceiling under 4ms.",
-    benchmarks: [
-      "YCSB Workload A (50/50 Read/Write): 65,000 operations/sec, p99 latency = 5.2ms.",
-      "YCSB Workload A (100% Write): 82,000 operations/sec, p99 latency = 3.8ms.",
-      "Bloom Filter false positive rate measured at 1.2% with 10 bits per key allocation."
-    ],
+    scalingStrategy: "One Python process coordinates the browser. Active sessions are local and do not survive a restart.",
+    security: "The action gateway checks allowed actions, ownership, and observations. The local UI is not a production authentication system.",
+    performance: "Replay has no model dependency; discovery uses a configured provider.",
+    benchmarks: ["Recorded replay checks expected outputs with new inputs.", "Evidence covers local demo cases, not arbitrary websites."],
     tradeoffs: [
-      {
-        decision: "LSM-Tree instead of B-Tree",
-        alternative: "B-Tree implementation",
-        rationale: "Accepted higher read amplification and the need for Bloom filters to achieve maximum append-only write throughput."
-      },
-      {
-        decision: "Single-threaded background compaction runner",
-        alternative: "Multi-threaded compaction pool",
-        rationale: "Bypassed lock contention on compaction metadata to simplify concurrency safety, at the cost of slower peak compaction catchup times."
-      }
+      { decision: "Discover once, replay deterministically", alternative: "Ask a model to plan every run", rationale: "A saved procedure makes repeated execution inspectable and avoids repeated model decisions." },
+      { decision: "Validate state before continuing", alternative: "Treat completed clicks as success", rationale: "Page evidence must support the requested result." },
     ],
-    monitoring: [
-      "zenithdb_memtable_size_bytes: Current active in-memory buffer usage.",
-      "zenithdb_compaction_active_runs: Background compaction count.",
-      "zenithdb_raft_replication_lag_seconds: Offset lag between leader and followers.",
-      "zenithdb_disk_write_amplification_ratio: Sequential vs logical write byte ratios."
+    monitoring: ["Execution evidence: Saved steps, outcomes, and failure context.", "Model calls: Discovery and replay usage are tracked separately."],
+    testing: "Tests and evaluation commands cover replay, expected business errors, and intervention behavior. The design report links recorded evidence.",
+    cicd: "The repository documents Python and frontend setup, local launch commands, and evaluation instructions.",
+    futureWork: "Further validation would cover physical handoff acceptance and reuse of one unchanged capability across application profiles.",
+    repo: "https://github.com/ManoBharathi93/capability-runner",
+    demo: "https://github.com/ManoBharathi93/capability-runner#run-the-product",
+    doc: "https://github.com/ManoBharathi93/capability-runner/blob/main/REPORT.md",
+  },
+  {
+    id: "syncstream",
+    name: "SyncStream",
+    summary: "Distributed data synchronization using PostgreSQL change events, Kafka, Redis, and Elasticsearch.",
+    tag: "Distributed Systems",
+    status: "Prototype",
+    whatIBuilt: "Built a CDC pipeline with Debezium, Kafka consumers for Redis and Elasticsearch, shared retries, dead-letter queues, and consumer-management APIs.",
+    measuredResult: "Implemented product-event propagation from PostgreSQL to cache and search projections, with repository verification scripts.",
+    limitations: "A local development platform; analytics consumption is not implemented and role-header authorization needs production hardening.",
+    evidence: "Source, Docker Compose setup, architecture documentation, and workflow verification scripts are available in the repository.",
+    tech: ["Java", "PostgreSQL", "Debezium", "Kafka", "Redis", "Elasticsearch", "Docker"],
+    problem: "Synchronizing caches and search indexes through application dual writes creates failure windows and duplicated integration logic.",
+    motivation: "Keep PostgreSQL as the source of truth and propagate its changes to independent downstream consumers.",
+    architectureDiagram: `
+PostgreSQL WAL --> Debezium --> Kafka
+                                 |
+                    +------------+------------+
+                    |                         |
+             Redis Consumer          Elasticsearch Consumer
+                    |                         |
+                  Redis                  Search Index
+
+Shared Retry / Dead-Letter Queues
+Consumer Registry + Dashboard    Prometheus + Grafana
+`,
+    sequenceDiagram: `
+Database       Debezium           Kafka          Consumers       Read Models
+   |-- change ---->|                |                |                |
+   |               |-- event ------>|                |                |
+   |               |                |-- consume ---->|                |
+   |               |                |                |-- project ---->|
+   |               |                |                |<-- result -----|
+   |               |                |<-- offset -----|                |
+   |               |                |<-- retry / DLQ on failure -------|
+`,
+    failureModes: [
+      { scenario: "Downstream projection fails", impact: "Cache or search updates can lag behind PostgreSQL.", mitigation: "Retry policies and dead-letter topics retain failures for investigation." },
+      { scenario: "Consumer needs recovery", impact: "Previously read events may need reprocessing.", mitigation: "Registry APIs include replay requests and verification workflows." },
     ],
-    testing: "Tested using a Jepsen-based fault injection test suite verifying linearizability of reads and writes under random network partitions, leader isolation, and SIGKILL node crashes.",
-    cicd: "GitHub Actions workflow running unit tests, race detector (`go test -race ./...`), golangci-lint, and compiling static binaries for AMD64 architectures on git tag creation.",
-    futureWork: "Develop active transaction support via Two-Phase Commit (2PC) and implement prefix Bloom filters to improve range query lookups.",
+    scalingStrategy: "Kafka decouples capture from projection. Partitioning and consumer groups provide a path to parallel processing; no production capacity figure is claimed.",
+    security: "The local setup uses role headers. Signed identity and production credential management remain deployment work.",
+    performance: "Functional CDC propagation is implemented; no measured throughput or latency benchmark is published here.",
+    benchmarks: ["Product events flow to Redis and Elasticsearch.", "Verification scripts cover monitoring and administration workflows."],
+    tradeoffs: [
+      { decision: "CDC through Debezium and Kafka", alternative: "Application dual writes or polling", rationale: "Change capture separates source writes from downstream projection, at the cost of more infrastructure." },
+      { decision: "Separate cache and search consumers", alternative: "One combined projection service", rationale: "Consumers can evolve independently while sharing the event stream." },
+    ],
+    monitoring: ["Prometheus and Grafana: Repository configurations support operational visibility.", "Consumer dashboard: Registration, health, and replay management APIs."],
+    testing: "Deterministic verification scripts cover the monitoring and admin dashboard workflows.",
+    cicd: "Docker Compose starts infrastructure; Maven and Python commands start consumers and the registry platform.",
+    futureWork: "Documented next steps include an analytics consumer and production identity controls.",
     repo: "https://github.com/ManoBharathi93/SyncStream",
-    demo: "/contact",
-    doc: "https://github.com/ManoBharathi93/SyncStream/blob/main/docs/architecture/ARCHITECTURE.md"
+    demo: "https://github.com/ManoBharathi93/SyncStream#quick-start",
+    doc: "https://github.com/ManoBharathi93/SyncStream/blob/main/docs/architecture/ARCHITECTURE.md",
   },
   {
-    id: "aetherflow",
-    name: "AetherFlow",
-    summary: "High-Performance Commit Log Broker",
-    tag: "High-Performance Networking",
-    status: "In Progress",
-    whatIBuilt: "Building a Rust commit-log prototype around append-only segments, an epoll-based socket loop, and a zero-copy consumer path using Linux sendfile. Durability and consumer-group behavior are still being developed.",
-    measuredResult: "No verified performance result published yet. Throughput and latency figures below are targets pending benchmark scripts, hardware details, and raw output.",
-    limitations: "Does not yet support production-grade replication, transactional delivery, durable consumer groups, or portable non-Linux execution.",
-    tech: ["Rust", "Linux Sockets", "epoll", "sendfile", "Cargo"],
-    problem: "Standard message brokers suffer from high CPU context switches and memory copying overhead when transferring data from files to network sockets.",
-    motivation: "High-throughput telemetry and log ingestion systems need to maximize network bandwidth (up to 10 Gbps) by bypassing user-space memory buffers during message reads.",
+    id: "ticketless-enterprise",
+    name: "Ticketless IT/HR Voice Support",
+    summary: "A voice and screen support prototype combining enterprise retrieval, guided actions, and human approval.",
+    tag: "Multimodal AI Agents",
+    status: "Prototype",
+    whatIBuilt: "Built speech recognition, WebSocket voice interactions, VLM/OCR screen understanding, enterprise RAG, and LangGraph orchestration with human approval and structured verification before closure.",
+    measuredResult: "Implemented a combined voice-and-screen support workflow. No quantitative performance result is claimed for this prototype.",
+    limitations: "An IT/HR support prototype; production deployment and a measured reliability benchmark are not established by this project summary.",
+    evidence: "Implementation summary follows my resume. The supplied project repository is linked above; public access is currently unavailable.",
+    tech: ["Speech Recognition", "WebSockets", "VLM/OCR", "RAG", "LangGraph"],
+    problem: "Support requests often need both a spoken description and the context visible on an employee's screen.",
+    motivation: "Bring voice, screen context, and enterprise knowledge into one guided support workflow.",
     architectureDiagram: `
-+----------------------------------------------------------------------+
-|                           AetherFlow Broker                          |
-|                                                                      |
-|  Producer ──> [ epoll Socket Loop ] ──> [ Ring Buffer ]              |
-|                                                |                     |
-|                                         (Write to Log)               |
-|                                                v                     |
-|  Consumer <── [ sendfile Syscall ] <── [ OS Page Cache ] <── Disk    |
-+----------------------------------------------------------------------+
+Voice Input --> Speech Recognition ----+
+                                      |
+Screen Context --> VLM / OCR ----------+--> LangGraph Orchestration
+                                      |              |
+Enterprise Knowledge --> RAG ---------+              v
+                                              Human Approval
+                                                     |
+                                                     v
+                                           Structured Verification
+                                                     |
+                                                     v
+                                               Support Closure
 `,
     sequenceDiagram: `
-Producer           AetherFlow Broker       OS Page Cache          Disk          Consumer
-   |                       |                     |                  |               |
-   |-- publish(payload) -->|                     |                  |               |
-   |                       |-- write_append() -->|                  |               |
-   |                       |                     |-- sync_flush --->|               |
-   |<-- ack_publish -------|                     |                  |               |
-   |                       |                     |                  |               |
-   |                       |-- send_message() ------------------------------------->|
-   |                       |   (Calls sendfile syscall)                             |
-   |                       |   [Kernel transfers page cache directly to socket]     |
+Employee       Voice / Screen       Agent + RAG      Approval      Verification
+   |-- request ---->|                    |              |              |
+   |                |-- context -------->|              |              |
+   |                |                    |-- proposal -->|              |
+   |<-- review and approve -----------------------------|              |
+   |                |                    |-- workflow ----------------->|
+   |<-- verified outcome ----------------------------------------------|
 `,
     failureModes: [
-      {
-        scenario: "Slow Consumer Bottleneck",
-        impact: "Consumer reads fall behind, forcing the broker to drop pages from memory cache and read from disk.",
-        mitigation: "Implemented a sliding cache window that reads directly from disk asynchronously using a thread pool, preventing fast consumers from blocking on disk reads."
-      },
-      {
-        scenario: "Disk Segment Corruption",
-        impact: "Mangled index headers block broker startup and log segmentation.",
-        mitigation: "Log segments are validated using CRC32 checksums on startup. Corrupted frames are automatically truncated to the last clean checksum entry."
-      }
+      { scenario: "Incomplete voice or screen interpretation", impact: "The workflow may lack enough context to resolve the request.", mitigation: "Human review and structured verification provide a check before closure." },
+      { scenario: "An action needs approval", impact: "Execution requires a human decision.", mitigation: "Keep human approval in the support workflow." },
     ],
-    scalingStrategy: "Horizontal scaling via partition distribution, coordinating consumer group metadata and routing offsets using consistent hashing rules.",
-    security: "TLS 1.3 socket wrapper encryption combined with SASL/SCRAM authentication for consumer group offset writes.",
-    performance: "Line-rate saturation of a 10 Gbps network card under 4KB message payloads, maintaining sub-millisecond p99 consumption latencies.",
-    benchmarks: [
-      "Throughput: 1.15 million messages/sec published at 4KB average size.",
-      "Latency: p99 write-to-read delivery latency = 1.1ms under 80% network load.",
-      "Context switches reduced by 65% compared to standard read/write socket wrappers."
-    ],
+    scalingStrategy: "WebSockets carry interactive voice traffic. Concurrent-session capacity has not been reported for this prototype.",
+    security: "Human approval is part of the action flow, and structured verification precedes closure. Production security validation is outside the documented scope.",
+    performance: "Interactive voice and screen support; latency and concurrency measurements are not included in the supplied results.",
+    benchmarks: ["Combines speech, screen understanding, and enterprise retrieval.", "Approval and verification precede support closure."],
     tradeoffs: [
-      {
-        decision: "Zero-copy sendfile over mmap",
-        alternative: "Memory-mapped file (mmap) lookup",
-        rationale: "sendfile avoids translation lookaside buffer (TLB) shootdowns and page table allocations under large files, though it prevents custom user-space encryption before socket transfer."
-      },
-      {
-        decision: "Lacks custom transaction schemas",
-        alternative: "Transactional write support",
-        rationale: "Prioritized raw write throughput and simple log structures over transactional rollback overhead."
-      }
+      { decision: "Use voice and screen context", alternative: "Text-only support requests", rationale: "Screen understanding can supply context that a spoken description leaves out." },
+      { decision: "Keep human approval", alternative: "Fully autonomous support actions", rationale: "The user participates before actions are accepted and the request is closed." },
     ],
-    monitoring: [
-      "aetherflow_network_egress_bytes_total: Network throughput.",
-      "aetherflow_disk_read_ops_total: Active disk lookups vs cache reads.",
-      "aetherflow_consumer_lag_records: Log offset offsets per consumer group."
-    ],
-    testing: "Unit and integration tests run using simulated producers/consumers. Load testing validated using netperf and sysbench generators.",
-    cicd: "GitHub Actions running cargo-clippy, rustfmt, cargo-test, and building optimized releases using target-specific flags.",
-    futureWork: "Add asynchronous disk writes via `io_uring` and support direct user-space network bypass (DPDK / RDMA).",
-    repo: "https://github.com/ManoBharathi93/SyncStream",
-    demo: "/contact",
-    doc: "https://github.com/ManoBharathi93/SyncStream/blob/main/docs/architecture/ARCHITECTURE.md"
+    monitoring: ["Workflow outcome: Structured verification before closure.", "Approval state: Human participation in the resolution flow."],
+    testing: "Structured verification is built into the workflow. A separate test-suite or benchmark report was not supplied for this entry.",
+    cicd: "The project repository is linked for source access; public setup and deployment documentation could not be verified.",
+    futureWork: "Further work would document reproducible support scenarios, latency measurements, and deployment requirements.",
+    repo: "https://github.com/ManoBharathi93/Ticketless-Enterprise",
+    demo: "",
+    doc: "https://github.com/ManoBharathi93/Ticketless-Enterprise",
   },
   {
-    id: "syncmirror",
-    name: "SyncMirror",
-    summary: "Production CDC Ingestion Platform",
-    tag: "Stream Processing",
-    status: "In Progress",
-    whatIBuilt: "Building a Rust CDC prototype that reads PostgreSQL logical changes, maps them to partitioned events, and applies idempotent updates to a Redis read model. Recovery behavior is still being validated.",
-    measuredResult: "No verified performance result published yet. Replication-rate and latency figures below remain targets until the benchmark and raw measurements are public.",
-    limitations: "Does not yet support DDL evolution, multi-region replication, or independently verified exactly-once semantics across every failure boundary.",
-    tech: ["Rust", "PostgreSQL", "Kafka", "Redis", "Docker"],
-    problem: "Dual-writing database updates to read caches leads to consistency drift during database or cache failures, while database polling introduces query load and lag.",
-    motivation: "High-scale backend networks require a transactional database projection pipeline that replicates writes to downstream read caches with near-zero replication lag and guarantees consistency.",
+    id: "adaptive-runbook-intelligence",
+    name: "Adaptive Runbook Intelligence Platform",
+    summary: "A support-automation proof of concept that learns reusable runbooks from execution history.",
+    tag: "Agent Memory & RAG",
+    status: "Prototype",
+    whatIBuilt: "Built knowledge retrieval, case memory, a runbook library, policy-based routing, feedback tracking, and a fast path for known-good runbooks without LLM calls.",
+    measuredResult: "Includes a three-phase benchmark over 20 synthetic support tickets, comparing stateless reasoning, runbook creation, and runbook reuse.",
+    limitations: "The demonstration uses synthetic tickets and simulated MCP actions. It does not establish production incident-resolution performance.",
+    evidence: "The repository includes workflow code, runbook storage, policy logic, a benchmark runner, and documented metrics.",
+    tech: ["Python", "ChromaDB", "SQLite", "Streamlit", "MCP", "Embeddings"],
+    problem: "Repeated support requests can trigger the same retrieval and reasoning even after a successful resolution is already known.",
+    motivation: "Reuse validated resolution steps and retain feedback about when a runbook succeeds or fails.",
     architectureDiagram: `
-+--------------------------------------------------------------------------+
-|                             SyncMirror Pipeline                          |
-|                                                                          |
-|  PostgreSQL ──> [ WAL Ingestion ] ──> [ Kafka Broker ] ──> [ Redis Cache ]|
-|   (WAL log)      (SyncMirror Engine)    (Event Bus)         (Read Model) |
-|                         |                                                |
-|                         v                                                |
-|             [ Deduplicator (Sliding) ]                                   |
-+--------------------------------------------------------------------------+
+Incoming Query --> Runbook Similarity Search
+                            |
+               +------------+------------+
+               |                         |
+        Known-Good Match              No Match
+               |                         |
+          Policy Gate           Knowledge + Case Memory
+               |                         |
+       Direct MCP Actions          LLM Reasoning
+               |                         |
+               |                    Policy Gate
+               |                         |
+               +----------+--------------+
+                          |
+               Feedback + Runbook Updates
 `,
     sequenceDiagram: `
-PostgreSQL        SyncMirror Engine          Kafka Topic         Deduplicator         Redis Cache
-    |                     |                       |                   |                   |
-    |-- WAL row event --->|                       |                   |                   |
-    |                     |-- parse_WAL_bytes() ->|                   |                   |
-    |                     |-- publish() --------->|                   |                   |
-    |                     |                       |-- poll_event() -->|                   |
-    |                     |                       |                   |-- verify_id() --->|
-    |                     |                       |                   |<-- unique --------|
-    |                     |                       |                   |-- write_update() >|
-    |                     |                       |                   |                   |<-- ack
-    |<-- commit_offset ---|                       |<-- commit --------|                   |
+Query          Runbook Store       Policy          Executor       Feedback
+  |-- match ------>|                 |                |              |
+  |<-- known-good -|                 |                |              |
+  |-- candidate ------------------->|                |              |
+  |                                 |-- approved --->|              |
+  |                                 |                |-- outcome -->|
+  |                |<-- update counters and status -----------------|
+  |<-- result; fast path avoids LLM calls ------------|              |
 `,
     failureModes: [
-      {
-        scenario: "Kafka Broker Outage",
-        impact: "WAL parsing engine is blocked, increasing WAL disk storage on PostgreSQL.",
-        mitigation: "SyncMirror buffers offsets locally and pauses WAL consumption. If the outage exceeds 2 hours, it alerts operator and safely stalls to prevent PostgreSQL disk overflow."
-      },
-      {
-        scenario: "Duplicate Event Delivery during consumer crash",
-        impact: "Event re-delivery leads to cache inconsistency.",
-        mitigation: "Implemented a sliding-window de-duplication filter using transaction IDs and sequence tokens, ensuring idempotent writes to the target database."
-      }
+      { scenario: "No suitable runbook", impact: "A saved resolution cannot be reused confidently.", mitigation: "Route through exploratory retrieval and reasoning." },
+      { scenario: "Runbook repeatedly fails or reopens", impact: "A previously useful procedure may no longer be reliable.", mitigation: "Update lifecycle counters and exclude known-bad runbooks from matching." },
     ],
-    scalingStrategy: "Partitioning Kafka topics by entity primary key hash, allowing multiple independent SyncMirror workers to consume and project events in parallel.",
-    security: "TLS-encrypted connection string configurations, credential management via AWS Secrets Manager, and read-only database logical replication privileges.",
-    performance: "Replication capacity of 150,000 events/second under sub-20ms end-to-end latency from PostgreSQL commit to Redis cache write.",
-    benchmarks: [
-      "Standard replication lag = 12ms under 80,000 events/sec workload.",
-      "PostgreSQL CPU utilization decreased from 85% (under polling) to 12% (using CDC).",
-      "End-to-end lag remained under 45ms during simulated 3x database write spikes."
-    ],
+    scalingStrategy: "The proof of concept uses ChromaDB indexes and SQLite statistics. Distributed operation is not demonstrated.",
+    security: "A policy gate evaluates execution eligibility. Benchmark MCP actions are simulated rather than live enterprise changes.",
+    performance: "The known-good fast path bypasses model reasoning and tracks latency, tokens, and LLM calls separately.",
+    benchmarks: ["Three phases compare stateless, learning, and reuse behavior.", "Repeated-query checks compare determinism hashes."],
     tradeoffs: [
-      {
-        decision: "Logical replication over physical replication",
-        alternative: "Physical replica synchronization",
-        rationale: "Logical replication allows streaming structured row events (INSERT/UPDATE/DELETE) to Kafka, though it consumes slightly more database CPU."
-      },
-      {
-        decision: "Sliding-window deduplication instead of distributed locks",
-        alternative: "Distributed lock table in Redis",
-        rationale: "Avoided lock acquisition latencies on the cache write path, accepting the memory overhead of local transaction ID indexes."
-      }
+      { decision: "Reuse explicit runbooks", alternative: "Reason from scratch for every request", rationale: "Stored steps can be inspected and routed directly when their history supports reuse." },
+      { decision: "Separate semantic and structured memory", alternative: "Store all runbook state in one format", rationale: "Similarity search finds candidates while counters support lifecycle decisions." },
     ],
-    monitoring: [
-      "syncmirror_replication_lag_seconds: Ingestion-to-write latency.",
-      "syncmirror_parsed_events_total: Processed row transactions counter.",
-      "syncmirror_memory_buffer_bytes: Active queue utilization.",
-      "syncmirror_deduplication_cache_hits: Duplicate transaction filters counter."
-    ],
-    testing: "Tested using Jepsen-style network partition injection. Integrity validated using checksum comparison between PostgreSQL and Redis caches.",
-    cicd: "GitHub Actions checking code formatting, compiling Rust targets, running tests, and pushing Docker images to Amazon ECR.",
-    futureWork: "Support database schema evolution (DDL modifications parsing) and multi-region target synchronization.",
-    repo: "https://github.com/ManoBharathi93/SyncStream",
-    demo: "/contact",
-    doc: "https://github.com/ManoBharathi93/SyncStream/blob/main/docs/architecture/ARCHITECTURE.md"
+    monitoring: ["Execution metrics: Tokens, model calls, latency, and escalations.", "Runbook lifecycle: Successes, failures, reopenings, and reuse status."],
+    testing: "The benchmark reuses a fixed synthetic ticket set across three phases and includes a repeated-query determinism check.",
+    cicd: "The README documents Python setup, provider configuration, benchmark commands, and Streamlit launch instructions.",
+    futureWork: "Further validation would use held-out cases and approved integrations with real operational systems.",
+    repo: "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence",
+    demo: "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence#launch-ui",
+    doc: "https://github.com/ManoBharathi93/Adaptive-Runbook-Intelligence#architecture",
   },
   {
-    id: "chronoscache",
-    name: "ChronosCache",
-    summary: "Distributed Log-Structured Cache",
-    tag: "Distributed Caching",
-    status: "In Progress",
-    whatIBuilt: "Building an off-heap cache prototype with a slab-style allocator, indexed key lookup, and an asynchronous Linux I/O path. Distributed replication is outside the current implementation milestone.",
-    measuredResult: "No verified performance result published yet. The request-rate and latency values below are design targets, not measured claims.",
-    limitations: "Does not yet support replica synchronization, multi-node consistency, multi-threaded io_uring workers, or a published benchmark harness.",
-    tech: ["Go", "C++", "Linux io_uring", "Slab Allocator"],
-    problem: "High-throughput in-memory caches suffer from GC pause delays and memory fragmentation when handling concurrent read/write workloads.",
-    motivation: "Low-latency systems (such as real-time ad bidding or financial processing) require sub-millisecond retrieval times and memory layouts that bypass garbage collection overhead.",
+    id: "adaptive-compute-efficient-learning",
+    name: "Adaptive Compute Efficient Learning via Conceptual-Criticality",
+    summary: "Research into allocating model compute according to input difficulty and early-exit confidence.",
+    tag: "AI Research",
+    status: "Prototype",
+    whatIBuilt: "Co-authored the AAAI 2026 Student Abstract and contributed to a proof of concept for criticality estimation and early-exit inference.",
+    measuredResult: "The proof of concept retained about 90.7% accuracy while reducing energy use by about 65% versus a 6-layer baseline.",
+    limitations: "These are results for the evaluated proof of concept, not a general energy or accuracy guarantee for other models and datasets.",
+    evidence: "The research repository contains the paper, notebooks, and experiment code. Results here follow the resume summary.",
+    tech: ["Python", "PyTorch", "Transformers", "Jupyter", "Early Exit"],
+    problem: "A fixed inference depth spends the same computation on easy and difficult inputs.",
+    motivation: "Explore whether input difficulty and confidence can guide compute use while retaining predictive accuracy.",
     architectureDiagram: `
-+-------------------------------------------------------------------------+
-|                            ChronosCache Node                            |
-|                                                                         |
-|  Query ──> [ io_uring Sockets ] ──> [ Lock-Free Index ] ──> Slab Alloc  |
-|                                                                 |       |
-|                                                         (LRU Evict)     |
-|                                                                 v       |
-|                                                           Raw Memory    |
-+-------------------------------------------------------------------------+
+Input --> Criticality Estimation --> Adaptive Compute Decision
+                                               |
+                                               v
+                                      Transformer Layers
+                                               |
+                                      Early-Exit Heads
+                                               |
+                                  Confidence Threshold Met?
+                                      |              |
+                                     Yes             No
+                                      |              |
+                                 Prediction     Continue Layers
 `,
     sequenceDiagram: `
-Client            io_uring Engine         Lock-Free Index        Slab Allocator       Memory Block
-  |                      |                       |                     |                   |
-  |-- set(k, v) -------->|                       |                     |                   |
-  |                      |-- get_slab_block() ------------------------>|                   |
-  |                      |                       |                     |-- allocate_64B -->|
-  |                      |<-- return_ptr ------------------------------|                   |
-  |                      |-- index_set(k, ptr) ->|                     |                   |
-  |                      |<-- success -----------|                     |                   |
-  |<-- success ----------|                       |                     |                   |
+Input          Criticality         Transformer       Exit Head      Evaluation
+  |-- score ------>|                    |                |              |
+  |                |-- allocation ---->|                |              |
+  |                                     |-- hidden ---->|              |
+  |                                     |<-- confidence-|              |
+  |                                     |-- exit / continue            |
+  |                                     |-- prediction + compute ----->|
+  |<-- accuracy and energy comparison --------------------------------|
 `,
     failureModes: [
-      {
-        scenario: "Slab Exhaustion",
-        impact: "Write requests fail because all memory blocks of a specific class are allocated.",
-        mitigation: "Implemented dynamic cache eviction using an adaptive LRU policy that reclaims stale slabs, and support scaling block allocation to larger classes dynamically."
-      },
-      {
-        scenario: "Memory Fragmentation on compaction",
-        impact: "High memory utilization due to sparse allocations.",
-        mitigation: "A background compaction thread scans slabs, merges underutilized memory blocks, and releases empty pages back to the system allocator."
-      }
+      { scenario: "An input exits too early", impact: "Compute savings may reduce prediction quality.", mitigation: "Evaluate accuracy alongside exit thresholds and compute usage." },
+      { scenario: "Results vary across workloads", impact: "Savings may not transfer to another model or dataset.", mitigation: "Report the evaluated baseline and experimental scope." },
     ],
-    scalingStrategy: "Consistent hashing on the client side with virtual nodes, allowing partition distribution and node addition without cache invalidation.",
-    security: "Secured client access endpoints using custom verification tokens mapped to in-memory ACL ranges.",
-    performance: "1.5 million requests/second throughput with p99 retrieval latencies under 500 microseconds.",
-    benchmarks: [
-      "Peak throughput: 1.62 million read operations/sec under 128-byte keys.",
-      "p99 retrieval latency: 380 microseconds under 80% read, 20% write load.",
-      "Garbage collection pause times: 0ms (due to off-heap slab memory design)."
-    ],
+    scalingStrategy: "The work explores per-input compute allocation. Larger-model and broader-dataset validation remain further research.",
+    security: "This is experimental research code rather than an exposed inference service; no service security model is claimed.",
+    performance: "About 90.7% accuracy with about 65% lower energy use than the 6-layer baseline in the proof of concept.",
+    benchmarks: ["Baseline: fixed 6-layer computation.", "Evaluation: prediction accuracy and energy use within the proof-of-concept setup."],
     tradeoffs: [
-      {
-        decision: "Off-heap slab memory over standard language runtime pointers",
-        alternative: "Standard heap map allocations",
-        rationale: "Bypasses Go/Java garbage collection scans to guarantee 0ms pause times, but requires manual pointer tracking and memory management."
-      },
-      {
-        decision: "Consistent hashing instead of distributed coordination (Raft/Paxos)",
-        alternative: "Distributed consensus partition map",
-        rationale: "Prioritized retrieval latency and write throughput over strict state consensus."
-      }
+      { decision: "Adapt compute to input difficulty", alternative: "Run full fixed-depth inference for every input", rationale: "Easier inputs may require fewer computation steps." },
+      { decision: "Use confidence-based early exits", alternative: "Always use the final layer", rationale: "Threshold selection makes the accuracy-versus-compute tradeoff explicit." },
     ],
-    monitoring: [
-      "chronoscache_active_slabs_ratio: Cache memory fragmentation ratio.",
-      "chronoscache_ops_per_second: Total throughput metrics.",
-      "chronoscache_latency_microseconds: Retrieval latency statistics.",
-      "chronoscache_cache_eviction_total: Count of keys evicted."
-    ],
-    testing: "Unit tests verify slab allocation, index lookups, and LRU eviction. Concurrency tested using load generators under YCSB workloads.",
-    cicd: "GitHub Actions checking code formatting, compiling targets, running tests, and publishing releases.",
-    futureWork: "Add support for distributed replica synchronization and multi-thread io_uring workers.",
-    repo: "https://github.com/ManoBharathi93/Dynamic-Retriever",
-    demo: "/contact",
-    doc: "https://github.com/ManoBharathi93/Dynamic-Retriever/blob/main/README.md"
-  },
-  {
-    id: "vektorindex",
-    name: "VektorIndex",
-    summary: "SIMD-Accelerated Vector Retrieval Engine",
-    tag: "AI Infrastructure",
-    status: "In Progress",
-    whatIBuilt: "Building a C++ approximate-nearest-neighbor prototype with HNSW graph construction, compact vector storage, and SIMD-oriented distance calculations. The large-scale evaluation remains unfinished.",
-    measuredResult: "No verified performance result published yet. Recall and latency values below are acceptance targets pending a reproducible dataset and benchmark report.",
-    limitations: "Does not yet support GPU acceleration, hybrid keyword retrieval, distributed indexes, or a verified ten-million-vector evaluation.",
-    tech: ["C++", "AVX-512", "HNSW", "Faiss", "CMake"],
-    problem: "High-dimensional vector searches are CPU-intensive, limiting query throughput and increasing retrieval latency for RAG and search applications.",
-    motivation: "Large-scale retrieval systems need to search millions of vectors under tight latency SLAs (e.g., <5ms) using hardware-optimized instruction sets.",
-    architectureDiagram: `
-+------------------------------------------------------------------------+
-|                            VektorIndex Engine                          |
-|                                                                        |
-|  Vector Query ──> [ SIMD Distance (AVX-512) ] ──> [ HNSW Graph ]       |
-|                                                          |             |
-|                                                          v             |
-|                                                    Quantized Vectors   |
-+------------------------------------------------------------------------+
-`,
-    sequenceDiagram: `
-Client             VektorIndex Engine       HNSW Index Layers       AVX-512 Registers     Memory
-  |                        |                        |                       |                |
-  |-- search(vector, k) -->|                        |                       |                |
-  |                        |-- search_layer() ----->|                       |                |
-  |                        |                        |-- load_vectors() --------------------->|
-  |                        |                        |-- calculate_dist() ->|                |
-  |                        |                        |   (Computes cosine   |                |
-  |                        |                        |    distance)          |                |
-  |                        |                        |<-- distance_val -----|                |
-  |                        |<-- top_k_candidates ---|                       |                |
-  |<-- results ------------|                        |                       |                |
-`,
-    failureModes: [
-      {
-        scenario: "HNSW Graph Disconnection",
-        impact: "Dynamic vector deletions remove nodes, isolating graph segments and lowering recall accuracy.",
-        mitigation: "Implemented a re-linking algorithm that checks graph connectivity and reconnects isolated nodes during deletions."
-      },
-      {
-        scenario: "Memory Allocation Limit Exceeded",
-        impact: "High-dimensional indexes exceed RAM limits, leading to OOM crashes.",
-        mitigation: "Implemented Product Quantization (PQ) to compress vectors by 75%, allowing the index to fit in memory."
-      }
-    ],
-    scalingStrategy: "Segment-based indexing with background index merging (similar to Lucene segment configurations), allowing search queries to run in parallel across index partitions.",
-    security: "Encrypted index checkpoint files and mTLS-secured query interfaces.",
-    performance: "Search query latency under 5ms over 10 million 1536-dimensional vectors, maintaining a recall accuracy rate over 95%.",
-    benchmarks: [
-      "Recall accuracy: 96.5% under HNSW configurations (M=16, efSearch=64).",
-      "Query throughput: 8,200 queries/sec on a 32-core VM.",
-      "p99 search latency: 4.2ms (compared to 240ms under brute-force cosine search)."
-    ],
-    tradeoffs: [
-      {
-        decision: "Approximate nearest neighbor (HNSW) over exact brute-force search",
-        alternative: "Exact Flat index",
-        rationale: "Accepted a 3% drop in recall accuracy to achieve sub-5ms retrieval times."
-      },
-      {
-        decision: "AVX-512 SIMD compiler constraints",
-        alternative: "Scalar execution compiler targets",
-        rationale: "Bypassed hardware compatibility for legacy processors to maximize retrieval speed on modern server CPUs."
-      }
-    ],
-    monitoring: [
-      "vektorindex_query_latency_milliseconds: Search latency statistics.",
-      "vektorindex_queries_per_second: Retrieval throughput.",
-      "vektorindex_recall_accuracy_ratio: Measured search accuracy.",
-      "vektorindex_memory_utilization_bytes: Index RAM consumption."
-    ],
-    testing: "Unit and integration tests verify vector insertion, indexing, and search accuracy against standard datasets (e.g., SIFT1M).",
-    cicd: "GitHub Actions running compiler builds, static analysis, unit tests, and verifying SIMD instruction flags.",
-    futureWork: "Add support for GPU acceleration (CUDA cores) and hybrid keyword-vector retrieval.",
-    repo: "https://github.com/ManoBharathi93/CPAD",
-    demo: "/contact",
-    doc: "https://github.com/ManoBharathi93/CPAD"
-  },
-  {
-    id: "kubesched-gpu",
-    name: "KubeSched-GPU",
-    summary: "Topology-Aware Kubernetes Scheduler",
-    tag: "AI Infrastructure",
-    status: "In Progress",
-    whatIBuilt: "Building a Kubernetes scheduler-plugin prototype that scores GPU placements from topology metadata. Cluster-scale validation and real NVLink measurements remain future milestones.",
-    measuredResult: "No verified performance result published yet. Scheduling latency and training-throughput improvements have not been benchmarked on representative GPU hardware.",
-    limitations: "Does not yet support MIG-aware placement, cloud-specific topology discovery, production failover, or verified end-to-end training gains.",
-    tech: ["Go", "Kubernetes", "gRPC", "NVLink", "Helm"],
-    problem: "Standard schedulers do not account for inter-GPU NVLink connection layouts, leading to communication bottlenecks during multi-node LLM training.",
-    motivation: "Distributed deep learning workloads require high inter-GPU bandwidth. Placing containers without considering topology layouts degrades training throughput.",
-    architectureDiagram: `
-+-------------------------------------------------------------------------+
-|                        KubeSched-GPU Scheduler                          |
-|                                                                         |
-|  Job Pod ──> [ Pod Ingestion ] ──> [ Topology Map ] ──> Node Scoring    |
-|                                                            |            |
-|                                                            v            |
-|                                                      Node Selection     |
-+-------------------------------------------------------------------------+
-`,
-    sequenceDiagram: `
-Kube API Server        KubeSched-GPU         Topology Agent         Target Node        Kubelet
-       |                     |                      |                     |               |
-       |-- scheduling_pod -->|                      |                     |               |
-       |                     |-- get_topology_map() |                     |               |
-       |                     |-- query_metrics() -->|                     |               |
-       |                     |<-- returns_costs ----|                     |               |
-       |                     |                      |                     |               |
-       |                     |-- score_node() ------>|                     |               |
-       |                     |   (Selects node with |                     |               |
-       |                     |    optimal NVLink)   |                     |               |
-       |-- bind_pod_to_node -|                      |                     |               |
-       |----------------------------------------------------------------->|               |
-       |                                                                  |-- run_pod() ->|
-`,
-    failureModes: [
-      {
-        scenario: "Topology Agent Timeout",
-        impact: "Scheduler misses topology maps, defaulting to standard resource scoring.",
-        mitigation: "Implemented a fallback cache that stores node layouts statically, ensuring scheduling runs continue during agent failures."
-      },
-      {
-        scenario: "GPU Hardware Failure during training run",
-        impact: "Active training job fails, requiring manual recovery.",
-        mitigation: "Coordinated with Kubelet APIs to automatically re-schedule the failed job onto topology-equivalent node groups."
-      }
-    ],
-    scalingStrategy: "Multi-threaded scheduling queue with parallel node scoring, supporting clusters of over 10,000 nodes without performance degradation.",
-    security: "OIDC-compliant authentication, role-based access control (RBAC), and secured gRPC communication channels.",
-    performance: "Evaluates placements for 1,000 container pods in under 100ms.",
-    benchmarks: [
-      "Distributed training step times decreased by 18% compared to standard schedulers.",
-      "Scheduling throughput: 1,200 pods/sec on a 16-core manager node.",
-      "NVLink bandwidth utilization optimized by 35% on multi-node training runs."
-    ],
-    tradeoffs: [
-      {
-        decision: "Topology scoring over simple resource allocation",
-        alternative: "Resource-based bin packing",
-        rationale: "Prioritized training throughput over scheduler execution speed, accepting slightly longer scheduling queues."
-      },
-      {
-        decision: "Static layout caches over real-time NVLink bandwidth monitoring",
-        alternative: "Real-time bandwidth parsing",
-        rationale: "Avoided network overhead in scheduler loops by caching static node hardware layouts."
-      }
-    ],
-    monitoring: [
-      "kubesched_scheduling_latency_seconds: Placement latency statistics.",
-      "kubesched_pod_placements_total: Count of scheduled containers.",
-      "kubesched_topology_cache_hit_ratio: Cache efficiency metrics.",
-      "kubesched_nvlink_utilization_ratio: Measured inter-GPU bandwidth."
-    ],
-    testing: "Integration tests run on simulated clusters. Placement accuracy verified against mock topologies.",
-    cicd: "GitHub Actions running tests, verifying code quality, compiling binaries, and publishing Helm charts.",
-    futureWork: "Add support for dynamic Multi-Instance GPU (MIG) partitioning and cloud-native GPU topology maps.",
+    monitoring: ["Accuracy: Predictive quality in the evaluated experiment.", "Compute use: Energy, layers used, and inference-cost comparisons."],
+    testing: "Notebooks demonstrate criticality estimation and early-exit comparisons alongside the research paper and experiment code.",
+    cicd: "Python dependency setup and notebook instructions are available for reproducing the research workflow.",
+    futureWork: "Further research would test more workloads and document how savings vary with model size and exit thresholds.",
     repo: "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality",
-    demo: "/contact",
-    doc: "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality"
-  }
+    demo: "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality/tree/main/notebooks",
+    doc: "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality#notebooks",
+  },
+  {
+    id: "dynamic-retriever",
+    name: "Dynamic vs. Fixed K Reranking in RAG",
+    summary: "A retrieval experiment comparing fixed context size with relevance-based dynamic document selection.",
+    tag: "Retrieval & Evaluation",
+    status: "Prototype",
+    whatIBuilt: "Built a notebook comparison using embeddings, FAISS retrieval, cross-encoder reranking, and fixed versus score-based dynamic context selection.",
+    measuredResult: "On the documented synthetic experiment, estimated average context tokens fell from 125.17 to 13.00 while answer presence in context remained 1.00 for both methods.",
+    limitations: "Uses 100 synthetic documents and 30 queries. Token cost is estimated; answer presence measures retrieved context, not generated-answer correctness.",
+    evidence: "The repository contains the comparison notebook, experiment design, evaluation definitions, and aggregate results.",
+    tech: ["Python", "Sentence Transformers", "FAISS", "Cross-Encoder", "Jupyter"],
+    problem: "A fixed document count can add irrelevant context for simple queries or omit context for broader queries.",
+    motivation: "Compare selection strategies by measuring both context quality and the amount of text selected.",
+    architectureDiagram: `
+Synthetic Documents --> Embeddings --> FAISS Index
+                                           ^
+                                           |
+Query --> Embedding --> Candidate Retrieval
+                              |
+                       Cross-Encoder Reranking
+                              |
+                  +-----------+-----------+
+                  |                       |
+             Fixed-K Context        Dynamic-K Context
+                  |                       |
+                  +-----------+-----------+
+                              |
+                     Retrieval Evaluation
+`,
+    sequenceDiagram: `
+Query             FAISS          Reranker        Selection       Evaluation
+  |-- retrieve ---->|               |               |               |
+  |<-- candidates -|               |               |               |
+  |-- score candidates ----------->|               |               |
+  |                                |-- ranking ---->|               |
+  |                                                 |-- fixed K --->|
+  |                                                 |-- dynamic K ->|
+  |<-- compare context quality and estimated tokens ----------------|
+`,
+    failureModes: [
+      { scenario: "Threshold discards useful context", impact: "Selection could omit information needed for an answer.", mitigation: "Compare answer presence, ranking metrics, and context precision." },
+      { scenario: "Synthetic results do not generalize", impact: "Gains may differ on real document collections.", mitigation: "Keep dataset scope explicit and validate separately on new corpora." },
+    ],
+    scalingStrategy: "The notebook uses a small synthetic corpus and FAISS IndexFlatL2. Large-corpus throughput is outside the measured experiment.",
+    security: "The experiment uses synthetic documents. Enterprise document permissions and tenant isolation are outside its scope.",
+    performance: "README-reported synthetic results compare context quality and estimated token cost.",
+    benchmarks: ["Precision: 0.11 fixed K; 0.98 dynamic K.", "Average selected documents: 10.00 fixed K; 1.03 dynamic K.", "Estimated average context tokens: 125.17 fixed K; 13.00 dynamic K."],
+    tradeoffs: [
+      { decision: "Select by relative reranker score", alternative: "Always keep a fixed document count", rationale: "Context size follows relevance but becomes sensitive to the selection threshold." },
+      { decision: "Evaluate retrieval independently", alternative: "Judge only final generated answers", rationale: "Context metrics isolate the effect of document selection." },
+    ],
+    monitoring: ["Context quality: Answer presence, precision, MRR, and NDCG.", "Context size: Selected document count and estimated tokens."],
+    testing: "Both strategies are compared on the same synthetic documents and queries with known answers.",
+    cicd: "The project provides a notebook and README with setup and execution instructions.",
+    futureWork: "Further evaluation would use real corpora, additional query types, and generated-answer measurements.",
+    repo: "https://github.com/ManoBharathi93/Dynamic-Retriever",
+    demo: "https://github.com/ManoBharathi93/Dynamic-Retriever/blob/main/Dynamic_K_vs_Fixed_K_Retrieval_ipynb.ipynb",
+    doc: "https://github.com/ManoBharathi93/Dynamic-Retriever#experiment-design",
+  },
 ];

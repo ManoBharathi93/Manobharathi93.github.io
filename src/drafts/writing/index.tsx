@@ -1,6 +1,7 @@
 import * as React from "react";
-import { ArrowRight, BookOpen, Clock, Calendar, Tag } from "lucide-react";
-import { blogData } from "@/data/blogData";
+import { ArrowRight, Clock, Calendar, Tag } from "lucide-react";
+// Unpublished template: kept outside app routes until original articles are ready.
+import { blogData } from "./blogData";
 
 export default function BlogIndexPage() {
   return (

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Clock, Calendar, Tag, BookOpen } from "lucide-react";
-import { blogData, BlogArticle } from "@/data/blogData";
+import { ArrowLeft, Clock, Calendar, Tag } from "lucide-react";
+import { blogData } from "./blogData";
 
 interface PageProps {
   params: Promise<{

@@ -52,7 +52,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
         <p className="text-xs font-mono text-[var(--muted)]">Tech Stack: {project.tech.join(" · ")}</p>
 
         {/* Project Links */}
-        {project.status === "Completed" && <div className="flex flex-wrap gap-3 pt-2 print:hidden">
+        <div className="flex flex-wrap gap-3 pt-2 print:hidden">
           <a
             href={project.repo}
             target="_blank"
@@ -70,9 +70,9 @@ export default async function ProjectDetailPage({ params }: PageProps) {
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 px-4 py-2 rounded border border-[var(--border)] bg-[var(--background)] hover:bg-[var(--muted-background)] text-xs font-semibold font-mono transition-all"
           >
-            <FileText className="w-4 h-4" /> Architecture RFC
+            <FileText className="w-4 h-4" /> Project Documentation
           </a>
-        </div>}
+        </div>
       </div>
 
       <section className="grid md:grid-cols-2 gap-6">
@@ -80,9 +80,9 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           ["Problem", project.problem],
           ["What I built", project.whatIBuilt],
           ["Key decisions", project.tradeoffs.map((item) => `${item.decision}: ${item.rationale}`).join(" ")],
-          ["Measured result", project.measuredResult],
+          ["Results", project.measuredResult],
           ["Limitations", project.limitations],
-          ["Evidence", "Pending a project-specific repository, design document, runnable demo, and reproducible benchmark report. A result will be treated as verified only when its method and raw output are published."],
+          ["Evidence", project.evidence],
         ].map(([label, value]) => (
           <div key={label} className="p-5 rounded border border-[var(--border)] bg-[var(--muted-background)]/20 space-y-2">
             <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--accent)]">{label}</h2>
@@ -119,7 +119,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 {project.architectureDiagram.trim()}
               </pre>
             </div>
-            <p className="text-[11px] text-[var(--muted)] italic">Figure 1.0: Node components and inter-process communication flow boundaries.</p>
+            <p className="text-[11px] text-[var(--muted)] italic">Figure 1.0: High-level project components and information flow.</p>
           </section>
 
           {/* Sequence Diagram */}
@@ -130,7 +130,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
                 {project.sequenceDiagram.trim()}
               </pre>
             </div>
-            <p className="text-[11px] text-[var(--muted)] italic">Figure 1.1: Event timeline execution and commit sequence constraints.</p>
+            <p className="text-[11px] text-[var(--muted)] italic">Figure 1.1: Main workflow and validation steps.</p>
           </section>
 
           {/* Failure Modes & Mitigations */}
@@ -186,13 +186,13 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           {/* Testing & CI/CD */}
           <div className="grid md:grid-cols-2 gap-6 pt-2">
             <section className="space-y-3">
-              <h2 className="text-base font-bold tracking-tight">7. Testing Strategy</h2>
+              <h2 className="text-base font-bold tracking-tight">7. Validation</h2>
               <p className="text-xs leading-relaxed text-[var(--muted)] text-justify-custom">
                 {project.testing}
               </p>
             </section>
             <section className="space-y-3">
-              <h2 className="text-base font-bold tracking-tight">8. CI/CD Pipeline</h2>
+              <h2 className="text-base font-bold tracking-tight">8. Setup & Delivery</h2>
               <p className="text-xs leading-relaxed text-[var(--muted)] text-justify-custom">
                 {project.cicd}
               </p>
@@ -205,15 +205,15 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           {/* Performance Targets */}
           <div className="p-5 rounded border border-[var(--border)] bg-[var(--muted-background)]/30 space-y-4">
             <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--accent)] border-b border-[var(--border)] pb-2 flex items-center gap-1.5">
-              <Cpu className="w-3.5 h-3.5" /> Performance Targets
+              <Cpu className="w-3.5 h-3.5" /> Results & Evaluation
             </h3>
             <div className="space-y-3 text-xs">
               <div>
-                <div className="text-[10px] font-mono text-[var(--muted)] uppercase">Target Capacity</div>
+                <div className="text-[10px] font-mono text-[var(--muted)] uppercase">Evaluation Summary</div>
                 <div className="text-sm font-bold text-[var(--foreground)] mt-0.5">{project.performance}</div>
               </div>
               <div>
-                <div className="text-[10px] font-mono text-[var(--muted)] uppercase">Unverified Acceptance Targets</div>
+                <div className="text-[10px] font-mono text-[var(--muted)] uppercase">Evaluation Scope</div>
                 <ul className="list-disc pl-4 mt-1 text-[var(--muted)] space-y-1">
                   {project.benchmarks.map((b, idx) => (
                     <li key={idx}>{b}</li>
@@ -246,7 +246,7 @@ export default async function ProjectDetailPage({ params }: PageProps) {
           {/* Monitoring Metrics */}
           <div className="p-5 rounded border border-[var(--border)] bg-[var(--muted-background)]/30 space-y-3">
             <h3 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--accent)] border-b border-[var(--border)] pb-2">
-              Observability Targets
+              Observability
             </h3>
             <ul className="space-y-2 text-xs font-mono text-[var(--muted)]">
               {project.monitoring.map((m, idx) => {

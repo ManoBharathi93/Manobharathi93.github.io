@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -17,12 +18,12 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mano Bharathi | Systems & Platform Engineer",
-  description: "Portfolio of Mano Bharathi, Software Engineer specializing in distributed systems, storage engines, message queues, and AI infrastructure.",
+  title: "Mano Bharathi M | Software Engineer",
+  description: "Software engineer with 2+ years of experience, including internship, building backend services, distributed systems, observability, and AI-agent workflows at OpenText.",
   metadataBase: new URL("https://manobharathi93.github.io"),
   openGraph: {
-    title: "Mano Bharathi | Systems & Platform Engineer",
-    description: "Production platform backend engineering, distributed systems, and AI infrastructure pipelines.",
+    title: "Mano Bharathi M | Software Engineer",
+    description: "Backend engineering, distributed systems, observability, and AI-agent workflows. Projects, experience, research, and awards.",
     url: "https://manobharathi93.github.io",
     siteName: "Mano Bharathi Portfolio",
     locale: "en_US",
@@ -30,8 +31,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mano Bharathi | Systems & Platform Engineer",
-    description: "Production platform backend engineering, distributed systems, and AI infrastructure pipelines.",
+    title: "Mano Bharathi M | Software Engineer",
+    description: "Backend engineering, distributed systems, observability, and AI-agent workflows. Projects, experience, research, and awards.",
   },
   robots: {
     index: true,
@@ -52,23 +53,23 @@ export default function RootLayout({
           <header className="sticky top-0 z-40 w-full border-b border-[var(--border)] bg-[var(--background)]/90 backdrop-blur-sm">
             <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <a href="/" className="font-mono font-bold tracking-tight text-sm hover:text-[var(--accent)] transition-colors">
+                <Link href="/" className="font-mono font-bold tracking-tight text-sm hover:text-[var(--accent)] transition-colors">
                   MB_CORE_LOG
-                </a>
+                </Link>
                 <span className="hidden sm:inline text-xs font-mono text-[var(--muted)] border-l border-[var(--border)] pl-3">
-                  UTC 09:22:08
+                  Bengaluru, IN
                 </span>
               </div>
 
               <nav className="flex items-center gap-5 text-sm font-medium">
-                <a href="/" className="hover:text-[var(--accent)] transition-colors">Home</a>
-                <a href="/#experience" className="hidden md:inline hover:text-[var(--accent)] transition-colors">Experience</a>
-                <a href="/projects" className="hover:text-[var(--accent)] transition-colors">Projects</a>
-                <a href="/architecture" className="hover:text-[var(--accent)] transition-colors">Architecture</a>
-                <a href="/blog" className="hover:text-[var(--accent)] transition-colors">Writing</a>
-                <a href="/resume" className="hover:text-[var(--accent)] transition-colors">Resume</a>
+                <Link href="/" className="hover:text-[var(--accent)] transition-colors">Home</Link>
+                <Link href="/#experience" className="hidden md:inline hover:text-[var(--accent)] transition-colors">Experience</Link>
+                <Link href="/projects" className="hover:text-[var(--accent)] transition-colors">Projects</Link>
+                <Link href="/architecture" className="hover:text-[var(--accent)] transition-colors">Architecture</Link>
+                <Link href="/#awards" className="hover:text-[var(--accent)] transition-colors">Awards</Link>
+                <Link href="/resume" className="hover:text-[var(--accent)] transition-colors">Resume</Link>
                 <a href="https://github.com/ManoBharathi93" target="_blank" rel="noopener noreferrer" className="hidden sm:inline hover:text-[var(--accent)] transition-colors">GitHub</a>
-                <a href="/contact" className="hover:text-[var(--accent)] transition-colors">Contact</a>
+                <Link href="/contact" className="hover:text-[var(--accent)] transition-colors">Contact</Link>
                 <ThemeToggle />
               </nav>
             </div>
@@ -83,13 +84,13 @@ export default function RootLayout({
           <footer className="border-t border-[var(--border)] bg-[var(--muted-background)] py-8 mt-12">
             <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-[var(--muted)]">
               <div>
-                © 2026 Mano Bharathi M. Built for production metrics.
+                © 2026 Mano Bharathi M. Backend, Distributed Systems & AI.
               </div>
               <div className="flex gap-6">
                 <a href="/sitemap.xml" className="hover:underline">Sitemap</a>
                 <a href="/robots.txt" className="hover:underline">Robots</a>
                 <a href="https://github.com/ManoBharathi93" target="_blank" rel="noopener noreferrer" className="hover:underline">GitHub</a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:underline">LinkedIn</a>
+                <a href="https://linkedin.com/in/manobharathi-m" target="_blank" rel="noopener noreferrer" className="hover:underline">LinkedIn</a>
               </div>
             </div>
           </footer>
