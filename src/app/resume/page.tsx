@@ -173,7 +173,8 @@ export default function ResumePage() {
           <div className="grid md:grid-cols-2 gap-4 print:grid-cols-1">
             {awards.map((award) => (
               <div key={award.id} className="space-y-1">
-                <a href={award.certificateHref} target="_blank" rel="noopener noreferrer" className="font-bold text-xs hover:underline">{award.title} · {award.organization}</a>
+                <a href={award.certificateHref} target="_blank" rel="noopener noreferrer" className="font-bold text-xs hover:underline">{award.contribution}</a>
+                <p className="text-xs font-semibold text-[var(--accent)] print:text-emerald-700">{award.title} · {award.organization}</p>
                 <p className="text-[10px] font-mono text-[var(--muted)] print:text-gray-600">{award.date}</p>
                 <p className="text-[11px] text-[var(--muted)] print:text-gray-800 leading-relaxed">{award.description}</p>
               </div>

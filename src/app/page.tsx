@@ -191,12 +191,13 @@ export default function HomePage() {
         <div className="space-y-4">
           {awards.map((award) => (
             <a key={award.id} href={award.certificateHref} target="_blank" rel="noopener noreferrer" className="group block border-b border-[var(--border)] pb-3">
-              <div className="flex justify-between items-baseline gap-2">
+              <div className="flex flex-wrap justify-between items-baseline gap-2">
                 <h3 className="text-sm font-bold group-hover:text-[var(--accent)] transition-colors">
-                  {award.title} · {award.organization}
+                  {award.contribution}
                 </h3>
                 <span className="text-xs font-mono text-[var(--muted)] whitespace-nowrap">{award.date}</span>
               </div>
+              <p className="text-xs font-semibold text-[var(--accent)] mt-1">{award.title} · {award.organization}</p>
               <p className="text-xs text-[var(--muted)] mt-1">
                 {award.description}
               </p>

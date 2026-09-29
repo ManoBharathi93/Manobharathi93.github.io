@@ -1,6 +1,7 @@
 export interface Award {
   id: string;
   title: string;
+  contribution: string;
   organization: string;
   date: string;
   description: string;
@@ -13,6 +14,7 @@ export const awards: Award[] = [
   {
     id: "pi45",
     title: "Put Customers First",
+    contribution: "CVE agent and customer demonstrations",
     organization: "OpenText",
     date: "12 February 2026",
     description:
@@ -22,6 +24,7 @@ export const awards: Award[] = [
   {
     id: "pi44",
     title: "Raise the Bar",
+    contribution: "Raw-data sleeve visualization",
     organization: "OpenText",
     date: "25 July 2025",
     description:
@@ -31,6 +34,7 @@ export const awards: Award[] = [
   {
     id: "pi41",
     title: "Raise the Bar",
+    contribution: "Dark mode, reporting and Azure backend",
     organization: "OpenText",
     date: "14 February 2025",
     description:
@@ -40,6 +44,7 @@ export const awards: Award[] = [
   {
     id: "pi42",
     title: "Raise the Bar",
+    contribution: "AWS and Azure network visualization",
     organization: "OpenText",
     date: "24 January 2025",
     description:
