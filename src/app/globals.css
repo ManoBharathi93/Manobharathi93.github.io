@@ -55,3 +55,21 @@ body {
   text-align: justify;
   text-justify: inter-word;
 }
+
+.resume-section-heading {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.25rem;
+  color: var(--accent);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+@media print {
+  .resume-sheet { font-size: 10.5pt; line-height: 1.35; }
+  .resume-sheet h2 { font-size: 22pt; }
+  .resume-sheet section { break-inside: avoid; }
+  .resume-sheet a { color: inherit; text-decoration: none; }
+}

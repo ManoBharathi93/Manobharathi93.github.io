@@ -22,6 +22,7 @@ export interface Project {
   summary: string;
   tag: string;
   status: "Completed" | "Prototype" | "In Progress";
+  featured: boolean;
   whatIBuilt: string;
   measuredResult: string;
   limitations: string;
@@ -52,6 +53,7 @@ export const projectsData: Project[] = [
     summary: "Discover browser workflows once, then replay them with new inputs without calling a model.",
     tag: "Browser Automation",
     status: "Prototype",
+    featured: true,
     whatIBuilt: "Built LLM-assisted workflow discovery, saved capability artifacts, deterministic replay, action validation, page-evidence checks, expected-error handling, and human takeover.",
     measuredResult: "Recorded local banking demos show saved workflows replaying with different inputs and zero replay model calls.",
     limitations: "Demonstrated on local banking apps with synthetic data. General website support, production authentication, and cross-tenant reuse are outside the demonstrated scope.",
@@ -85,6 +87,7 @@ export const projectsData: Project[] = [
     summary: "Distributed data synchronization using PostgreSQL change events, Kafka, Redis, and Elasticsearch.",
     tag: "Distributed Systems",
     status: "Prototype",
+    featured: true,
     whatIBuilt: "Built a CDC pipeline with Debezium, Kafka consumers for Redis and Elasticsearch, shared retries, dead-letter queues, and consumer-management APIs.",
     measuredResult: "Implemented product-event propagation from PostgreSQL to cache and search projections, with repository verification scripts.",
     limitations: "A local development platform; analytics consumption is not implemented and role-header authorization needs production hardening.",
@@ -118,6 +121,7 @@ export const projectsData: Project[] = [
     summary: "A voice and screen support prototype combining enterprise retrieval, guided actions, and human approval.",
     tag: "Multimodal AI Agents",
     status: "Prototype",
+    featured: false,
     whatIBuilt: "Built speech recognition, WebSocket voice interactions, VLM/OCR screen understanding, enterprise RAG, and LangGraph orchestration with human approval and structured verification before closure.",
     measuredResult: "Implemented a combined voice-and-screen support workflow. No quantitative performance result is claimed for this prototype.",
     limitations: "An IT/HR support prototype; production deployment and a measured reliability benchmark are not established by this project summary.",
@@ -151,6 +155,7 @@ export const projectsData: Project[] = [
     summary: "A support-automation proof of concept that learns reusable runbooks from execution history.",
     tag: "Agent Memory & RAG",
     status: "Prototype",
+    featured: false,
     whatIBuilt: "Built knowledge retrieval, case memory, a runbook library, policy-based routing, feedback tracking, and a fast path for known-good runbooks without LLM calls.",
     measuredResult: "Includes a three-phase benchmark over 20 synthetic support tickets, comparing stateless reasoning, runbook creation, and runbook reuse.",
     limitations: "The demonstration uses synthetic tickets and simulated MCP actions. It does not establish production incident-resolution performance.",
@@ -184,6 +189,7 @@ export const projectsData: Project[] = [
     summary: "Research prototypes for entropy-based difficulty prediction and confidence-based early-exit inference.",
     tag: "AI Research",
     status: "Prototype",
+    featured: false,
     whatIBuilt: "Co-authored the AAAI 2026 Student Abstract and contributed to separate notebook prototypes for criticality estimation and early-exit inference.",
     measuredResult: "Resume-reported proof-of-concept result: about 90.7% accuracy and about 65% lower energy use versus a 6-layer baseline. The notebook estimates energy and extrapolates baseline cost.",
     limitations: "Criticality prediction and early exit are separate notebook experiments. Energy is estimated from sampled GPU power and elapsed time; six-layer baseline cost is extrapolated.",
@@ -217,6 +223,7 @@ export const projectsData: Project[] = [
     summary: "A retrieval experiment comparing fixed context size with relevance-based dynamic document selection.",
     tag: "Retrieval & Evaluation",
     status: "Prototype",
+    featured: true,
     whatIBuilt: "Built a notebook comparison using embeddings, FAISS retrieval, cross-encoder reranking, and fixed versus score-based dynamic context selection.",
     measuredResult: "In the documented synthetic experiment, mean context word count fell from 125.17 to 13.00 while answer presence in context remained 1.00 for both methods.",
     limitations: "Uses 100 synthetic documents and 30 queries. The notebook uses word count as a token-cost proxy; answer presence measures retrieved context, not generated-answer correctness.",

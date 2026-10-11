@@ -18,21 +18,34 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mano Bharathi M | Software Engineer",
-  description: "Software engineer with 2+ years of experience, including internship, building backend services, distributed systems, observability, and AI-agent workflows at OpenText.",
+  title: "Mano Bharathi M | Portfolio",
+  description: "Portfolio of Mano Bharathi M, a software engineer focused on backend services, distributed systems, observability, and AI-agent workflows.",
   metadataBase: new URL("https://manobharathi93.github.io"),
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Mano Bharathi M | Software Engineer",
-    description: "Backend engineering, distributed systems, observability, and AI-agent workflows. Projects, experience, research, and awards.",
-    url: "https://manobharathi93.github.io",
+    title: "Mano Bharathi M | Portfolio",
+    description: "Portfolio of Mano Bharathi M, featuring backend systems, distributed-systems projects, technical skills, experience, research, and awards.",
+    url: "https://manobharathi93.github.io/",
     siteName: "Mano Bharathi Portfolio",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "https://manobharathi93.github.io/preview.png",
+        width: 1200,
+        height: 627,
+        alt: "Mano Bharathi M - Software Engineering Portfolio",
+        type: "image/png",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mano Bharathi M | Software Engineer",
-    description: "Backend engineering, distributed systems, observability, and AI-agent workflows. Projects, experience, research, and awards.",
+    title: "Mano Bharathi M | Portfolio",
+    description: "Portfolio of Mano Bharathi M, featuring backend systems, distributed-systems projects, technical skills, and experience.",
+    images: ["https://manobharathi93.github.io/preview.png"],
   },
   robots: {
     index: true,

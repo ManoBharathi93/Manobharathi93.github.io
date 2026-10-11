@@ -198,6 +198,50 @@ test("exported portfolio themes and project diagrams work in Chromium", { timeou
     assert.deepEqual(await bodyColors(page), light);
   });
 
+  await t.test("resume variants render directly and expose their matching PDF", async () => {
+    const variants = [
+      { path: "/resume", headline: "Software Engineer | Backend & Distributed Systems", pdf: "/Mano_Bharathi_Resume.pdf" },
+      { path: "/resume/ai-infrastructure", headline: "Software Engineer | AI Infrastructure & Agent Engineering", pdf: "/Mano_Bharathi_AI_Infrastructure_Resume.pdf" },
+    ];
+    await page.setViewportSize({ width: 1440, height: 1100 });
+    for (const variant of variants) {
+      const response = await page.goto(`${server.origin}${variant.path}`, { waitUntil: "networkidle" });
+      assert.equal(response?.status(), 200);
+      await waitForTheme(page, "light");
+      assert.equal(await page.locator("article h2").innerText(), "Mano Bharathi M");
+      assert.equal(await page.locator("article").innerText().then((text) => text.includes(variant.headline)), true);
+      assert.equal(await page.locator("#awards").count(), 1);
+      assert.equal(await page.getByRole("link", { name: "Download PDF", exact: true }).getAttribute("href"), variant.pdf);
+      const pdfResponse = await context.request.get(`${server.origin}${variant.pdf}`);
+      assert.equal(pdfResponse.status(), 200);
+      assert.match(pdfResponse.headers()["content-type"], /application\/pdf/);
+    }
+  });
+
+  await t.test("initial static HTML exposes one complete social preview and its PNG", async () => {
+    const html = await readFile(join(exportDirectory, "index.html"), "utf8");
+    const expectedMeta = {
+      "og:title": "Mano Bharathi M | Portfolio",
+      "og:description": "Portfolio of Mano Bharathi M, featuring backend systems, distributed-systems projects, technical skills, experience, research, and awards.",
+      "og:image": "https://manobharathi93.github.io/preview.png",
+      "og:url": "https://manobharathi93.github.io",
+      "og:type": "website",
+      "twitter:card": "summary_large_image",
+      "twitter:image": "https://manobharathi93.github.io/preview.png",
+    };
+    for (const [name, value] of Object.entries(expectedMeta)) {
+      const pattern = new RegExp(`<meta (?:property|name)="${name}" content="${value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`, "g");
+      assert.equal((html.match(pattern) ?? []).length, 1, `Expected exactly one ${name} tag`);
+    }
+    const image = await readFile(join(exportDirectory, "preview.png"));
+    assert.deepEqual(image.subarray(0, 8), Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]));
+    assert.equal(image.readUInt32BE(16), 1200);
+    assert.equal(image.readUInt32BE(20), 627);
+    const response = await context.request.get(`${server.origin}/preview.png`);
+    assert.equal(response.status(), 200);
+    assert.match(response.headers()["content-type"], /image\/png/);
+  });
+
   for (const project of projects) {
     await t.test(`${project}: both diagrams render with working source and full-size links in both themes`, async () => {
       await page.setViewportSize({ width: 1440, height: 1100 });

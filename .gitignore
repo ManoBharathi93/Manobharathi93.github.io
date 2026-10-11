@@ -44,3 +44,6 @@ next-env.d.ts
 #readme
 *.txt
 *.md
+!docs/recruiter-audit.md
+!docs/resume-backend.md
+!docs/resume-ai-infrastructure.md

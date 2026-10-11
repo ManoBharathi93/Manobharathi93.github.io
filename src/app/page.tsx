@@ -1,4 +1,5 @@
 import * as React from "react";
+import Link from "next/link";
 import { ArrowUpRight, Cpu, Database, Network, ShieldAlert, Zap, FileText } from "lucide-react";
 import { projectsData } from "@/data/projectsData";
 import { experienceHighlights } from "@/data/experienceData";
@@ -155,7 +156,7 @@ export default function HomePage() {
         </h2>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {projectsData.map((project, index) => {
+          {projectsData.filter((project) => project.featured).map((project, index) => {
             const Icon = [Cpu, Database, Network, FileText, Zap, Cpu][index] ?? Cpu;
             return (
               <div key={project.id} className="p-5 rounded border border-[var(--border)] hover:border-[var(--accent)] bg-[var(--muted-background)]/20 transition-all flex flex-col justify-between">
@@ -180,6 +181,9 @@ export default function HomePage() {
             );
           })}
         </div>
+        <Link href="/projects" className="inline-flex items-center gap-1 text-xs text-[var(--accent)] font-semibold hover:underline">
+          View all projects <ArrowUpRight className="w-3.5 h-3.5" />
+        </Link>
       </section>
 
       {/* 5. AWARDS SECTION */}

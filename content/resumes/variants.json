@@ -1,0 +1,189 @@
+{
+  "identity": {
+    "name": "Mano Bharathi M",
+    "email": "immanobharathi21@gmail.com",
+    "phone": "+91 93604 25733",
+    "location": "Bengaluru, India",
+    "linkedin": "linkedin.com/in/manobharathi-m",
+    "linkedinUrl": "https://linkedin.com/in/manobharathi-m",
+    "website": "manobharathi93.github.io",
+    "websiteUrl": "https://manobharathi93.github.io",
+    "github": "github.com/ManoBharathi93",
+    "githubUrl": "https://github.com/ManoBharathi93"
+  },
+  "education": {
+    "degree": "B.E. Electronics and Communication Engineering",
+    "institution": "Sri Krishna College of Engineering and Technology",
+    "year": "2024",
+    "detail": "CGPA 8.5/10"
+  },
+  "research": {
+    "name": "Adaptive Compute Efficient Learning via Conceptual-Criticality",
+    "url": "https://github.com/ManoBharathi93/Adaptive-Compute-Efficient-Learning-via-Conceptual-Criticality",
+    "category": "Co-author, AAAI 2026 Student Abstract",
+    "description": "Proof of concept studying adaptive computation. Reported energy comparisons are estimates against an extrapolated 6-layer baseline."
+  },
+  "variants": {
+    "backend": {
+      "label": "Backend & distributed systems",
+      "headline": "Software Engineer | Backend & Distributed Systems",
+      "summary": "Software engineer with 2+ years of experience, including internship, at OpenText. Builds backend services, cloud-connected systems, observability workflows, and data pipelines using Python, Java, SQL, PostgreSQL, Kafka, and Kubernetes.",
+      "pdf": "/Mano_Bharathi_Resume.pdf",
+      "experience": [
+        {
+          "title": "Associate Software Developer",
+          "company": "OpenText",
+          "location": "Bengaluru",
+          "dates": "Oct 2024 – Present",
+          "bullets": [
+            "Redesigned UUID storage in a distributed cloud-connectivity service, increasing supported inter-region connections from 55 to 165 without a database schema migration.",
+            "Built a time-series baseline service with dynamic upper and lower bounds and routing between raw 5-minute data and hourly aggregates for observability queries.",
+            "Built a case-aware dual-memory agent for staged evaluation; the evaluation reduced escalations from 20 to 5 and measured lower latency, token use, and model calls per ticket.",
+            "Prototyped a CVE workflow spanning advisory ingestion, normalization, inventory matching, and network-automation remediation; estimated about 60% less manual triage effort."
+          ]
+        },
+        {
+          "title": "Software Engineering Intern",
+          "company": "OpenText",
+          "location": "Bengaluru",
+          "dates": "Apr 2024 – Sep 2024",
+          "bullets": [
+            "Built Python and SQL automation for license-usage extraction and CSV reporting, replacing repetitive manual reporting work."
+          ]
+        }
+      ],
+      "projects": [
+        {
+          "name": "SyncStream",
+          "url": "https://github.com/ManoBharathi93/SyncStream",
+          "description": "Built a CDC prototype using PostgreSQL, Debezium, Kafka, Redis, and Elasticsearch for cache and search projections. Includes retries and dead-letter queues; it remains a local development platform."
+        },
+        {
+          "name": "Capability Runner",
+          "url": "https://github.com/ManoBharathi93/capability-runner",
+          "description": "Built LLM-assisted browser workflow discovery and deterministic saved-workflow replay with validation and page-evidence checks; demonstrated on local banking apps with synthetic data."
+        }
+      ],
+      "skills": [
+        [
+          "Languages",
+          "Python, Java, Go, C++, SQL"
+        ],
+        [
+          "Backend & systems",
+          "FastAPI, Spring Boot, REST APIs, WebSockets, Linux"
+        ],
+        [
+          "Data & infrastructure",
+          "PostgreSQL, Vertica, Kafka, Redis, Elasticsearch, Docker, Kubernetes, Helm, Git, CI/CD"
+        ],
+        [
+          "AI & retrieval",
+          "RAG, embeddings, vector retrieval, tool calling, evaluation, LangGraph, MCP"
+        ]
+      ]
+    },
+    "ai-infrastructure": {
+      "label": "AI infrastructure & agent engineering",
+      "headline": "Software Engineer | AI Infrastructure & Agent Engineering",
+      "summary": "Software engineer with 2+ years of experience, including internship, at OpenText. Builds reliable AI-agent prototypes and backend workflows involving retrieval, memory, validation, observability, and automation.",
+      "pdf": "/Mano_Bharathi_AI_Infrastructure_Resume.pdf",
+      "experience": [
+        {
+          "title": "Associate Software Developer",
+          "company": "OpenText",
+          "location": "Bengaluru",
+          "dates": "Oct 2024 – Present",
+          "bullets": [
+            "Built a case-aware dual-memory agent combining enterprise RAG with reusable case memory. In staged evaluation, escalations fell from 20 to 5; latency, tokens per ticket, and model calls per ticket also declined.",
+            "Prototyped a CVE workflow spanning advisory ingestion, normalization, inventory matching, and network-automation remediation; estimated about 60% less manual triage effort.",
+            "Built a time-series baseline service that routes between raw 5-minute observations and hourly aggregates for scalable observability queries.",
+            "Redesigned UUID storage in a distributed cloud-connectivity service, increasing supported inter-region connections from 55 to 165 without a database schema migration."
+          ]
+        },
+        {
+          "title": "Software Engineering Intern",
+          "company": "OpenText",
+          "location": "Bengaluru",
+          "dates": "Apr 2024 – Sep 2024",
+          "bullets": [
+            "Built Python and SQL automation for license-usage extraction and CSV reporting, replacing repetitive manual reporting work."
+          ]
+        }
+      ],
+      "projects": [
+        {
+          "name": "Capability Runner",
+          "url": "https://github.com/ManoBharathi93/capability-runner",
+          "description": "Built LLM-assisted browser workflow discovery and model-free saved-workflow replay with action validation, page-evidence checks, expected-error handling, and human takeover for unsupported states."
+        },
+        {
+          "name": "Ticketless IT/HR Voice Support",
+          "url": "https://github.com/ManoBharathi93/Ticketless-Enterprise",
+          "description": "Built an IT/HR support prototype combining voice interactions, VLM/OCR screen understanding, enterprise RAG, LangGraph orchestration, human approval, and structured verification before closure."
+        },
+        {
+          "name": "SyncStream",
+          "url": "https://github.com/ManoBharathi93/SyncStream",
+          "description": "Built a CDC prototype using PostgreSQL, Debezium, Kafka, Redis, and Elasticsearch for independent data projections; it does not claim production recovery or exactly-once processing."
+        }
+      ],
+      "skills": [
+        [
+          "AI & agents",
+          "LangGraph, MCP, RAG, embeddings, vector retrieval, tool calling, evaluation, PyTorch"
+        ],
+        [
+          "Backend & systems",
+          "Python, Java, FastAPI, Spring Boot, REST APIs, WebSockets, Linux"
+        ],
+        [
+          "Data & infrastructure",
+          "PostgreSQL, Kafka, Redis, Elasticsearch, Docker, Kubernetes, Git, CI/CD"
+        ],
+        [
+          "Languages",
+          "Python, Java, Go, C++, SQL"
+        ]
+      ]
+    }
+  },
+  "awards": [
+    {
+      "id": "pi45",
+      "title": "Put Customers First",
+      "contribution": "CVE agent and customer demonstrations",
+      "organization": "OpenText",
+      "date": "12 February 2026",
+      "description": "Recognized for developing a CVE data-extraction agent for a Policy AI assistant prototype and contributing to customer demonstrations.",
+      "certificateHref": "/awards/award-pi45.pdf"
+    },
+    {
+      "id": "pi44",
+      "title": "Raise the Bar",
+      "contribution": "Raw-data sleeve visualization",
+      "organization": "OpenText",
+      "date": "25 July 2025",
+      "description": "Recognized for delivering sleeve visualization for raw datasets on time in the first sprint of PI44.",
+      "certificateHref": "/awards/award-pi44.pdf"
+    },
+    {
+      "id": "pi41",
+      "title": "Raise the Bar",
+      "contribution": "Dark mode, reporting and Azure backend",
+      "organization": "OpenText",
+      "date": "14 February 2025",
+      "description": "Recognized for dark mode support, license-consumption reporting, and quickly becoming productive on Azure backend work.",
+      "certificateHref": "/awards/award-pi41.pdf"
+    },
+    {
+      "id": "pi42",
+      "title": "Raise the Bar",
+      "contribution": "AWS and Azure network visualization",
+      "organization": "OpenText",
+      "date": "24 January 2025",
+      "description": "Recognized for implementing AWS and Azure network-test visualization on the geographical map and demonstrating working code for early feedback.",
+      "certificateHref": "/awards/award-pi42.pdf"
+    }
+  ]
+}
