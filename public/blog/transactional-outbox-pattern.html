@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f2eb">
+  <title>The Transaction Ends at the Database — An Outbox Pattern Field Guide</title>
+  <meta name="description" content="A practical, visual guide to the transactional outbox: the failure it prevents, the guarantees it does not make, and the decisions around it.">
+  <link rel="canonical" href="https://manobharathi93.github.io/blog/transactional-outbox-pattern.html">
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="The Transaction Ends at the Database — An Outbox Pattern Field Guide">
+  <meta property="og:description" content="A practical, visual guide to the transactional outbox: the failure it prevents, the guarantees it does not make, and the decisions around it.">
+  <meta property="og:url" content="https://manobharathi93.github.io/blog/transactional-outbox-pattern.html">
+  <meta property="og:image" content="https://manobharathi93.github.io/blog/transactional-outbox-cover.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="627">
+  <meta property="og:image:alt" content="A field guide to the transactional outbox pattern, from database commit through event delivery.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Transaction Ends at the Database — An Outbox Pattern Field Guide">
+  <meta name="twitter:description" content="A practical, visual guide to the transactional outbox: the failure it prevents, the guarantees it does not make, and the decisions around it.">
+  <meta name="twitter:image" content="https://manobharathi93.github.io/blog/transactional-outbox-cover.png">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f2eb;
+      --white: #fffefa;
+      --ink: #19241f;
+      --muted: #64716a;
+      --line: #d9ddd5;
+      --green: #245c45;
+      --green-soft: #e5eee7;
+      --orange: #e17b45;
+      --orange-soft: #f8e9df;
+      --blue: #477a8b;
+      --blue-soft: #e5eef0;
+      --red: #b94f45;
+      --shadow: 0 18px 50px #1e31210d;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.7;
+      font-size: 16px;
+    }
+    a { color: inherit; }
+    button { font: inherit; }
+    .topbar {
+      height: 66px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 max(5vw, calc((100vw - 1200px) / 2));
+      border-bottom: 1px solid var(--line);
+      background: #f5f2ebd9;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      letter-spacing: .04em;
+      font-weight: 750;
+      text-transform: uppercase;
+    }
+    .brand-mark {
+      width: 25px; height: 25px; border-radius: 8px;
+      display: grid; place-items: center;
+      color: white; background: var(--green); font-size: 13px;
+    }
+    .topbar a {
+      font-size: 13px; font-weight: 650; color: var(--green);
+      text-decoration: none; border-bottom: 1px solid #245c4555;
+    }
+    .hero {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: clamp(60px, 9vw, 116px) 28px 72px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 70px;
+      align-items: end;
+    }
+    .eyebrow {
+      display: flex; align-items: center; gap: 9px;
+      margin: 0 0 21px; color: var(--green);
+      font-size: 12px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; height: 2px; width: 24px; background: var(--orange); }
+    h1, h2, h3, p { margin-top: 0; }
+    h1 {
+      max-width: 830px;
+      margin-bottom: 24px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(46px, 7vw, 82px);
+      font-weight: 500;
+      letter-spacing: -.055em;
+      line-height: .99;
+    }
+    .dek {
+      max-width: 740px; margin-bottom: 0;
+      font-size: clamp(18px, 2vw, 21px); line-height: 1.55; color: #48564e;
+    }
+    .byline {
+      border-left: 1px solid var(--line); padding-left: 20px;
+      color: var(--muted); font-size: 13px; line-height: 1.6;
+    }
+    .byline strong { display: block; color: var(--ink); font-size: 14px; margin-bottom: 4px; }
+    .hero-rule { max-width: 1200px; margin: 0 auto; border-top: 1px solid var(--line); }
+    .layout {
+      max-width: 1200px; margin: 0 auto; padding: 0 28px 100px;
+      display: grid; grid-template-columns: 190px minmax(0, 760px); gap: 78px;
+      align-items: start;
+    }
+    .toc {
+      position: sticky; top: 24px; margin-top: 73px;
+      border-top: 2px solid var(--ink); padding-top: 14px;
+    }
+    .toc-label { margin-bottom: 14px; font-size: 10px; font-weight: 800; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+    .toc a {
+      display: block; padding: 7px 0; color: #59665f; text-decoration: none;
+      font-size: 12px; line-height: 1.4;
+    }
+    .toc a:hover { color: var(--green); }
+    article { min-width: 0; }
+    .article-meta {
+      display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+      margin: 55px 0 28px; color: var(--muted); font-size: 12px;
+    }
+    .pill { border: 1px solid #c8d1c9; border-radius: 99px; padding: 3px 9px; color: var(--green); font-weight: 700; }
+    article p { color: #39463f; margin-bottom: 20px; }
+    article h2 {
+      margin: 76px 0 19px; font-family: Georgia, "Times New Roman", serif;
+      font-weight: 500; font-size: clamp(31px, 4vw, 43px); letter-spacing: -.035em; line-height: 1.12;
+      scroll-margin-top: 24px;
+    }
+    article h3 {
+      margin: 33px 0 10px; font-size: 17px; line-height: 1.3; letter-spacing: -.015em;
+    }
+    .lead { font-size: 19px; line-height: 1.65; color: #28372f; }
+    .callout {
+      margin: 30px 0; padding: 19px 22px; border-left: 3px solid var(--orange);
+      background: #fbf8f1; color: #39463f;
+    }
+    .callout strong { color: var(--ink); }
+    figure { margin: 31px 0 35px; }
+    .diagram {
+      width: 100%; display: block; border: 1px solid var(--line);
+      border-radius: 14px; background: var(--white); box-shadow: var(--shadow);
+    }
+    figcaption { margin-top: 11px; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .diagram text { font-family: Inter, ui-sans-serif, system-ui, sans-serif; fill: var(--ink); }
+    .diagram .small { font-size: 12px; fill: #59665f; }
+    .diagram .label { font-size: 14px; font-weight: 750; }
+    .diagram .sub { font-size: 11px; fill: #627068; }
+    .diagram .node { fill: #fffefa; stroke: #ccd5ce; stroke-width: 1.4; }
+    .diagram .db { fill: var(--green-soft); stroke: #9cb8a4; }
+    .diagram .broker { fill: var(--blue-soft); stroke: #a4c1c9; }
+    .diagram .app { fill: #f7eee2; stroke: #dfc7a8; }
+    .diagram .event { fill: #f7e9df; stroke: #e8b99a; }
+    .diagram .wire { fill: none; stroke: #718078; stroke-width: 2; }
+    .diagram .good-wire { fill: none; stroke: var(--green); stroke-width: 2.5; }
+    .diagram .bad-wire { fill: none; stroke: var(--red); stroke-width: 2.5; stroke-dasharray: 6 5; }
+    .diagram .step { font-size: 10px; font-weight: 800; fill: var(--green); }
+    .code {
+      overflow-x: auto; margin: 23px 0 30px; padding: 19px 21px;
+      border-radius: 12px; background: #1f2c26; color: #e9eee8;
+      font: 13px/1.7 "Cascadia Code", Consolas, monospace;
+    }
+    .code .comment { color: #a7b9ac; }
+    .inline-code { padding: .12em .36em; border-radius: 4px; background: #e8ebe4; color: #284835; font: .88em "Cascadia Code", Consolas, monospace; }
+    .decision-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin: 25px 0 30px;
+    }
+    .decision {
+      border: 1px solid var(--line); border-radius: 12px; padding: 17px 18px; background: var(--white);
+    }
+    .decision b { display: block; margin-bottom: 6px; font-size: 14px; }
+    .decision p { margin: 0; font-size: 13px; line-height: 1.55; }
+    .decision .num { color: var(--orange); font: 800 11px "Cascadia Code", monospace; margin-bottom: 9px; }
+
+    .simulator {
+      margin: 39px 0 35px; border: 1px solid #cbd6cc; border-radius: 16px;
+      overflow: hidden; background: var(--white); box-shadow: var(--shadow);
+    }
+    .sim-head { padding: 23px 25px 18px; background: #edf2eb; }
+    .sim-kicker { margin: 0 0 7px; color: var(--green); font-size: 10px; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+    .sim-head h3 { margin: 0 0 6px; font: 500 25px/1.2 Georgia, "Times New Roman", serif; }
+    .sim-head p { margin: 0; color: #526057; font-size: 13px; }
+    .sim-body { padding: 22px 25px 25px; }
+    .mode-row { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 19px; }
+    .mode-label { margin-right: 5px; font-size: 12px; font-weight: 750; color: #526057; }
+    .mode-btn, .action-btn {
+      cursor: pointer; border: 1px solid #ccd5ce; border-radius: 7px; padding: 8px 11px;
+      background: white; color: var(--ink); font-size: 12px; font-weight: 700;
+      transition: background .15s, border-color .15s, transform .15s;
+    }
+    .mode-btn:hover, .action-btn:hover { border-color: var(--green); transform: translateY(-1px); }
+    .mode-btn[aria-pressed="true"] { border-color: var(--green); background: var(--green); color: white; }
+    .action-btn.primary { background: var(--green); color: white; border-color: var(--green); }
+    .action-btn.danger { color: #9e3f36; border-color: #e5c4bf; }
+    .sim-stage {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px;
+      margin: 16px 0 17px;
+    }
+    .stage {
+      min-height: 100px; border: 1px solid var(--line); border-radius: 10px; padding: 12px;
+      background: #fbfaf6; transition: background .2s, border-color .2s;
+    }
+    .stage.active { border-color: #8db19a; background: #eef5ef; }
+    .stage.warn { border-color: #e4b7a3; background: #fff3ec; }
+    .stage .step-no { display: block; color: var(--muted); font: 700 10px "Cascadia Code", monospace; }
+    .stage b { display: block; margin: 5px 0; font-size: 12px; }
+    .stage span:last-child { display: block; color: var(--muted); font-size: 11px; line-height: 1.4; }
+    .sim-status {
+      min-height: 54px; margin: 0 0 16px; padding: 12px 14px;
+      border-radius: 8px; background: #f2f3ee; color: #45534a; font-size: 13px; line-height: 1.5;
+    }
+    .sim-status strong { color: var(--ink); }
+    .sim-status.bad { background: var(--orange-soft); color: #793d26; }
+    .sim-status.good { background: var(--green-soft); color: #245c45; }
+    .sim-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .sim-caption { padding: 0 25px 21px; color: var(--muted); font-size: 11px; }
+    .table-wrap { overflow-x: auto; margin: 23px 0 30px; }
+    table { width: 100%; border-collapse: collapse; background: var(--white); font-size: 13px; }
+    th, td { padding: 12px 13px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { color: #4b5c51; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; }
+    td:first-child { font-weight: 750; white-space: nowrap; }
+    .closing {
+      margin: 56px 0 0; padding: 27px 28px; border-radius: 14px; background: var(--green); color: #f4f3e9;
+    }
+    .closing p { margin: 0; color: inherit; font: 500 23px/1.45 Georgia, "Times New Roman", serif; }
+    footer {
+      padding: 25px max(5vw, calc((100vw - 1200px) / 2)); border-top: 1px solid var(--line);
+      color: var(--muted); font-size: 12px;
+    }
+    :focus-visible { outline: 3px solid #d7834d; outline-offset: 3px; }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; gap: 26px; }
+      .byline { border-left: 0; border-top: 1px solid var(--line); padding: 14px 0 0; }
+      .layout { grid-template-columns: 1fr; gap: 0; }
+      .toc { position: static; display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 26px; }
+      .toc-label { flex-basis: 100%; }
+      .toc a { padding: 2px 0; }
+      .article-meta { margin-top: 36px; }
+    }
+    @media (max-width: 600px) {
+      .topbar { padding: 0 20px; }
+      .hero { padding: 58px 21px 48px; }
+      .layout { padding: 0 21px 70px; }
+      .decision-grid { grid-template-columns: 1fr; }
+      .sim-head, .sim-body { padding-left: 17px; padding-right: 17px; }
+      .sim-caption { padding-left: 17px; padding-right: 17px; }
+      .sim-stage { grid-template-columns: repeat(2, 1fr); }
+      .sim-actions .action-btn { flex: 1 1 44%; }
+      article h2 { margin-top: 58px; }
+      .diagram text { font-size: 11px; }
+      .diagram .label { font-size: 12px; }
+      .diagram .sub { font-size: 9px; }
+      .diagram .small { font-size: 10px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="/" aria-label="Back to Mano Bharathi's portfolio">← Portfolio</a>
+    <div class="brand"><span class="brand-mark" aria-hidden="true">↗</span> Systems, in practice</div>
+    <a href="#outbox">Jump to the outbox pattern ↓</a>
+  </header>
+
+  <section class="hero">
+    <div>
+      <p class="eyebrow">Distributed systems · A field guide</p>
+      <h1>The transaction ends at the database.</h1>
+      <p class="dek">A payment can be correct in PostgreSQL and still disappear from every system that needs to hear about it. The transactional outbox is a practical answer to that uncomfortable gap.</p>
+    </div>
+    <div class="byline">
+      <strong>From the payment boundary</strong>
+      A visual walk through the decisions behind a reliable event pipeline<br>
+      9 minute read
+    </div>
+  </section>
+  <div class="hero-rule"></div>
+
+  <main class="layout">
+    <nav class="toc" aria-label="On this page">
+      <div class="toc-label">On this page</div>
+      <a href="#invariant">Start with the invariant</a>
+      <a href="#boundary">Where the boundary ends</a>
+      <a href="#outbox">The outbox</a>
+      <a href="#relay">Getting events out</a>
+      <a href="#delivery">Duplicates are normal</a>
+      <a href="#decisions">Decisions that matter</a>
+    </nav>
+
+    <article>
+      <div class="article-meta"><span class="pill">Architecture</span><span>PostgreSQL · Kafka · CDC</span><span>Illustrated walkthrough</span></div>
+      <p class="lead">Start with two wallets. Alice has ₹8,000; Bob has ₹3,000. Alice sends Bob ₹2,000. The balances should become ₹6,000 and ₹5,000—not ₹6,000 and ₹3,000 because the process died halfway through.</p>
+
+      <p>That small story gives us a useful invariant: the transfer must debit one account and credit the other as a single unit. It also exposes a bigger truth about reliable systems: every new boundary creates a new way to be partly successful.</p>
+
+      <h2 id="invariant">Make the money move atomically</h2>
+      <p>Both account updates belong in one PostgreSQL transaction. If either update fails, neither should become visible. In a real wallet, I would also put the ledger entries, the idempotency record, and the event intent in that same transaction.</p>
+
+      <pre class="code"><span class="comment">-- Keep the debit, credit and ledger entries together.</span>
+BEGIN;
+  UPDATE accounts
+     SET balance = balance - 2000
+   WHERE id = 'alice' AND balance &gt;= 2000;
+  <span class="comment">-- Require exactly one row to be updated.</span>
+  UPDATE accounts
+     SET balance = balance + 2000
+   WHERE id = 'bob';
+  INSERT INTO ledger_entries (...);
+COMMIT;</pre>
+
+      <p>The guarded debit matters. Atomicity alone does not stop two concurrent transfers from both spending the same observed balance. PostgreSQL coordinates updates to the row; the balance predicate is checked as part of the update, and the application must reject the transfer unless exactly one Alice row changed. Lock ordering and suitable constraints complete the picture.</p>
+
+      <div class="callout"><strong>Keep the accounting story intact.</strong> A ledger records movements; a balance is a convenient current-state projection. Write the debit and credit entries together, and keep the balance update in the same transaction.</div>
+
+      <h2 id="boundary">A durable commit is not a published event</h2>
+      <p>PostgreSQL has its own durability machinery. Under the configured commit guarantees, it records changes in its write-ahead log before acknowledging a durable commit. After a crash, that log helps PostgreSQL recover committed data. It is not, however, an application event bus. Kafka stores and distributes business events; WAL protects and recovers database state.</p>
+
+      <p>Now imagine the payment service needs to notify the recipient, update analytics, feed fraud monitoring, and refresh an activity timeline. Calling those services inline makes the payment request wait on all of them. A slow notification provider can hold up checkout; an unavailable analytics system can turn a successful payment into an HTTP error the client may retry.</p>
+
+      <p>Publishing asynchronously is better for isolation, but it introduces a second durable system. The database and Kafka do not share one ordinary atomic commit.</p>
+
+      <figure>
+        <svg class="diagram" viewBox="0 0 760 250" role="img" aria-labelledby="dual-title dual-desc">
+          <title id="dual-title">The dual-write failure window</title>
+          <desc id="dual-desc">The application commits to PostgreSQL and then publishes to Kafka. A crash between those actions leaves the database committed without a Kafka event.</desc>
+          <defs><marker id="arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#b94f45"/></marker><marker id="arrow-gray" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#718078"/></marker></defs>
+          <rect x="28" y="24" width="704" height="202" rx="14" fill="#fbfaf6"/>
+          <rect class="node app" x="52" y="89" width="155" height="72" rx="10"/>
+          <text class="label" x="129" y="117" text-anchor="middle">Payment service</text><text class="sub" x="129" y="139" text-anchor="middle">one process, two writes</text>
+          <rect class="node db" x="302" y="46" width="166" height="66" rx="10"/>
+          <text class="label" x="385" y="73" text-anchor="middle">PostgreSQL</text><text class="sub" x="385" y="93" text-anchor="middle">transfer committed ✓</text>
+          <rect class="node broker" x="538" y="137" width="166" height="66" rx="10"/>
+          <text class="label" x="621" y="164" text-anchor="middle">Kafka</text><text class="sub" x="621" y="184" text-anchor="middle">event not published</text>
+          <path class="wire" d="M207 103 C245 103 258 79 302 79" marker-end="url(#arrow-gray)"/>
+          <text class="step" x="235" y="69">1 · COMMIT</text>
+          <path class="bad-wire" d="M207 148 C330 191 416 188 538 170" marker-end="url(#arrow-red)"/>
+          <text class="step" x="330" y="211" style="fill:#b94f45">2 · PUBLISH · crash can happen here</text>
+          <path d="M474 129 l16 16 m0 -16 l-16 16" stroke="#b94f45" stroke-width="4" stroke-linecap="round"/>
+          <text class="small" x="386" y="34" text-anchor="middle">Success in one system, absence in the other</text>
+        </svg>
+        <figcaption>Figure 1. Reordering the writes only reverses the failure: publish first, and Kafka may describe a payment the database later rolls back.</figcaption>
+      </figure>
+
+      <p>Retries and <span class="inline-code">try/catch</span> do not close this window. A process can stop after either system has accepted its write. The answer is not to make the HTTP handler more hopeful; it is to make the intent to publish part of the database commit.</p>
+
+      <h2 id="outbox">Put the event intent in the transaction</h2>
+      <p>The outbox is an ordinary database table. The application writes the payment and a record describing the event in one transaction. If the transaction rolls back, neither exists. If it commits, both exist—even if the service disappears before it can talk to Kafka.</p>
+
+      <figure>
+        <svg class="diagram" viewBox="0 0 760 328" role="img" aria-labelledby="architecture-title architecture-desc">
+          <title id="architecture-title">Transactional outbox architecture</title>
+          <desc id="architecture-desc">The payment API atomically writes account and ledger state plus an outbox event to PostgreSQL. Debezium reads committed changes from WAL and routes the event to Kafka, which has independent notification, analytics and fraud consumers.</desc>
+          <defs><marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#245c45"/></marker><marker id="arrow-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#477a8b"/></marker></defs>
+          <rect x="17" y="20" width="726" height="285" rx="14" fill="#fbfaf6"/>
+          <rect class="node app" x="36" y="110" width="134" height="72" rx="10"/>
+          <text class="label" x="103" y="138" text-anchor="middle">Payment API</text><text class="sub" x="103" y="159" text-anchor="middle">one DB transaction</text>
+          <rect class="node db" x="220" y="66" width="183" height="160" rx="12"/>
+          <text class="label" x="311" y="91" text-anchor="middle">PostgreSQL</text>
+          <rect x="239" y="106" width="145" height="36" rx="6" fill="#fffefa" stroke="#b9cbbd"/>
+          <text class="sub" x="311" y="129" text-anchor="middle">accounts + ledger</text>
+          <rect x="239" y="155" width="145" height="43" rx="6" fill="#f7e9df" stroke="#e8b99a"/>
+          <text class="sub" x="311" y="174" text-anchor="middle">outbox event</text><text class="sub" x="311" y="189" text-anchor="middle">same COMMIT</text>
+          <rect class="node event" x="449" y="78" width="122" height="136" rx="10"/>
+          <text class="label" x="510" y="107" text-anchor="middle">Debezium</text><text class="sub" x="510" y="128" text-anchor="middle">reads committed</text><text class="sub" x="510" y="145" text-anchor="middle">WAL changes</text><text class="sub" x="510" y="177" text-anchor="middle">Outbox Event</text><text class="sub" x="510" y="193" text-anchor="middle">Router</text>
+          <rect class="node broker" x="618" y="94" width="104" height="104" rx="10"/>
+          <text class="label" x="670" y="137" text-anchor="middle">Kafka</text><text class="sub" x="670" y="158" text-anchor="middle">topic</text>
+          <path class="good-wire" d="M170 146 L220 146" marker-end="url(#arrow-green)"/>
+          <text class="step" x="195" y="133" text-anchor="middle">1</text>
+          <path class="good-wire" d="M403 144 L449 144" marker-end="url(#arrow-green)"/>
+          <text class="step" x="426" y="132" text-anchor="middle">2</text>
+          <path class="good-wire" d="M571 144 L618 144" marker-end="url(#arrow-green)"/>
+          <text class="step" x="595" y="132" text-anchor="middle">3</text>
+          <rect class="node" x="530" y="247" width="184" height="38" rx="8"/>
+          <text class="sub" x="622" y="271" text-anchor="middle">notifications · analytics · fraud</text>
+          <path class="wire" d="M670 198 L670 247" marker-end="url(#arrow-blue)"/>
+          <text class="small" x="310" y="258" text-anchor="middle">WAL is recovery first; logical decoding makes</text><text class="small" x="310" y="276" text-anchor="middle">committed changes available to CDC.</text>
+        </svg>
+        <figcaption>Figure 2. The database transaction guarantees the business change and its publication intent travel together. CDC delivers that intent beyond the database boundary.</figcaption>
+      </figure>
+
+      <p>A useful event record usually carries a stable <span class="inline-code">event_id</span>, an aggregate or transfer ID, an event type, a schema version, a creation time, and the payload. Add an aggregate sequence if consumers need to detect ordering gaps. Keep sensitive data out of payloads unless every subscriber is entitled to it.</p>
+
+      <pre class="code"><span class="comment">-- Shape, not a universal schema</span>
+BEGIN;
+  UPDATE accounts ...;
+  INSERT INTO ledger_entries ...;
+  INSERT INTO idempotency_records ...;
+  INSERT INTO outbox_events
+    (event_id, aggregate_id, event_type, payload, created_at)
+  VALUES (...);
+COMMIT;</pre>
+
+      <h2 id="relay">Getting committed events out</h2>
+      <p>For a modest system, a polling publisher is often the easiest thing to operate. It selects unpublished rows in batches, claims them safely—commonly with row locks and <span class="inline-code">FOR UPDATE SKIP LOCKED</span>—publishes, then records progress. Polling is not inherently wrong; frequent empty queries, lock contention, table cleanup, and the latency/throughput trade-off are the costs to measure.</p>
+
+      <p>When the event stream is already central to the architecture, change data capture is a natural fit. PostgreSQL logical decoding exposes committed changes from WAL. Debezium reads those changes and its Outbox Event Router maps outbox rows to Kafka records. This avoids application-side polling, but it adds operational responsibilities: replication slots, WAL retention, connector health, schema evolution, and replay behavior.</p>
+
+      <div class="callout"><strong>WAL, CDC and Kafka are different layers.</strong> WAL supports database recovery. Logical decoding exposes committed changes. Debezium turns those changes into a stream. Kafka retains and distributes the resulting application events.</div>
+
+      <section class="simulator" aria-labelledby="sim-title">
+        <div class="sim-head">
+          <p class="sim-kicker">Try the failure, don't just read about it</p>
+          <h3 id="sim-title">Where does the event go missing?</h3>
+          <p>Choose a design, then inject a crash at a specific point. The boxes show what is durable after the process stops.</p>
+        </div>
+        <div class="sim-body">
+          <div class="mode-row" role="group" aria-label="Choose event publishing design">
+            <span class="mode-label">Design</span>
+            <button type="button" class="mode-btn" data-mode="direct" aria-pressed="true">Direct dual write</button>
+            <button type="button" class="mode-btn" data-mode="outbox" aria-pressed="false">Outbox + CDC</button>
+          </div>
+          <div class="sim-stage" aria-label="System state">
+            <div class="stage" data-stage="db"><span class="step-no">01 / DATABASE</span><b>Payment</b><span data-state="db">Not committed</span></div>
+            <div class="stage" data-stage="outbox"><span class="step-no">02 / OUTBOX</span><b>Event intent</b><span data-state="outbox">No record</span></div>
+            <div class="stage" data-stage="kafka"><span class="step-no">03 / BROKER</span><b>Kafka event</b><span data-state="kafka">Not published</span></div>
+            <div class="stage" data-stage="consumer"><span class="step-no">04 / CONSUMER</span><b>Business effect</b><span data-state="consumer">Not processed</span></div>
+          </div>
+          <div class="sim-status" role="status" aria-live="polite"><strong>Ready.</strong> Pick a failure point or run the successful path.</div>
+          <div class="sim-actions">
+            <button type="button" class="action-btn danger" data-action="crash-after-db">Crash after database commit</button>
+            <button type="button" class="action-btn danger" data-action="crash-after-publish">Crash after Kafka publish</button>
+            <button type="button" class="action-btn primary" data-action="complete">Run successful path</button>
+            <button type="button" class="action-btn" data-action="reset">Reset</button>
+          </div>
+        </div>
+        <div class="sim-caption">A simplified model, not a timing or throughput benchmark. In outbox mode, the relay can resume from durable database state; a crash after Kafka accepts an event may still cause a duplicate.</div>
+      </section>
+
+      <p>The simulator makes the key distinction visible: the outbox does not make a network call atomic with a database commit. It makes the need to publish durable and recoverable. A relay can resume after failure because the event intent was committed with the payment.</p>
+
+      <h2 id="delivery">Assume duplicates; make effects idempotent</h2>
+      <p>At-least-once delivery is the practical contract for many pipelines: a message should not silently vanish, but retries can deliver it more than once. For example, a CDC connector may publish an event and fail before its own progress is durably recorded. On recovery, it may publish that event again.</p>
+
+      <p>Consumers should therefore treat <span class="inline-code">event_id</span> as a stable deduplication key. If a consumer updates its own database, insert that ID into a processed-events table in the same transaction as the business effect. A unique constraint turns a replay into a harmless no-op.</p>
+
+      <pre class="code"><span class="comment">-- The event receipt and business update commit together.</span>
+BEGIN;
+  INSERT INTO processed_events (event_id)
+  VALUES (:event_id)
+  ON CONFLICT DO NOTHING;
+
+  <span class="comment">-- Apply the effect only if the insert was new.</span>
+  UPDATE customer_activity ...;
+COMMIT;</pre>
+
+      <p>That transaction works when the consumer's effect is in its own database. An email or SMS provider is another boundary: if the provider accepts the send but the consumer crashes before recording success, a retry can send twice. Use provider idempotency support or a stable delivery key where available; otherwise, be honest that exactly-once external side effects are not guaranteed.</p>
+
+      <div class="callout"><strong>“Exactly once” needs a boundary.</strong> Kafka transactions can coordinate Kafka records and offsets in Kafka workflows. They do not automatically include a PostgreSQL commit or an external provider's side effect. End-to-end correctness still depends on application-level idempotency.</div>
+
+      <h2 id="decisions">The decisions worth writing down</h2>
+      <p>The outbox is a small table with a meaningful operational footprint. These are the choices I would make explicit before calling the design done.</p>
+
+      <div class="decision-grid">
+        <div class="decision"><div class="num">01 / COMMIT BOUNDARY</div><b>What belongs in the transaction?</b><p>Payment state, ledger entries, idempotency result, and the outbox record. Not Kafka publication, HTTP notification, or another service call.</p></div>
+        <div class="decision"><div class="num">02 / RELAY</div><b>Polling or CDC?</b><p>Start with polling when it meets volume and operational needs. Prefer CDC when low-latency change streaming justifies connector and WAL-slot operations.</p></div>
+        <div class="decision"><div class="num">03 / ORDER</div><b>What ordering do consumers need?</b><p>Partition by aggregate ID when per-account or per-transfer order matters. Define sequence numbers and gap handling; a global total order is expensive and rarely necessary.</p></div>
+        <div class="decision"><div class="num">04 / RETENTION</div><b>How long do records stay?</b><p>Set a cleanup policy for published rows, preserve enough history for diagnosis, and monitor table growth, replication lag, and WAL retention.</p></div>
+        <div class="decision"><div class="num">05 / RETRY</div><b>What happens to poison events?</b><p>Bound retries, alert on repeated failures, and define a quarantine or dead-letter workflow that supports safe replay—not silent deletion.</p></div>
+        <div class="decision"><div class="num">06 / CLIENT RETRIES</div><b>Can a payment request repeat?</b><p>Persist idempotency keys with a request fingerprint and result. Reusing the key with different payment details should fail clearly.</p></div>
+      </div>
+
+      <h3>Why not put everything in Kafka transactions?</h3>
+      <p>Kafka's producer idempotence and transactions are useful inside Kafka's own boundary. A payment must also commit to PostgreSQL, where the balances and ledger live. Without distributed transaction coordination across both systems—and all the complexity that entails—Kafka cannot make those two commits one indivisible action. The outbox keeps the source-of-truth transaction local, then relies on replay and idempotent consumers.</p>
+
+      <h3>And the rest of the payment platform?</h3>
+      <p>Client idempotency protects against the familiar timeout-after-commit retry. Guarded updates and database constraints protect the balance invariant under concurrency. A shared rate limiter such as Redis can protect the database from abusive traffic, but it should not decide whether a transfer happened or whether a balance is valid. Those correctness decisions stay with PostgreSQL.</p>
+
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Failure or pressure</th><th>Design response</th><th>What it does not replace</th></tr></thead>
+          <tbody>
+            <tr><td>Partial transfer</td><td>One database transaction; ledger debit and credit together</td><td>Concurrency controls and balance constraints</td></tr>
+            <tr><td>Crash after commit</td><td>PostgreSQL durability and WAL recovery</td><td>Application event publication</td></tr>
+            <tr><td>Commit succeeds, event missing</td><td>Transactional outbox plus recoverable relay</td><td>Consumer idempotency</td></tr>
+            <tr><td>Duplicate delivery</td><td>Stable event ID and idempotent effect</td><td>Exactly-once external provider behavior</td></tr>
+            <tr><td>Client retries transfer</td><td>Persisted idempotency key and request result</td><td>Event deduplication at consumers</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Reliable systems are explicit about what can fail</h2>
+      <p>The path from a balance update to a Kafka consumer is not one giant transaction. It is a sequence of smaller guarantees: PostgreSQL protects the payment and event intent together; CDC or a poller carries that intent forward; Kafka makes it available to independent consumers; consumers guard their own effects against replay.</p>
+
+      <p>That is the value of the outbox. It does not erase failure, and it does not promise that every external side effect happens once. It gives the system a durable place to remember work that still needs doing—and a way to try again without losing the payment that started it.</p>
+
+      <div class="closing"><p>Commit the fact. Persist the intent. Deliver it at least once. Make the effect safe to repeat.</p></div>
+    </article>
+  </main>
+  <footer>Illustrations and interactive model are embedded in this page. Architecture is intentionally simplified; production guarantees depend on database, connector, broker, and consumer configuration.</footer>
+
+  <script>
+    (() => {
+      const state = { mode: "direct", db: false, outbox: false, kafka: false, consumer: false };
+      const status = document.querySelector(".sim-status");
+      const stages = [...document.querySelectorAll(".stage")];
+      const values = {
+        db: document.querySelector('[data-state="db"]'),
+        outbox: document.querySelector('[data-state="outbox"]'),
+        kafka: document.querySelector('[data-state="kafka"]'),
+        consumer: document.querySelector('[data-state="consumer"]')
+      };
+
+      function render(message, tone = "") {
+        for (const key of ["db", "outbox", "kafka", "consumer"]) {
+          values[key].textContent = key === "db" ? (state.db ? "Committed ✓" : "Not committed")
+            : key === "outbox" ? (state.outbox ? "Durable event ✓" : "No record")
+            : key === "kafka" ? (state.kafka ? "Published ✓" : "Not published")
+            : (state.consumer ? "Effect applied ✓" : "Not processed");
+        }
+        stages.forEach((stage) => {
+          const key = stage.dataset.stage;
+          stage.classList.toggle("active", state[key]);
+          stage.classList.toggle("warn", key === "db" && state.db && !state.kafka
+            || key === "outbox" && state.outbox && !state.kafka);
+        });
+        status.className = `sim-status ${tone}`;
+        status.innerHTML = message;
+      }
+
+      function reset(message = "<strong>Ready.</strong> Pick a failure point or run the successful path.") {
+        Object.assign(state, { db: false, outbox: false, kafka: false, consumer: false });
+        render(message);
+      }
+
+      document.querySelectorAll(".mode-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.mode = button.dataset.mode;
+          document.querySelectorAll(".mode-btn").forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+          reset(`<strong>${state.mode === "direct" ? "Direct dual write selected." : "Outbox + CDC selected."}</strong> Choose a failure point to see what remains durable.`);
+        });
+      });
+
+      document.querySelector('[data-action="crash-after-db"]').addEventListener("click", () => {
+        reset();
+        state.db = true;
+        if (state.mode === "outbox") state.outbox = true;
+        const explanation = state.mode === "direct"
+          ? "<strong>Crash injected.</strong> The payment is committed, but there is no event record to resume from. The downstream systems never hear about it."
+          : "<strong>Crash injected.</strong> Payment and event intent committed together. Kafka has not received it yet, but the CDC relay can resume from the durable outbox change.";
+        render(explanation, "bad");
+      });
+
+      document.querySelector('[data-action="crash-after-publish"]').addEventListener("click", () => {
+        reset();
+        state.db = true;
+        state.outbox = state.mode === "outbox";
+        state.kafka = true;
+        const explanation = "<strong>Crash injected after broker acknowledgement.</strong> Kafka has the event, but the sender may not have checkpointed progress. Recovery can publish it again; consumers must deduplicate by event ID.";
+        render(explanation, "bad");
+      });
+
+      document.querySelector('[data-action="complete"]').addEventListener("click", () => {
+        state.db = true;
+        state.outbox = state.mode === "outbox";
+        state.kafka = true;
+        state.consumer = true;
+        render("<strong>Path completed.</strong> The payment is committed, the event is in Kafka, and a consumer applied its effect. In a real system, each boundary needs monitoring and retry policy.", "good");
+      });
+
+      document.querySelector('[data-action="reset"]').addEventListener("click", () => reset());
+    })();
+  </script>
+</body>
+</html>

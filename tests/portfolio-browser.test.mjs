@@ -218,6 +218,35 @@ test("exported portfolio themes and project diagrams work in Chromium", { timeou
     }
   });
 
+  await t.test("technical writing index links to the published outbox article", async () => {
+    await page.setViewportSize({ width: 1440, height: 1100 });
+    const indexResponse = await page.goto(`${server.origin}/blog`, { waitUntil: "networkidle" });
+    assert.equal(indexResponse?.status(), 200);
+    await waitForTheme(page, "light");
+    assert.equal(await page.getByRole("heading", { name: "Technical Writing" }).count(), 1);
+    await page.getByRole("link", {
+      name: "The Transaction Ends at the Database — An Outbox Pattern Field Guide",
+    }).click();
+    await page.waitForURL(/\/blog\/transactional-outbox-pattern\.html$/);
+    assert.equal(
+      await page.getByRole("heading", { name: "The transaction ends at the database." }).count(),
+      1,
+    );
+    assert.equal(
+      await page.getByRole("link", { name: "Back to Mano Bharathi's portfolio" }).getAttribute("href"),
+      "/",
+    );
+    assert.equal(
+      await page.locator('meta[property="og:image"]').getAttribute("content"),
+      "https://manobharathi93.github.io/blog/transactional-outbox-cover.png",
+    );
+    const coverResponse = await context.request.get(
+      `${server.origin}/blog/transactional-outbox-cover.png`,
+    );
+    assert.equal(coverResponse.status(), 200);
+    assert.match(coverResponse.headers()["content-type"], /image\/png/);
+  });
+
   await t.test("initial static HTML exposes one complete social preview and its PNG", async () => {
     const html = await readFile(join(exportDirectory, "index.html"), "utf8");
     const expectedMeta = {

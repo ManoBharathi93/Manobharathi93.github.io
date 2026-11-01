@@ -78,6 +78,7 @@ export default function RootLayout({
                 <Link href="/" className="hover:text-[var(--accent)] transition-colors">Home</Link>
                 <Link href="/#experience" className="hidden md:inline hover:text-[var(--accent)] transition-colors">Experience</Link>
                 <Link href="/projects" className="hover:text-[var(--accent)] transition-colors">Projects</Link>
+                <Link href="/blog" className="hover:text-[var(--accent)] transition-colors">Writing</Link>
                 <Link href="/architecture" className="hover:text-[var(--accent)] transition-colors">Architecture</Link>
                 <Link href="/#awards" className="hover:text-[var(--accent)] transition-colors">Awards</Link>
                 <Link href="/resume" className="hover:text-[var(--accent)] transition-colors">Resume</Link>

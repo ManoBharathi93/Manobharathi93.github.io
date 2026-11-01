@@ -4,6 +4,7 @@ import { ArrowUpRight, Cpu, Database, Network, ShieldAlert, Zap, FileText } from
 import { projectsData } from "@/data/projectsData";
 import { experienceHighlights } from "@/data/experienceData";
 import { awards } from "@/data/awardsData";
+import { articles } from "@/data/articlesData";
 
 export default function HomePage() {
   return (
@@ -149,7 +150,50 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 4. CORE SYSTEMS PROJECTS */}
+      {/* 4. TECHNICAL WRITING */}
+      <section id="writing" className="space-y-6 scroll-mt-20">
+        <div className="flex flex-wrap items-end justify-between gap-3 border-b border-[var(--border)] pb-2">
+          <div>
+            <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--muted)]">
+              Technical Writing
+            </h2>
+            <p className="mt-2 text-xs text-[var(--muted)]">
+              Notes and field guides on backend engineering and distributed systems.
+            </p>
+          </div>
+          <Link href="/blog" className="inline-flex items-center gap-1 text-xs text-[var(--accent)] font-semibold hover:underline">
+            Browse all writing <ArrowUpRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        <div className="grid gap-4">
+          {articles.slice(0, 1).map((article) => (
+            <article key={article.id} className="rounded border border-[var(--border)] bg-[var(--muted-background)]/20 p-5">
+              <div className="flex flex-wrap items-center gap-3 text-[10px] font-mono text-[var(--muted)]">
+                <span>{article.publishedAt}</span>
+                <span aria-hidden="true">·</span>
+                <span>{article.readTime}</span>
+                <span className="rounded border border-[var(--border)] px-2 py-0.5 text-[var(--accent)]">
+                  {article.topics[0]}
+                </span>
+              </div>
+              <h3 className="mt-3 text-base font-bold tracking-tight">
+                <a href={article.href} className="hover:text-[var(--accent)] transition-colors">
+                  {article.title}
+                </a>
+              </h3>
+              <p className="mt-2 max-w-3xl text-xs leading-relaxed text-[var(--muted)]">
+                {article.excerpt}
+              </p>
+              <a href={article.href} className="mt-4 inline-flex items-center gap-1 text-xs text-[var(--accent)] font-semibold hover:underline">
+                Read the article <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* 5. CORE SYSTEMS PROJECTS */}
       <section id="projects" className="space-y-8 scroll-mt-20">
         <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--muted)] border-b border-[var(--border)] pb-2">
           Selected Projects & Research
@@ -186,7 +230,7 @@ export default function HomePage() {
         </Link>
       </section>
 
-      {/* 5. AWARDS SECTION */}
+      {/* 6. AWARDS SECTION */}
       <section id="awards" className="space-y-6">
         <h2 className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--muted)] border-b border-[var(--border)] pb-2">
           Awards & Recognition
